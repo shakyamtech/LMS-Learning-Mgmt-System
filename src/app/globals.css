@@ -891,8 +891,8 @@ a:hover {
 [style*="--college-bg-cream"],
 [style*="F8F6F0"],
 .bg-cream-pattern {
-  background-image: radial-gradient(circle, rgba(27, 94, 32, 0.09) 1.5px, transparent 1.5px),
-                    radial-gradient(circle, rgba(27, 94, 32, 0.09) 1.5px, transparent 1.5px) !important;
+  background-image: radial-gradient(circle, rgba(27, 94, 32, 0.15) 1.5px, transparent 1.5px),
+                    radial-gradient(circle, rgba(27, 94, 32, 0.15) 1.5px, transparent 1.5px) !important;
   background-size: 48px 48px !important;
   background-position: 0 0, 24px 24px !important;
 }
