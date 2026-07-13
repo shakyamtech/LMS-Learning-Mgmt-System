@@ -991,6 +991,18 @@ a:hover {
   transform: translateY(0);
 }
 
+/* Testimonial Name Hover Interaction */
+.testimonial-name {
+  display: inline-block;
+  transition: color 0.25s ease-in-out, transform 0.25s ease-in-out;
+  cursor: default;
+}
+.testimonial-name:hover {
+  color: var(--college-accent) !important;
+  transform: scale(1.08);
+}
+
+
 
 
 
