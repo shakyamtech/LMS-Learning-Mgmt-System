@@ -173,29 +173,29 @@ export default async function Home() {
             Why Choose Us
           </h2>
           <div className="grid-2">
-            <div>
-              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🎓</div>
+            <div className="choose-card">
+              <div className="icon-wrap">🎓</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Best Programs</h3>
-              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>Our curriculum is globally recognized and highly competitive.</p>
-              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+              <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>Our curriculum is globally recognized and highly competitive.</p>
+              <Link href="#" className="btn-text">Learn More →</Link>
             </div>
-            <div>
-              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🔬</div>
+            <div className="choose-card">
+              <div className="icon-wrap">🔬</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Laboratories</h3>
-              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>State-of-the-art facilities for hands-on scientific research.</p>
-              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+              <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>State-of-the-art facilities for hands-on scientific research.</p>
+              <Link href="#" className="btn-text">Learn More →</Link>
             </div>
-            <div>
-              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🏀</div>
+            <div className="choose-card">
+              <div className="icon-wrap">🏀</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Variety of Sports</h3>
-              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>Engage in over 20+ collegiate level athletic programs.</p>
-              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+              <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>Engage in over 20+ collegiate level athletic programs.</p>
+              <Link href="#" className="btn-text">Learn More →</Link>
             </div>
-            <div>
-              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🍎</div>
+            <div className="choose-card">
+              <div className="icon-wrap">🍎</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Great Canteens</h3>
-              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>Nutritious, globally-inspired meal plans available 24/7.</p>
-              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+              <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>Nutritious, globally-inspired meal plans available 24/7.</p>
+              <Link href="#" className="btn-text">Learn More →</Link>
             </div>
           </div>
         </div>

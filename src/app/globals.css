@@ -306,3 +306,52 @@ a:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
 }
+
+/* Why Choose Us Cards */
+.choose-card {
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid transparent;
+}
+
+.choose-card:hover {
+  background-color: white;
+  border-color: rgba(0,0,0,0.03);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+  transform: translateY(-5px);
+}
+
+.choose-card .icon-wrap {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 2px solid var(--college-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.choose-card:hover .icon-wrap {
+  background-color: var(--college-primary);
+  border-color: var(--college-primary);
+  box-shadow: 0 4px 10px rgba(27, 94, 32, 0.2);
+}
+
+.choose-card .btn-text {
+  color: var(--college-accent);
+  margin-top: auto;
+}
+
+.choose-card:hover .btn-text {
+  color: var(--college-primary);
+  transform: translateX(6px);
+}
