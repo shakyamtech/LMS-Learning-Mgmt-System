@@ -49,7 +49,8 @@ export default function HeroSlider() {
                 width: "100%",
                 opacity: current === index ? 1 : 0, 
                 visibility: current === index ? "visible" : "hidden",
-                transition: "opacity 0.6s ease-in-out, visibility 0.6s ease-in-out" 
+                transform: current === index ? "translateY(0)" : "translateY(20px)",
+                transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)" 
               }}
             >
               <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "4.5rem", fontWeight: 800, margin: "0 0 1.5rem 0", lineHeight: 1.1, color: "var(--college-text)", whiteSpace: "pre-line" }}>
