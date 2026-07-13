@@ -33,7 +33,7 @@ export default function HeroSlider() {
 
   return (
     <section className="flex-row" style={{ minHeight: "calc(100vh - 120px)", backgroundColor: "var(--college-bg-cream)", position: "relative", overflow: "hidden" }}>
-      <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", zIndex: 2, position: "relative" }}>
+      <div className="section-pad" style={{ flex: 0.8, display: "flex", flexDirection: "column", justifyContent: "center", zIndex: 2, position: "relative" }}>
         {/* We use position absolute for text to allow cross-fade without layout shift, 
             but for simplicity and responsive height we'll just let the text change inline. 
             A better approach is to map the text and change opacity. */}
@@ -89,7 +89,18 @@ export default function HeroSlider() {
         </div>
       </div>
 
-      <div className="hero-img-box mobile-img-box" style={{ flex: 1, backgroundColor: "#EAE6DF", position: "relative" }}>
+      <div className="hero-img-box mobile-img-box" style={{ flex: 1.2, backgroundColor: "#EAE6DF", position: "relative" }}>
+        {/* Soft edge gradient overlay */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "20%",
+          height: "100%",
+          background: "linear-gradient(to right, var(--college-bg-cream) 0%, rgba(248, 246, 240, 0) 100%)",
+          zIndex: 2,
+          pointerEvents: "none"
+        }} />
         {slides.map((slide, index) => (
           <img
             key={index}
