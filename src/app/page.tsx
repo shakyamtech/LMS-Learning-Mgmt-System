@@ -30,13 +30,11 @@ export default async function Home() {
 
   return (
     <div id="top" style={{
-      margin: "0 0.5in",
       minHeight: "100vh",
       backgroundColor: "var(--college-bg-cream)",
       color: "var(--college-text)",
       fontFamily: "var(--font-geist-sans), Arial, sans-serif",
-      overflowX: "hidden",
-      boxShadow: "0 0 30px rgba(0,0,0,0.1)"
+      overflowX: "hidden"
     }}>
       <style dangerouslySetInnerHTML={{
         __html: `
