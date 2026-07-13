@@ -260,10 +260,8 @@ export default async function Home() {
 
       {/* 9. Graduation */}
       <section className="flex-row" style={{ backgroundColor: "var(--college-primary)", color: "white" }}>
-        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#154A1A", position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#888", fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", padding: "2rem" }}>
-            [ Graduates Celebrating Photo ]
-          </div>
+        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#154A1A", position: "relative", overflow: "hidden" }}>
+          <img src="/graduation.png" alt="Nepali Graduates Celebrating" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3.5rem", margin: "0 0 1.5rem 0" }}>Graduation</h2>
