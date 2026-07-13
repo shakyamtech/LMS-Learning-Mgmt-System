@@ -90,18 +90,7 @@ export default function HeroSlider() {
         </div>
       </div>
 
-      <div className="hero-img-box mobile-img-box" style={{ flex: 1.3, backgroundColor: "#EAE6DF", position: "relative" }}>
-        {/* Soft edge gradient overlay */}
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "20%",
-          height: "100%",
-          background: "linear-gradient(to right, var(--college-bg-cream) 0%, rgba(248, 246, 240, 0) 100%)",
-          zIndex: 2,
-          pointerEvents: "none"
-        }} />
+      <div className="hero-img-box mobile-img-box" style={{ flex: 1.3, backgroundColor: "transparent", position: "relative" }}>
         {slides.map((slide, index) => (
           <img
             key={index}
@@ -114,6 +103,8 @@ export default function HeroSlider() {
               objectFit: "cover",
               opacity: current === index ? 1 : 0,
               transition: "opacity 1s ease-in-out",
+              maskImage: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%)",
+              WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%)",
             }}
           />
         ))}
