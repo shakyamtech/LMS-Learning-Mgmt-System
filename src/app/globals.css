@@ -887,6 +887,15 @@ a:hover {
   }
 }
 
+/* ─── Premium Cream Background Pattern ─── */
+[style*="--college-bg-cream"],
+[style*="F8F6F0"],
+.bg-cream-pattern {
+  background-image: radial-gradient(rgba(27, 94, 32, 0.045) 1.5px, transparent 1.5px) !important;
+  background-size: 24px 24px !important;
+}
+
+
 
 
 
