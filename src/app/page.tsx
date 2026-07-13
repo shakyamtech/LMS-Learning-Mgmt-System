@@ -248,15 +248,15 @@ export default async function Home() {
 
         <form style={{ maxWidth: "800px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div className="contact-form-mobile" style={{ display: "flex", gap: "1rem" }}>
-            <input type="text" placeholder="Your Name" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
-            <input type="text" placeholder="Phone Number" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
-            <input type="email" placeholder="Email Address" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
+            <input type="text" placeholder="Your Name" className="contact-input" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
+            <input type="text" placeholder="Phone Number" className="contact-input" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
+            <input type="email" placeholder="Email Address" className="contact-input" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
           </div>
           <div className="mobile-col" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem", gap: "1rem" }}>
             <label style={{ fontSize: "0.85rem", color: "#666", display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <input type="checkbox" /> By clicking this button, you agree to our privacy policy.
             </label>
-            <button type="button" style={{ padding: "1rem 3rem", backgroundColor: "var(--college-primary)", color: "white", border: "none", borderRadius: "4px", fontWeight: "bold", fontSize: "1rem", cursor: "pointer", width: "100%" }}>Send</button>
+            <button type="button" className="contact-submit-btn" style={{ padding: "1rem 3rem", backgroundColor: "var(--college-primary)", color: "white", border: "none", borderRadius: "4px", fontWeight: "bold", fontSize: "1rem", cursor: "pointer", width: "100%" }}>Send</button>
           </div>
         </form>
       </section>
