@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { decryptSession } from "@/lib/auth-utils";
 import { logout } from "@/app/actions/auth";
+import HeaderScrollHandler from "./HeaderScrollHandler";
 
 export default async function SiteHeader() {
   const cookieStore = await cookies();
@@ -26,6 +27,7 @@ export default async function SiteHeader() {
 
   return (
     <>
+      <HeaderScrollHandler />
       {/* Top Utility Bar */}
       <div
         style={{
@@ -43,6 +45,7 @@ export default async function SiteHeader() {
 
       {/* Main Navigation Header */}
       <header
+        className="site-main-header"
         style={{
           backgroundColor: "var(--college-primary)",
           color: "white",
@@ -50,9 +53,6 @@ export default async function SiteHeader() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
           boxShadow: "0 4px 6px rgba(0,0,0,0.15)",
         }}
       >
