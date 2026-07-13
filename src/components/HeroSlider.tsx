@@ -32,8 +32,8 @@ export default function HeroSlider() {
   }, []);
 
   return (
-    <section className="flex-row" style={{ minHeight: "calc(100vh - 120px)", backgroundColor: "var(--college-bg-cream)", position: "relative", overflow: "hidden" }}>
-      <div className="section-pad" style={{ flex: 0.7, display: "flex", flexDirection: "column", justifyContent: "center", zIndex: 2, position: "relative" }}>
+    <section className="flex-row" style={{ minHeight: "calc(100vh - 120px)", backgroundColor: "#f8f6f0", position: "relative", overflow: "hidden" }}>
+      <div className="section-pad bg-cream-pattern" style={{ flex: 0.7, display: "flex", flexDirection: "column", justifyContent: "center", zIndex: 2, position: "relative" }}>
         {/* We use position absolute for text to allow cross-fade without layout shift, 
             but for simplicity and responsive height we'll just let the text change inline. 
             A better approach is to map the text and change opacity. */}
