@@ -1,9 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
 :root {
   /* Color Palette - Premium Modern */
   --primary: #4f46e5;      /* Indigo */
   --primary-hover: #4338ca;
   --secondary: #10b981;    /* Emerald */
   --background: #f8fafc;   /* Slate 50 */
+  --modular-card-bg: #ffffff;
+  --modular-text: #424a5d;
+
+  /* College Template Colors */
+  --college-primary: #1B5E20;
+  --college-primary-dark: #123d15;
+  --college-accent: #D4AF37;
+  --college-bg-cream: #F8F6F0;
+  --college-text: #333333;
+  --college-light: #FFFFFF;
+
   --surface: #ffffff;
   --surface-hover: #f1f5f9;
   --text-main: #0f172a;    /* Slate 900 */

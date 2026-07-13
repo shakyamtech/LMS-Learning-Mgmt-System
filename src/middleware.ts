@@ -46,15 +46,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Handle default home route redirect to login/dashboard
-  if (pathname === "/") {
-    if (session) {
-      const rolePath = session.role.toLowerCase();
-      return NextResponse.redirect(new URL(`/dashboard/${rolePath}`, request.url));
-    }
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   return NextResponse.next();
 }
 

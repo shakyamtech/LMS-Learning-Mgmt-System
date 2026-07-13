@@ -16,7 +16,6 @@ export default async function Home() {
     }
   }
 
-  // Get dynamic path for user's dashboard based on role
   const getDashboardUrl = (role: string) => {
     switch (role) {
       case "ADMIN":
@@ -32,275 +31,356 @@ export default async function Home() {
   return (
     <div style={{
       minHeight: "100vh",
-      backgroundColor: "var(--background)",
-      color: "var(--text-main)",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-      overflow: "hidden",
-      fontFamily: "var(--font-geist-sans), Arial, sans-serif"
+      backgroundColor: "var(--college-bg-cream)",
+      color: "var(--college-text)",
+      fontFamily: "var(--font-geist-sans), Arial, sans-serif",
+      overflowX: "hidden"
     }}>
-      {/* Premium Ambient Background Glows */}
-      <div style={{
-        position: "absolute",
-        top: "-10%",
-        left: "20%",
-        width: "50vw",
-        height: "50vw",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, rgba(79, 70, 229, 0) 70%)",
-        filter: "blur(80px)",
-        pointerEvents: "none",
-        zIndex: 0
-      }} />
-      <div style={{
-        position: "absolute",
-        bottom: "-10%",
-        right: "10%",
-        width: "45vw",
-        height: "45vw",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0) 70%)",
-        filter: "blur(80px)",
-        pointerEvents: "none",
-        zIndex: 0
-      }} />
+      <style dangerouslySetInnerHTML={{__html: `
+        .flex-row { display: flex; flex-direction: row; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 4rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .section-pad { padding: 6rem 4rem; }
+        .hide-mobile { display: flex; }
+        .hero-img-box { min-height: 500px; }
+        
+        @media (max-width: 1024px) {
+          .flex-row { flex-direction: column; }
+          .grid-3 { grid-template-columns: 1fr 1fr; }
+          .grid-4 { grid-template-columns: 1fr 1fr; }
+          .section-pad { padding: 4rem 2rem; }
+          .hero-img-box { min-height: 400px; }
+        }
+        
+        @media (max-width: 768px) {
+          .grid-3 { grid-template-columns: 1fr; }
+          .grid-4 { grid-template-columns: 1fr; }
+          .grid-2 { grid-template-columns: 1fr; }
+          .section-pad { padding: 3rem 1.5rem; }
+          .hide-mobile { display: none !important; }
+          .mobile-col { flex-direction: column !important; }
+          .mobile-center { justify-content: center !important; text-align: center !important; }
+          .mobile-img-box { min-height: 250px !important; }
+          h1 { font-size: 2.8rem !important; }
+          h2 { font-size: 2.2rem !important; }
+          .top-bar-mobile { flex-direction: column !important; text-align: center; gap: 0.5rem; }
+          .contact-form-mobile { flex-direction: column !important; }
+        }
+        
+        @media (max-width: 380px) { /* Galaxy Fold */
+          .section-pad { padding: 2rem 1rem; }
+          h1 { font-size: 2.2rem !important; }
+          h2 { font-size: 1.8rem !important; }
+          .mobile-img-box { min-height: 200px !important; }
+        }
+      `}} />
 
-      {/* Navigation Header */}
-      <header className="glass-panel" style={{
-        position: "sticky",
-        top: "1.5rem",
-        zIndex: 10,
-        margin: "1.5rem auto 0 auto",
-        width: "90%",
-        maxWidth: "1200px",
-        padding: "1rem 2.5rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        border: "1px solid var(--border)",
-        boxShadow: "var(--shadow-glass)"
-      }}>
+      {/* 1. Top Utility Bar */}
+      <div className="top-bar-mobile" style={{ backgroundColor: "var(--college-primary-dark)", color: "white", padding: "0.5rem 2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
+        <span>📞 +1 (234) 567 89 00</span>
+        <span>📍 2824 Chestnut St, Columbia, SC 29204</span>
+      </div>
+
+      {/* 2. Navigation Header */}
+      <header style={{ backgroundColor: "var(--college-primary)", color: "white", padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "1.75rem" }}>🌌</span>
-          <span className="text-gradient" style={{
-            fontSize: "1.35rem",
-            fontWeight: 800,
-            letterSpacing: "-0.03em"
-          }}>
-            AETHELGARD
-          </span>
+          <div style={{ width: "40px", height: "40px", backgroundColor: "var(--college-accent)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "white" }}>
+            C
+          </div>
+          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Carolina College</span>
         </div>
 
-        <nav style={{ display: "flex", alignItems: "center", gap: "2.5rem" }}>
-          <a href="#features" style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-muted)", transition: "color 0.2s" }} className="nav-link">Features</a>
-          <a href="#about" style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-muted)", transition: "color 0.2s" }} className="nav-link">Platform</a>
-          <a href="https://github.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-muted)", transition: "color 0.2s" }} className="nav-link">Docs</a>
+        <nav className="hide-mobile" style={{ gap: "2rem", fontWeight: 600, fontSize: "0.95rem" }}>
+          <Link href="#" style={{ color: "white", textDecoration: "none" }}>About us</Link>
+          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Admissions</Link>
+          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Academics</Link>
+          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Campus Life</Link>
         </nav>
 
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {session ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
-              <div style={{ textAlign: "right" }}>
-                <span className="text-muted" style={{ fontSize: "0.75rem" }}>Logged in as</span>
-                <div style={{ fontWeight: 600, fontSize: "0.85rem", marginTop: "-0.1rem" }}>
-                  {session.email.split("@")[0]} ({session.role})
-                </div>
-              </div>
-              <Link href={getDashboardUrl(session.role)} className="btn btn-primary" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
+            <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+              <Link href={getDashboardUrl(session.role)} style={{ padding: "0.6rem 1.5rem", border: "2px solid var(--college-accent)", borderRadius: "4px", color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>
                 Console ⚡
               </Link>
+              <form action={logout}>
+                <button type="submit" className="hide-mobile" style={{ padding: "0.6rem 1.5rem", backgroundColor: "var(--college-accent)", border: "none", borderRadius: "4px", color: "white", fontWeight: "bold", cursor: "pointer" }}>Logout</button>
+              </form>
             </div>
           ) : (
-            <>
-              <Link href="/login" className="btn btn-secondary" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
-                Sign In
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <Link href="/login" className="hide-mobile" style={{ color: "white", textDecoration: "none", alignSelf: "center", fontWeight: "bold" }}>Login</Link>
+              <Link href="/register" style={{ padding: "0.6rem 1.5rem", border: "2px solid var(--college-accent)", borderRadius: "4px", color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>
+                Contact Us
               </Link>
-              <Link href="/register" className="btn btn-primary" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
-                Create Account
-              </Link>
-            </>
+            </div>
           )}
         </div>
       </header>
 
-      {/* Main Hero & Content */}
-      <main className="container" style={{ flex: 1, zIndex: 1, paddingTop: "6.5rem", paddingBottom: "6rem", position: "relative" }}>
-        
-        {/* Hero Banner text */}
-        <div style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto 5rem auto" }}>
-          <span className="animate-fade-in" style={{
-            fontSize: "0.75rem",
-            backgroundColor: "rgba(79, 70, 229, 0.08)",
-            color: "var(--primary)",
-            fontWeight: 700,
-            padding: "0.35rem 1rem",
-            borderRadius: "var(--radius-full)",
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            border: "1px solid rgba(79, 70, 229, 0.15)"
-          }}>
-            🌌 The Future of Learning Environments
-          </span>
-
-          <h1 className="text-h1 text-gradient animate-fade-in" style={{
-            fontSize: "4rem",
-            margin: "1.5rem 0 1.25rem 0",
-            lineHeight: 1.15,
-            fontWeight: 800
-          }}>
-            Elevating Education Beyond Gravity
+      {/* 3. Hero Section ("This is Carolina!") */}
+      <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
+        <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "4.5rem", fontWeight: 800, margin: "0 0 1.5rem 0", lineHeight: 1.1, color: "var(--college-text)" }}>
+            This is <br/><span style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>Carolina!</span>
           </h1>
-          
-          <p className="text-muted animate-fade-in" style={{
-            fontSize: "1.2rem",
-            lineHeight: 1.6,
-            maxWidth: "650px",
-            margin: "0 auto 2.5rem auto"
-          }}>
-            A database-synchronized Learning Management System engineered for premium aesthetics, type safety, and real-time instructor-student workflows.
+          <p style={{ fontSize: "1.2rem", lineHeight: 1.6, marginBottom: "2.5rem", maxWidth: "500px", color: "#555" }}>
+            Experience an academic environment designed to foster critical thinking, global perspectives, and career readiness.
           </p>
+          <div className="mobile-col" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+            <Link href="/register" style={{ padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px", textAlign: "center" }}>Explore Admission</Link>
+            <Link href="#" style={{ color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold", textAlign: "center" }}>Academics →</Link>
+          </div>
+        </div>
+        <div className="hero-img-box mobile-img-box" style={{ flex: 1, backgroundColor: "#EAE6DF", position: "relative" }}>
+          <img src="/hero3.png" alt="Nepali Students Walking" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      </section>
 
-          <div className="flex-center animate-fade-in" style={{ gap: "1.5rem" }}>
-            {session ? (
-              <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-                <Link href={getDashboardUrl(session.role)} className="btn btn-primary" style={{ padding: "0.85rem 2rem", fontSize: "0.95rem" }}>
-                  Enter Your Dashboard
-                </Link>
-                <form action={logout}>
-                  <button className="btn btn-secondary" type="submit" style={{ padding: "0.85rem 2rem", fontSize: "0.95rem" }}>
-                    Sign Out
-                  </button>
-                </form>
+      {/* 4. About Our College Section */}
+      <section className="flex-row section-pad" style={{ backgroundColor: "white", gap: "4rem" }}>
+        <div style={{ flex: 1 }}>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 2rem 0", color: "var(--college-primary)" }}>
+            About <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Our College</span>
+          </h2>
+          <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#555", marginBottom: "2rem" }}>
+            Carolina College of Arts and Sciences offers a transformative educational experience. We pride ourselves on offering flexible schedules, extensive scholarship opportunities, and career assistance to ensure you succeed.
+          </p>
+          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 2rem 0" }}>
+            {["Convenient schedules", "Generous scholarships", "Accelerated timetables", "Dedicated career assistance"].map((item, i) => (
+              <li key={i} style={{ paddingLeft: "1.5rem", position: "relative", marginBottom: "0.75rem", fontSize: "1.1rem", color: "#333" }}>
+                <span style={{ position: "absolute", left: 0, color: "var(--college-primary)", fontWeight: "bold" }}>✓</span> {item}
+              </li>
+            ))}
+          </ul>
+          <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", fontSize: "1.1rem" }}>Explore our programs →</Link>
+
+          <div className="grid-3" style={{ marginTop: "4rem" }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>👨‍🏫</div>
+              <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1rem" }}>Experienced Tutors</h4>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🌍</div>
+              <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1rem" }}>Students from 40+ countries</h4>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🦉</div>
+              <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1rem" }}>Modern teaching methods</h4>
+            </div>
+          </div>
+        </div>
+        <div className="mobile-img-box" style={{ flex: 1, backgroundColor: "#EAE6DF", borderRadius: "8px", position: "relative", minHeight: "500px", overflow: "hidden" }}>
+          <img src="/hero2.png" alt="Nepali Students Learning" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }} />
+        </div>
+      </section>
+
+      {/* 5. Why Choose Us Section */}
+      <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
+        <div className="mobile-img-box" style={{ flex: 1, minHeight: "600px", backgroundColor: "#EAE6DF", position: "relative", overflow: "hidden" }}>
+          <img src="/hero1.png" alt="Nepali Student Portrait" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        <div className="section-pad" style={{ flex: 1 }}>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 3rem 0", color: "var(--college-primary)" }}>
+            Why <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Choose Us</span>
+          </h2>
+          <div className="grid-2">
+            <div>
+              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🎓</div>
+              <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Best Programs</h3>
+              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>Our curriculum is globally recognized and highly competitive.</p>
+              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+            </div>
+            <div>
+              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🔬</div>
+              <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Laboratories</h3>
+              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>State-of-the-art facilities for hands-on scientific research.</p>
+              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+            </div>
+            <div>
+              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🏀</div>
+              <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Variety of Sports</h3>
+              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>Engage in over 20+ collegiate level athletic programs.</p>
+              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+            </div>
+            <div>
+              <div style={{ width: "50px", height: "50px", borderRadius: "50%", border: "2px solid var(--college-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", marginBottom: "1rem" }}>🍎</div>
+              <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Great Canteens</h3>
+              <p style={{ color: "#555", marginBottom: "1rem", lineHeight: 1.5 }}>Nutritious, globally-inspired meal plans available 24/7.</p>
+              <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>Learn More →</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. "Want to study here?" (CTA Box) */}
+      <section className="section-pad" style={{ position: "relative", display: "flex", justifyContent: "center", backgroundColor: "#D4AF37", backgroundImage: "linear-gradient(to right, rgba(27, 94, 32, 0.9), rgba(27, 94, 32, 0.7))" }}>
+        <div style={{ backgroundColor: "white", padding: "4rem 2rem", borderRadius: "8px", maxWidth: "700px", textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.1)", zIndex: 1, width: "100%" }}>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
+            Want to <span style={{ borderBottom: "3px solid var(--college-accent)" }}>study here?</span>
+          </h2>
+          <p style={{ fontSize: "1.1rem", color: "#555", marginBottom: "2rem", lineHeight: 1.6 }}>
+            We are currently accepting applications for the upcoming fall semester. Join thousands of students making a difference.
+          </p>
+          <div className="mobile-col" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+            <Link href="/register" style={{ padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px" }}>Send a Request</Link>
+            <Link href="#" style={{ padding: "1rem 2rem", border: "2px solid var(--college-accent)", color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", borderRadius: "4px" }}>Learn More</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Latest Events */}
+      <section className="section-pad" style={{ backgroundColor: "var(--college-primary-dark)", color: "white" }}>
+        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: 0 }}>
+            Latest <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Events</span>
+          </h2>
+        </div>
+        <div className="grid-3">
+          {[
+            { tag: "CONFERENCES", date: "July 24, 2024", title: "Annual Science Fair & Expo", desc: "Discover the latest research from our undergrads." },
+            { tag: "CAMPUS LIFE", date: "August 12, 2024", title: "Freshman Orientation Week", desc: "Welcome to campus! Get to know your peers." },
+            { tag: "ACADEMICS", date: "September 5, 2024", title: "Guest Lecture: Global Econ", desc: "A special lecture by Dr. Alan Smith on global markets." }
+          ].map((event, i) => (
+            <div key={i} style={{ backgroundColor: "white", color: "var(--college-text)", borderRadius: "8px", padding: "2rem", display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: "var(--college-accent)", letterSpacing: "0.05em" }}>{event.tag}</span>
+                <span style={{ fontSize: "0.85rem", color: "#999" }}>{event.date}</span>
               </div>
-            ) : (
-              <>
-                <Link href="/register" className="btn btn-primary" style={{ padding: "0.85rem 2rem", fontSize: "0.95rem" }}>
-                  Get Started Free
-                </Link>
-                <Link href="/login" className="btn btn-secondary" style={{ padding: "0.85rem 2rem", fontSize: "0.95rem" }}>
-                  View Live Platform
-                </Link>
-              </>
-            )}
+              <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.4rem" }}>{event.title}</h3>
+              <p style={{ color: "#555", marginBottom: "2rem", lineHeight: 1.5, flex: 1 }}>{event.desc}</p>
+              <Link href="#" style={{ color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold" }}>Read More →</Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 8. Financial Aid and Scholarships */}
+      <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
+        <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 2rem 0", color: "var(--college-primary)" }}>
+            Financial Aid and <br className="hide-mobile"/><span style={{ borderBottom: "3px solid var(--college-accent)" }}>Scholarships</span>
+          </h2>
+          <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#555", maxWidth: "500px" }}>
+            We believe that a world-class education should be accessible to everyone. Explore our extensive financial aid packages, grants, and merit-based scholarships designed to support your academic journey.
+          </p>
+        </div>
+        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#EAE6DF", position: "relative", overflow: "hidden" }}>
+          <img src="/campus.png" alt="Nepali Campus Grounds" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      </section>
+
+      {/* 9. Graduation */}
+      <section className="flex-row" style={{ backgroundColor: "var(--college-primary)", color: "white" }}>
+        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#154A1A", position: "relative" }}>
+           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#888", fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", padding: "2rem" }}>
+            [ Graduates Celebrating Photo ]
+          </div>
+        </div>
+        <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3.5rem", margin: "0 0 1.5rem 0" }}>Graduation</h2>
+          <p style={{ fontSize: "1.1rem", lineHeight: 1.6, marginBottom: "2.5rem", maxWidth: "500px", opacity: 0.9 }}>
+            Join us in celebrating the extraordinary achievements of the Class of 2024. Discover the stories of our alumni and their next steps into the professional world.
+          </p>
+          <div>
+            <Link href="#" style={{ padding: "1rem 2rem", border: "2px solid white", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px", display: "inline-block" }}>Read More →</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. Testimonials */}
+      <section className="section-pad" style={{ backgroundColor: "var(--college-bg-cream)", textAlign: "center" }}>
+        <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 4rem 0", color: "var(--college-primary)" }}>
+          What Our Students <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Say</span>
+        </h2>
+        <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "white", padding: "4rem 2rem", borderRadius: "8px", boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
+          <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#eee", margin: "0 auto 1.5rem auto" }}></div>
+          <p style={{ fontSize: "1.25rem", fontStyle: "italic", color: "#555", lineHeight: 1.6, marginBottom: "2rem" }}>
+            "My time at Carolina College has been nothing short of amazing. The professors actually care about your success, and the campus community is incredibly welcoming."
+          </p>
+          <h4 style={{ margin: "0 0 0.25rem 0", color: "var(--college-primary)", fontSize: "1.1rem" }}>Tom Peterson</h4>
+          <span style={{ fontSize: "0.85rem", color: "#999" }}>Class of 2023</span>
+        </div>
+      </section>
+
+      {/* 11. Got any questions? (Contact Form) */}
+      <section className="section-pad" style={{ backgroundColor: "white", textAlign: "center" }}>
+         <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
+          Got any <span style={{ borderBottom: "3px solid var(--college-accent)" }}>questions?</span>
+        </h2>
+        <p style={{ fontSize: "1.1rem", color: "#555", marginBottom: "3rem" }}>Leave your details and we will contact you as soon as possible.</p>
+        
+        <form style={{ maxWidth: "800px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div className="contact-form-mobile" style={{ display: "flex", gap: "1rem" }}>
+            <input type="text" placeholder="Your Name" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
+            <input type="text" placeholder="Phone Number" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
+            <input type="email" placeholder="Email Address" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
+          </div>
+          <div className="mobile-col" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem", gap: "1rem" }}>
+            <label style={{ fontSize: "0.85rem", color: "#666", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <input type="checkbox" /> By clicking this button, you agree to our privacy policy.
+            </label>
+            <button type="button" style={{ padding: "1rem 3rem", backgroundColor: "var(--college-primary)", color: "white", border: "none", borderRadius: "4px", fontWeight: "bold", fontSize: "1rem", cursor: "pointer", width: "100%" }}>Send</button>
+          </div>
+        </form>
+      </section>
+
+      {/* 12. Footer */}
+      <footer style={{ backgroundColor: "var(--college-primary-dark)", color: "white", padding: "4rem 2rem 2rem 2rem" }}>
+        <div className="grid-4" style={{ marginBottom: "4rem" }}>
+          {/* Col 1 */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
+              <div style={{ width: "40px", height: "40px", backgroundColor: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "var(--college-primary)" }}>C</div>
+              <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Carolina College</span>
+            </div>
+            <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.8 }}>
+              Dedicated to excellence in education, research, and campus life. Shaping the leaders of tomorrow since 1892.
+            </p>
+          </div>
+          
+          {/* Col 2 */}
+          <div>
+            <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Quick Links</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
+              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>About us</Link>
+              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>Admissions</Link>
+              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>Academics</Link>
+              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>Campus Life</Link>
+            </div>
+          </div>
+
+          {/* Col 3 */}
+          <div>
+            <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Contact Us</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem", opacity: 0.8 }}>
+              <span>📞 +1 (234) 567 89 00</span>
+              <span>📍 2824 Chestnut St</span>
+              <span>✉️ info@carolina.edu</span>
+            </div>
+          </div>
+
+          {/* Col 4 */}
+          <div>
+            <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Stay Connected</h4>
+            <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.8, marginBottom: "1rem" }}>Subscribe to our newsletter for the latest updates.</p>
+            <div style={{ display: "flex" }}>
+              <input type="email" placeholder="Your email address" style={{ flex: 1, padding: "0.75rem", border: "none", borderRadius: "4px 0 0 4px", width: "100%" }} />
+              <button type="button" style={{ padding: "0.75rem 1.5rem", backgroundColor: "var(--college-accent)", color: "white", border: "none", borderRadius: "0 4px 4px 0", fontWeight: "bold", cursor: "pointer" }}>Join</button>
+            </div>
           </div>
         </div>
 
-        {/* Feature Highlights Grid */}
-        <section id="features" style={{ marginBottom: "6rem" }}>
-          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-            <h2 className="text-h2" style={{ margin: "0 0 0.5rem 0" }}>Engineered Core Architectural Modules</h2>
-            <p className="text-muted" style={{ margin: 0, fontSize: "1rem" }}>A highly optimized application designed with premium glassmorphic UI design tokens.</p>
+        {/* Bottom Bar */}
+        <div className="mobile-col" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem", opacity: 0.6, gap: "1rem", textAlign: "center" }}>
+          <span>© {new Date().getFullYear()} Carolina College. All rights reserved.</span>
+          <div className="mobile-center" style={{ display: "flex", gap: "1.5rem" }}>
+            <Link href="#" style={{ color: "white", textDecoration: "none" }}>Privacy Policy</Link>
+            <Link href="#" style={{ color: "white", textDecoration: "none" }}>Terms & Conditions</Link>
           </div>
-
-          <div className="grid-cols-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
-            
-            <div className="card" style={{ display: "flex", gap: "1.25rem", padding: "2rem" }}>
-              <div style={{ fontSize: "2.5rem", userSelect: "none" }}>🎓</div>
-              <div>
-                <h3 className="text-h3" style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 600 }}>
-                  Isolated Role-Based Portals
-                </h3>
-                <p className="text-muted" style={{ margin: 0, fontSize: "0.9rem", lineHeight: 1.5 }}>
-                  Distinct, custom workspaces for Students (progress bars, courses), Teachers (roster sliders, taught subjects), and Root Administrators (classroom provisioning, teacher assignments).
-                </p>
-              </div>
-            </div>
-
-            <div className="card" style={{ display: "flex", gap: "1.25rem", padding: "2rem" }}>
-              <div style={{ fontSize: "2.5rem", userSelect: "none" }}>⚡</div>
-              <div>
-                <h3 className="text-h3" style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 600 }}>
-                  One-Click Interactive Enrollments
-                </h3>
-                <p className="text-muted" style={{ margin: 0, fontSize: "0.9rem", lineHeight: 1.5 }}>
-                  Stateful Student Browser cards leveraging React 19 transition triggers. Enrolling instantly migrates items across list states in parallel under the hood without a single browser refresh.
-                </p>
-              </div>
-            </div>
-
-            <div className="card" style={{ display: "flex", gap: "1.25rem", padding: "2rem" }}>
-              <div style={{ fontSize: "2.5rem", userSelect: "none" }}>📊</div>
-              <div>
-                <h3 className="text-h3" style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 600 }}>
-                  Instructors Roster Console
-                </h3>
-                <p className="text-muted" style={{ margin: 0, fontSize: "0.9rem", lineHeight: 1.5 }}>
-                  Teachers gain access to classroom control panels. Interactive sliders let instructors dynamically alter, grade, and apply syllabus progression metrics directly down to the database pool.
-                </p>
-              </div>
-            </div>
-
-            <div className="card" style={{ display: "flex", gap: "1.25rem", padding: "2rem" }}>
-              <div style={{ fontSize: "2.5rem", userSelect: "none" }}>🛡️</div>
-              <div>
-                <h3 className="text-h3" style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 600 }}>
-                  Edge Route Security & JWT
-                </h3>
-                <p className="text-muted" style={{ margin: 0, fontSize: "0.9rem", lineHeight: 1.5 }}>
-                  Protected by Next.js Edge Middleware. HTTP-only secure cookie sessions with signed jose JWT signatures prevent unauthorized dashboard browsing and enforce strict role checking.
-                </p>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* Tech Stack Ribbon */}
-        <section id="about" style={{
-          textAlign: "center",
-          padding: "3rem 2rem",
-          borderRadius: "var(--radius-lg)",
-          border: "1px solid var(--border)",
-          backgroundColor: "var(--surface)",
-          boxShadow: "var(--shadow-sm)"
-        }}>
-          <h3 className="text-h3" style={{ margin: "0 0 1.5rem 0", fontSize: "1.1rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-muted)" }}>
-            Powered By Next-Gen Technologies
-          </h3>
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "3rem",
-            flexWrap: "wrap",
-            opacity: 0.8,
-            fontSize: "1.1rem",
-            fontWeight: 700
-          }}>
-            <span>⚡ Next.js 16</span>
-            <span>⚛️ React 19</span>
-            <span>🔷 TypeScript 5</span>
-            <span>💎 Prisma 7</span>
-            <span>☁️ Supabase</span>
-            <span>🟢 Postgres</span>
-          </div>
-        </section>
-
-      </main>
-
-      {/* Footer */}
-      <footer className="glass-panel" style={{
-        marginTop: "auto",
-        width: "100%",
-        padding: "2rem 4rem",
-        borderTop: "1px solid var(--border)",
-        borderRadius: "0",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        zIndex: 1
-      }}>
-        <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-          © {new Date().getFullYear()} Aethegard LMS Platform. Engineered by Antigravity.
-        </span>
-        <div style={{ display: "flex", gap: "2rem", fontSize: "0.85rem" }}>
-          <a href="https://nextjs.org" target="_blank" rel="noreferrer" style={{ color: "var(--text-muted)" }}>Documentation</a>
-          <a href="https://supabase.com" target="_blank" rel="noreferrer" style={{ color: "var(--text-muted)" }}>Supabase DB</a>
-          <a href="https://prisma.io" target="_blank" rel="noreferrer" style={{ color: "var(--text-muted)" }}>Prisma Client</a>
         </div>
       </footer>
-
     </div>
   );
 }
