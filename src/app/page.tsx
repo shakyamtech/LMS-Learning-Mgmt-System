@@ -82,7 +82,7 @@ export default async function Home() {
       {/* 1. Top Utility Bar */}
       <div className="top-bar-mobile" style={{ backgroundColor: "var(--college-primary-dark)", color: "white", padding: "0.5rem 2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
         <span>📞 +1 (234) 567 89 00</span>
-        <span>📍 2824 Chestnut St, Columbia, SC 29204</span>
+        <span>📍 Lagankhel, Lalitpur, Nepal</span>
       </div>
 
       {/* 2. Navigation Header */}
@@ -361,7 +361,7 @@ export default async function Home() {
             <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Contact Us</h4>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem", opacity: 0.8 }}>
               <span>📞 +1 (234) 567 89 00</span>
-              <span>📍 2824 Chestnut St</span>
+              <span>📍 Lagankhel, Lalitpur, Nepal</span>
               <span>✉️ info@carolina.edu</span>
             </div>
           </div>
