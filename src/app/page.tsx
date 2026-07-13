@@ -6,7 +6,7 @@ import { logout } from "@/app/actions/auth";
 export default async function Home() {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("session")?.value;
-  
+
   let session = null;
   if (sessionToken) {
     try {
@@ -36,7 +36,8 @@ export default async function Home() {
       fontFamily: "var(--font-geist-sans), Arial, sans-serif",
       overflowX: "hidden"
     }}>
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .flex-row { display: flex; flex-direction: row; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
         .grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 4rem; }
@@ -123,7 +124,7 @@ export default async function Home() {
       <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
         <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "4.5rem", fontWeight: 800, margin: "0 0 1.5rem 0", lineHeight: 1.1, color: "var(--college-text)" }}>
-            This is <br/><span style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>Carolina!</span>
+            This is <br /><span style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>Carolina!</span>
           </h1>
           <p style={{ fontSize: "1.2rem", lineHeight: 1.6, marginBottom: "2.5rem", maxWidth: "500px", color: "#555" }}>
             Experience an academic environment designed to foster critical thinking, global perspectives, and career readiness.
@@ -260,21 +261,23 @@ export default async function Home() {
       <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
         <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 2rem 0", color: "var(--college-primary)" }}>
-            Financial Aid and <br className="hide-mobile"/><span style={{ borderBottom: "3px solid var(--college-accent)" }}>Scholarships</span>
+            Financial Aid and <br className="hide-mobile" /><span style={{ borderBottom: "3px solid var(--college-accent)" }}>Scholarships</span>
           </h2>
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#555", maxWidth: "500px" }}>
             We believe that a world-class education should be accessible to everyone. Explore our extensive financial aid packages, grants, and merit-based scholarships designed to support your academic journey.
           </p>
         </div>
-        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#EAE6DF", position: "relative", overflow: "hidden" }}>
-          <img src="/campus.png" alt="Nepali Campus Grounds" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
+        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#EAE6DF", position: "relative" }}>
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#999", fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", padding: "2rem" }}>
+            [ Campus Grounds Photo ]
+          </div>
         </div>
       </section>
 
       {/* 9. Graduation */}
       <section className="flex-row" style={{ backgroundColor: "var(--college-primary)", color: "white" }}>
         <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#154A1A", position: "relative" }}>
-           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#888", fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", padding: "2rem" }}>
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#888", fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", padding: "2rem" }}>
             [ Graduates Celebrating Photo ]
           </div>
         </div>
@@ -306,11 +309,11 @@ export default async function Home() {
 
       {/* 11. Got any questions? (Contact Form) */}
       <section className="section-pad" style={{ backgroundColor: "white", textAlign: "center" }}>
-         <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
+        <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
           Got any <span style={{ borderBottom: "3px solid var(--college-accent)" }}>questions?</span>
         </h2>
         <p style={{ fontSize: "1.1rem", color: "#555", marginBottom: "3rem" }}>Leave your details and we will contact you as soon as possible.</p>
-        
+
         <form style={{ maxWidth: "800px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div className="contact-form-mobile" style={{ display: "flex", gap: "1rem" }}>
             <input type="text" placeholder="Your Name" style={{ flex: 1, padding: "1rem", border: "1px solid #ccc", borderRadius: "4px", fontSize: "1rem" }} />
@@ -339,7 +342,7 @@ export default async function Home() {
               Dedicated to excellence in education, research, and campus life. Shaping the leaders of tomorrow since 1892.
             </p>
           </div>
-          
+
           {/* Col 2 */}
           <div>
             <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Quick Links</h4>
