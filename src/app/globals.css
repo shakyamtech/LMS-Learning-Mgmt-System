@@ -268,10 +268,10 @@ a:hover {
 }
 
 .btn-primary:hover {
-  background-color: var(--college-primary-dark);
-  color: white !important;
+  background-color: var(--college-accent) !important;
+  color: var(--college-primary-dark) !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(27, 94, 32, 0.2);
+  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3) !important;
 }
 
 .btn-text {
