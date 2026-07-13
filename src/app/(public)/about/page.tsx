@@ -30,7 +30,7 @@ export default function AboutPage() {
       />
 
       {/* Mission & Vision */}
-      <section style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
+      <section id="about" style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5rem", alignItems: "center" }}>
           <div>
             <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Our Story</span>
@@ -71,7 +71,7 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values */}
-      <section style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
+      <section id="values" style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.8rem", color: "var(--college-primary)", margin: "0" }}>Our Core Values</h2>
@@ -93,7 +93,7 @@ export default function AboutPage() {
       </section>
 
       {/* Meet the Team */}
-      <section style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
+      <section id="team" style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.8rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Meet Our Leadership</h2>

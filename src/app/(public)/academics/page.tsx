@@ -26,7 +26,7 @@ export default function AcademicsPage() {
       />
 
       {/* Programs Grid */}
-      <section style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
+      <section id="programs" style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Our Programs</span>
@@ -59,7 +59,7 @@ export default function AcademicsPage() {
       </section>
 
       {/* Teaching Methodology */}
-      <section style={{ backgroundColor: "var(--college-primary)", padding: "6rem 5rem" }}>
+      <section id="methodology" style={{ backgroundColor: "var(--college-primary)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", color: "white", margin: "0 0 0.5rem 0" }}>How We Teach</h2>
@@ -83,7 +83,7 @@ export default function AcademicsPage() {
       </section>
 
       {/* Faculty Highlight */}
-      <section style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
+      <section id="faculty" style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5rem", alignItems: "center" }}>
           <img src="/hero1.png" alt="Faculty" className="hover-zoom-img" style={{ width: "100%", borderRadius: "12px", objectFit: "cover", height: "380px", boxShadow: "0 20px 50px rgba(0,0,0,0.12)" }} />
           <div>

@@ -89,7 +89,7 @@ export default async function SiteHeader() {
           </span>
         </Link>
 
-        {/* Nav Links */}
+        {/* Nav Links with Dropdowns */}
         <nav
           style={{
             display: "flex",
@@ -99,26 +99,74 @@ export default async function SiteHeader() {
           }}
         >
           {[
-            { label: "Home",        href: "/" },
-            { label: "About Us",     href: "/about" },
-            { label: "Admissions",   href: "/admissions" },
-            { label: "Academics",    href: "/academics" },
-            { label: "Campus Life",  href: "/campus-life" },
+            { label: "Home", href: "/" },
+            {
+              label: "About Us",
+              href: "/about",
+              submenu: [
+                { label: "Overview & Mission", href: "/about#about" },
+                { label: "Our Core Values", href: "/about#values" },
+                { label: "Meet Our Leadership", href: "/about#team" },
+              ],
+            },
+            {
+              label: "Admissions",
+              href: "/admissions",
+              submenu: [
+                { label: "How to Apply", href: "/admissions#apply" },
+                { label: "Required Documents", href: "/admissions#requirements" },
+                { label: "Scholarships", href: "/admissions#scholarships" },
+              ],
+            },
+            {
+              label: "Academics",
+              href: "/academics",
+              submenu: [
+                { label: "Courses & Programs", href: "/academics#programs" },
+                { label: "How We Teach", href: "/academics#methodology" },
+                { label: "Expert Faculty", href: "/academics#faculty" },
+              ],
+            },
+            {
+              label: "Campus Life",
+              href: "/campus-life",
+              submenu: [
+                { label: "Upcoming Events", href: "/campus-life#events" },
+                { label: "Clubs & Societies", href: "/campus-life#clubs" },
+                { label: "World-Class Facilities", href: "/campus-life#facilities" },
+              ],
+            },
           ].map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                color: "rgba(255,255,255,0.88)",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                padding: "0.25rem 0",
-                borderBottom: "2px solid transparent",
-              }}
-              className="site-nav-link"
-            >
-              {link.label}
-            </Link>
+            <div key={link.href} className="nav-item-container">
+              <Link
+                href={link.href}
+                style={{
+                  color: "rgba(255,255,255,0.88)",
+                  textDecoration: "none",
+                  transition: "color 0.2s",
+                  padding: "0.25rem 0",
+                  borderBottom: "2px solid transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                }}
+                className="site-nav-link"
+              >
+                {link.label}
+                {link.submenu && (
+                  <span style={{ fontSize: "0.55rem", opacity: 0.8, transform: "scale(0.8)" }}>▼</span>
+                )}
+              </Link>
+              {link.submenu && (
+                <div className="dropdown-menu">
+                  {link.submenu.map((sub) => (
+                    <Link key={sub.href} href={sub.href} className="dropdown-item">
+                      {sub.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </nav>
 

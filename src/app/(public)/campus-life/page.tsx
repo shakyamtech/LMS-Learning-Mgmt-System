@@ -35,7 +35,7 @@ export default function CampusLifePage() {
       />
 
       {/* Upcoming Events */}
-      <section style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
+      <section id="events" style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Stay Connected</span>
@@ -62,7 +62,7 @@ export default function CampusLifePage() {
       </section>
 
       {/* Clubs & Societies */}
-      <section style={{ backgroundColor: "var(--college-primary)", padding: "6rem 5rem" }}>
+      <section id="clubs" style={{ backgroundColor: "var(--college-primary)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", color: "white", margin: "0 0 0.5rem 0" }}>Clubs & Societies</h2>
@@ -83,7 +83,7 @@ export default function CampusLifePage() {
       </section>
 
       {/* Facilities */}
-      <section style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
+      <section id="facilities" style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.8rem", color: "var(--college-primary)", margin: "0" }}>World-Class Facilities</h2>

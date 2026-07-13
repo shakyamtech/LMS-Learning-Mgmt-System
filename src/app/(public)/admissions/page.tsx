@@ -35,7 +35,7 @@ export default function AdmissionsPage() {
       />
 
       {/* How to Apply Steps */}
-      <section style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
+      <section id="apply" style={{ backgroundColor: "white", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Simple Process</span>
@@ -56,7 +56,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Requirements + CTA */}
-      <section style={{ backgroundColor: "var(--college-primary)", padding: "6rem 5rem" }}>
+      <section id="requirements" style={{ backgroundColor: "var(--college-primary)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5rem", alignItems: "center" }}>
           <div>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", color: "white", margin: "0 0 0.5rem 0" }}>Required Documents</h2>
@@ -87,7 +87,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Scholarships Banner */}
-      <section style={{ backgroundColor: "var(--college-bg-cream)", padding: "5rem" }}>
+      <section id="scholarships" style={{ backgroundColor: "var(--college-bg-cream)", padding: "5rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", color: "var(--college-primary)", margin: "0 0 1rem 0" }}>🏆 Scholarship Opportunities</h2>
           <p style={{ fontSize: "1.1rem", color: "#666", lineHeight: 1.8, marginBottom: "2rem" }}>
