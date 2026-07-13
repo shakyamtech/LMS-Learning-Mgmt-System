@@ -101,6 +101,7 @@ export default function HeroSlider() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              objectPosition: "center bottom",
               opacity: current === index ? 1 : 0,
               transition: "opacity 1s ease-in-out",
               maskImage: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%)",
