@@ -28,7 +28,7 @@ export default async function TeacherDashboard() {
     
     // Fetch Enrollments & Students
     const enrollsSnap = await db.collection("enrollments").where("courseId", "==", courseDoc.id).get();
-    const enrollments = [];
+    const enrollments = [] as any[];
     for (const eDoc of enrollsSnap.docs) {
       const eData = eDoc.data();
       let student = { name: "Unknown", email: "" };
@@ -48,11 +48,11 @@ export default async function TeacherDashboard() {
 
     // Fetch Assignments & Submissions
     const assignmentsSnap = await db.collection("assignments").where("courseId", "==", courseDoc.id).get();
-    const assignments = [];
+    const assignments = [] as any[];
     for (const aDoc of assignmentsSnap.docs) {
       const aData = aDoc.data();
       const subsSnap = await db.collection("submissions").where("assignmentId", "==", aDoc.id).get();
-      const submissions = [];
+      const submissions = [] as any[];
       for (const sDoc of subsSnap.docs) {
         const sData = sDoc.data();
         let student = { name: "Unknown", email: "" };
@@ -75,7 +75,7 @@ export default async function TeacherDashboard() {
 
     // Fetch Announcements & Comments
     const announcementsSnap = await db.collection("announcements").where("courseId", "==", courseDoc.id).get();
-    const announcements = [];
+    const announcements = [] as any[];
     for (const anDoc of announcementsSnap.docs) {
       const anData = anDoc.data();
       
@@ -92,7 +92,7 @@ export default async function TeacherDashboard() {
       }
 
       const commentsSnap = await db.collection("comments").where("announcementId", "==", anDoc.id).get();
-      const comments = [];
+      const comments = [] as any[];
       for (const cDoc of commentsSnap.docs) {
         const cData = cDoc.data();
         let commentAuthor = { name: "Unknown", email: "" };

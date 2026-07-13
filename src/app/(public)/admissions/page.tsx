@@ -44,7 +44,7 @@ export default function AdmissionsPage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {steps.map((s, i) => (
-              <div key={i} style={{ padding: "2rem", borderRadius: "12px", backgroundColor: "var(--college-bg-cream)", position: "relative", overflow: "hidden", border: "1px solid rgba(0,0,0,0.05)" }}>
+              <div key={i} className="hover-step-card" style={{ padding: "2rem", borderRadius: "12px", backgroundColor: "var(--college-bg-cream)", position: "relative", overflow: "hidden", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <div style={{ position: "absolute", top: "1rem", right: "1.5rem", fontFamily: "Playfair Display, serif", fontSize: "4rem", fontWeight: 800, color: "rgba(27,94,32,0.06)", lineHeight: 1 }}>{s.step}</div>
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", backgroundColor: "var(--college-primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "1.25rem" }}>{s.step}</div>
                 <h3 style={{ margin: "0 0 0.75rem 0", color: "var(--college-primary)", fontSize: "1.15rem", fontWeight: 700 }}>{s.title}</h3>
@@ -63,7 +63,7 @@ export default function AdmissionsPage() {
             <p style={{ color: "rgba(255,255,255,0.75)", marginBottom: "2rem", fontSize: "1rem" }}>Please have the following ready before starting your application.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {requirements.map((r, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: "1rem", backgroundColor: "rgba(255,255,255,0.08)", padding: "1rem 1.25rem", borderRadius: "8px", color: "white" }}>
+                <div key={i} className="hover-requirement" style={{ display: "flex", alignItems: "center", gap: "1rem", backgroundColor: "rgba(255,255,255,0.08)", padding: "1rem 1.25rem", borderRadius: "8px", color: "white" }}>
                   <span style={{ fontSize: "1.4rem" }}>{r.icon}</span>
                   <span style={{ fontWeight: 500 }}>{r.label}</span>
                 </div>
@@ -76,10 +76,10 @@ export default function AdmissionsPage() {
             <p style={{ color: "#666", lineHeight: 1.7, marginBottom: "2rem" }}>
               Applications for our 2025 intake are now open. Limited seats available — apply early to secure your spot!
             </p>
-            <Link href="/register" style={{ display: "block", padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "8px", fontSize: "1.1rem", marginBottom: "1rem", transition: "all 0.3s" }}>
+            <Link href="/register" className="hover-btn-primary" style={{ display: "block", padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "8px", fontSize: "1.1rem", marginBottom: "1rem" }}>
               Start Application
             </Link>
-            <Link href="/about" style={{ display: "block", padding: "0.9rem 2rem", border: "2px solid var(--college-primary)", color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold", borderRadius: "8px", transition: "all 0.3s" }}>
+            <Link href="/about" className="hover-btn-outline" style={{ padding: "0.9rem 2rem", border: "2px solid var(--college-primary)", color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold", borderRadius: "8px" }}>
               Learn More About Us
             </Link>
           </div>
@@ -99,7 +99,7 @@ export default function AdmissionsPage() {
               { title: "Need-Based Grant", value: "Up to 30%", desc: "For economically disadvantaged students" },
               { title: "Women in Tech Award", value: "Up to 25%", desc: "Encouraging female participation in IT" },
             ].map((s, i) => (
-              <div key={i} style={{ backgroundColor: "white", borderRadius: "10px", padding: "2rem", borderTop: "4px solid var(--college-accent)", boxShadow: "0 4px 15px rgba(0,0,0,0.06)" }}>
+              <div key={i} className="hover-scholarship" style={{ backgroundColor: "white", borderRadius: "10px", padding: "2rem", borderTop: "4px solid var(--college-accent)", boxShadow: "0 4px 15px rgba(0,0,0,0.06)" }}>
                 <div style={{ fontFamily: "Playfair Display, serif", fontSize: "2rem", fontWeight: 800, color: "var(--college-accent)", marginBottom: "0.5rem" }}>{s.value}</div>
                 <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)" }}>{s.title}</h4>
                 <p style={{ color: "#888", margin: 0, fontSize: "0.9rem" }}>{s.desc}</p>

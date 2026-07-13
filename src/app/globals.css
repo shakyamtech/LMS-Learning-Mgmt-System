@@ -477,3 +477,179 @@ a:hover {
   box-shadow: 0 12px 28px rgba(27, 94, 32, 0.3);
   border-color: var(--college-accent);
 }
+
+/* ─── Public Pages: Hover Utility Classes ─── */
+
+/* Generic lift card */
+.hover-card {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.hover-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Glass-dark card (on dark bg sections) */
+.hover-card-dark {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.3s ease;
+  cursor: pointer;
+}
+.hover-card-dark:hover {
+  transform: translateY(-4px);
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Program cards — lift + accent top border glow */
+.hover-program-card {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.hover-program-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.13) !important;
+}
+
+/* Team member avatar cards */
+.hover-team-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.hover-team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 36px rgba(27, 94, 32, 0.15) !important;
+}
+.hover-team-card:hover img {
+  border-color: var(--college-primary) !important;
+}
+
+/* Methodology / feature icon cards */
+.hover-method-card {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: default;
+}
+.hover-method-card:hover {
+  transform: translateY(-5px);
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Requirement list items */
+.hover-requirement {
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+.hover-requirement:hover {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+  transform: translateX(4px);
+}
+
+/* Scholarship cards */
+.hover-scholarship {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+.hover-scholarship:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Club cards */
+.hover-club {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+.hover-club:hover {
+  transform: translateX(5px);
+  background-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Facility items */
+.hover-facility {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-facility:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* CTA button — bright pulse */
+.hover-btn-primary {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  display: inline-block;
+}
+.hover-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(27, 94, 32, 0.35);
+  filter: brightness(1.08);
+}
+
+/* Outline button */
+.hover-btn-outline {
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  display: block;
+}
+.hover-btn-outline:hover {
+  background-color: var(--college-primary) !important;
+  color: white !important;
+  transform: translateY(-2px);
+}
+
+/* Gold accent button */
+.hover-btn-gold {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: inline-block;
+}
+.hover-btn-gold:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(212, 175, 55, 0.4);
+}
+
+/* Event "Register" text links */
+.hover-text-link {
+  transition: color 0.2s ease, letter-spacing 0.2s ease;
+}
+.hover-text-link:hover {
+  color: var(--college-accent) !important;
+  letter-spacing: 0.03em;
+}
+
+/* Enroll button inside program cards */
+.hover-enroll-btn {
+  transition: background-color 0.25s ease, transform 0.25s ease;
+  display: block;
+  text-align: center;
+}
+.hover-enroll-btn:hover {
+  background-color: var(--college-accent) !important;
+  transform: translateY(-2px);
+}
+
+/* Step cards */
+.hover-step-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-step-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Value/mission cards */
+.hover-value-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(27, 94, 32, 0.12) !important;
+}
+
+/* Pure CSS Image Hover Zoom */
+.hover-zoom-img {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+.hover-zoom-img:hover {
+  transform: scale(1.02);
+}
+

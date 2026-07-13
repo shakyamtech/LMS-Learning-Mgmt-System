@@ -35,7 +35,7 @@ export default function AcademicsPage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.75rem" }}>
             {programs.map((p, i) => (
-              <div key={i} style={{ borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(0,0,0,0.07)", backgroundColor: "var(--college-bg-cream)", transition: "transform 0.3s, box-shadow 0.3s", cursor: "pointer" }}>
+              <div key={i} className="hover-program-card" style={{ borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(0,0,0,0.07)", backgroundColor: "var(--college-bg-cream)" }}>
                 <div style={{ height: "6px", backgroundColor: p.color }} />
                 <div style={{ padding: "2rem" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
@@ -48,7 +48,7 @@ export default function AcademicsPage() {
                     <span style={{ fontSize: "0.82rem", color: "#666", backgroundColor: "white", padding: "0.3rem 0.75rem", borderRadius: "20px", border: "1px solid #eee" }}>⏱ {p.duration}</span>
                     <span style={{ fontSize: "0.82rem", color: "#666", backgroundColor: "white", padding: "0.3rem 0.75rem", borderRadius: "20px", border: "1px solid #eee" }}>📶 {p.level}</span>
                   </div>
-                  <Link href="/register" style={{ display: "block", textAlign: "center", padding: "0.75rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "6px", fontSize: "0.9rem", transition: "all 0.3s" }}>
+                  <Link href="/register" className="hover-enroll-btn" style={{ padding: "0.75rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "6px", fontSize: "0.9rem" }}>
                     Enroll Now →
                   </Link>
                 </div>
@@ -72,7 +72,7 @@ export default function AcademicsPage() {
               { icon: "🧪", title: "Labs & Practice", desc: "Dedicated lab sessions every week" },
               { icon: "🌐", title: "Live Internships", desc: "Guaranteed internship placements" },
             ].map((m, i) => (
-              <div key={i} style={{ backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "white", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div key={i} className="hover-method-card" style={{ backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "white", border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>{m.icon}</div>
                 <h4 style={{ margin: "0 0 0.5rem 0", fontSize: "1.05rem", fontWeight: 700 }}>{m.title}</h4>
                 <p style={{ color: "rgba(255,255,255,0.7)", margin: 0, fontSize: "0.9rem" }}>{m.desc}</p>
@@ -85,12 +85,12 @@ export default function AcademicsPage() {
       {/* Faculty Highlight */}
       <section style={{ backgroundColor: "var(--college-bg-cream)", padding: "6rem 5rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5rem", alignItems: "center" }}>
-          <img src="/hero1.png" alt="Faculty" style={{ width: "100%", borderRadius: "12px", objectFit: "cover", height: "380px", boxShadow: "0 20px 50px rgba(0,0,0,0.12)" }} />
+          <img src="/hero1.png" alt="Faculty" className="hover-zoom-img" style={{ width: "100%", borderRadius: "12px", objectFit: "cover", height: "380px", boxShadow: "0 20px 50px rgba(0,0,0,0.12)" }} />
           <div>
             <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Expert Faculty</span>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", color: "var(--college-primary)", margin: "0.75rem 0 1.25rem 0" }}>Taught by Practitioners, Not Just Professors</h2>
             <p style={{ color: "#666", lineHeight: 1.8, marginBottom: "1.5rem" }}>All our instructors have a minimum of 5 years of real-world industry experience in addition to their teaching credentials. You learn what actually works in production.</p>
-            <Link href="/admissions" style={{ padding: "0.9rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px", display: "inline-block" }}>
+            <Link href="/admissions" className="hover-btn-primary" style={{ padding: "0.9rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px" }}>
               Apply Now →
             </Link>
           </div>

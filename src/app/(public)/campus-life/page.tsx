@@ -44,7 +44,7 @@ export default function CampusLifePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {events.map((e, i) => (
-              <div key={i} style={{ backgroundColor: "var(--college-bg-cream)", borderRadius: "12px", padding: "2rem", border: "1px solid rgba(0,0,0,0.05)", transition: "transform 0.3s, box-shadow 0.3s", cursor: "default" }}>
+              <div key={i} className="hover-card" style={{ backgroundColor: "var(--college-bg-cream)", borderRadius: "12px", padding: "2rem", border: "1px solid rgba(0,0,0,0.05)" }}>
                 <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>{e.icon}</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
                   <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.05em", textTransform: "uppercase" }}>{e.tag}</span>
@@ -52,7 +52,7 @@ export default function CampusLifePage() {
                 </div>
                 <h3 style={{ margin: "0 0 0.75rem 0", color: "var(--college-primary)", fontSize: "1.1rem", fontWeight: 700 }}>{e.title}</h3>
                 <p style={{ color: "#666", lineHeight: 1.65, margin: "0 0 1.5rem 0", fontSize: "0.92rem" }}>{e.desc}</p>
-                <Link href="/register" style={{ color: "var(--college-primary)", fontWeight: 700, textDecoration: "none", fontSize: "0.9rem", transition: "color 0.2s" }}>
+                <Link href="/register" className="hover-text-link" style={{ color: "var(--college-primary)", fontWeight: 700, textDecoration: "none", fontSize: "0.9rem" }}>
                   Register Interest →
                 </Link>
               </div>
@@ -70,7 +70,7 @@ export default function CampusLifePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
             {clubs.map((c, i) => (
-              <div key={i} style={{ backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "12px", padding: "2rem", display: "flex", alignItems: "center", gap: "1.25rem", border: "1px solid rgba(255,255,255,0.1)", transition: "background 0.3s" }}>
+              <div key={i} className="hover-club" style={{ backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "12px", padding: "2rem", display: "flex", alignItems: "center", gap: "1.25rem", border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div style={{ fontSize: "2.5rem", flexShrink: 0 }}>{c.icon}</div>
                 <div>
                   <h4 style={{ margin: "0 0 0.25rem 0", color: "white", fontWeight: 700, fontSize: "1rem" }}>{c.name}</h4>
@@ -96,7 +96,7 @@ export default function CampusLifePage() {
                 { icon: "☕", title: "Student Lounge & Café", desc: "A vibrant space to relax, collaborate, and recharge between classes." },
                 { icon: "🏋️", title: "Sports & Fitness Centre", desc: "Indoor gym, badminton courts, carrom boards, and a dedicated meditation room." },
               ].map((f, i) => (
-                <div key={i} style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start", backgroundColor: "white", borderRadius: "10px", padding: "1.5rem", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+                <div key={i} className="hover-facility" style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start", backgroundColor: "white", borderRadius: "10px", padding: "1.5rem", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
                   <span style={{ fontSize: "2rem", flexShrink: 0 }}>{f.icon}</span>
                   <div>
                     <h4 style={{ margin: "0 0 0.35rem 0", color: "var(--college-primary)", fontWeight: 700 }}>{f.title}</h4>
@@ -106,7 +106,7 @@ export default function CampusLifePage() {
               ))}
             </div>
             <div style={{ position: "relative" }}>
-              <img src="/graduation.png" alt="Campus facilities" style={{ width: "100%", borderRadius: "12px", objectFit: "cover", height: "480px", boxShadow: "0 20px 50px rgba(0,0,0,0.15)" }} />
+              <img src="/graduation.png" alt="Campus facilities" className="hover-zoom-img" style={{ width: "100%", borderRadius: "12px", objectFit: "cover", height: "480px", boxShadow: "0 20px 50px rgba(0,0,0,0.15)" }} />
               <div style={{ position: "absolute", top: "1.5rem", right: "1.5rem", backgroundColor: "var(--college-accent)", color: "white", padding: "1rem 1.5rem", borderRadius: "8px", textAlign: "center" }}>
                 <div style={{ fontSize: "1.75rem", fontWeight: 800, fontFamily: "Playfair Display, serif" }}>500+</div>
                 <div style={{ fontSize: "0.8rem", fontWeight: 600 }}>Active Students</div>
@@ -122,7 +122,7 @@ export default function CampusLifePage() {
         <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.1rem", marginBottom: "2rem", maxWidth: "600px", margin: "0 auto 2rem auto" }}>
           Life at Lagankhel IT Academy is richer than any textbook. Come experience it for yourself.
         </p>
-        <Link href="/register" style={{ padding: "1rem 2.5rem", backgroundColor: "var(--college-accent)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "6px", fontSize: "1.1rem", display: "inline-block", transition: "all 0.3s" }}>
+        <Link href="/register" className="hover-btn-gold" style={{ padding: "1rem 2.5rem", backgroundColor: "var(--college-accent)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "6px", fontSize: "1.1rem" }}>
           Apply Today
         </Link>
       </section>

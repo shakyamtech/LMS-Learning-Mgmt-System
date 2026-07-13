@@ -45,7 +45,7 @@ export default async function StudentDashboard() {
 
     // Assignments & Submissions
     const assignmentsSnap = await db.collection("assignments").where("courseId", "==", courseSnap.id).get();
-    const assignments = [];
+    const assignments = [] as any[];
     for (const aDoc of assignmentsSnap.docs) {
       const aData = aDoc.data();
       const subsSnap = await db.collection("submissions")
@@ -59,7 +59,7 @@ export default async function StudentDashboard() {
 
     // Announcements & Comments
     const announcementsSnap = await db.collection("announcements").where("courseId", "==", courseSnap.id).get();
-    const announcements = [];
+    const announcements = [] as any[];
     for (const anDoc of announcementsSnap.docs) {
       const anData = anDoc.data();
       
@@ -72,7 +72,7 @@ export default async function StudentDashboard() {
       }
 
       const commentsSnap = await db.collection("comments").where("announcementId", "==", anDoc.id).get();
-      const comments = [];
+      const comments = [] as any[];
       for (const cDoc of commentsSnap.docs) {
         const cData = cDoc.data();
         let commentAuthor = { name: "Unknown", email: "" };
@@ -107,7 +107,7 @@ export default async function StudentDashboard() {
 
   // 2. Fetch all courses the student is NOT enrolled in yet
   const availableCoursesSnap = await db.collection("courses").get();
-  const availableCourses = [];
+  const availableCourses = [] as any[];
   
   for (const doc of availableCoursesSnap.docs) {
     if (!enrolledCourseIds.has(doc.id)) {
