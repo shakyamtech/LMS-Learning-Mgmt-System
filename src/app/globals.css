@@ -993,7 +993,9 @@ a:hover {
 
 /* Testimonial Name Hover Interaction */
 .testimonial-name {
-  display: inline-block;
+  display: block;
+  width: fit-content;
+  margin: 0 auto 0.25rem auto !important;
   transition: color 0.25s ease-in-out, transform 0.25s ease-in-out;
   cursor: default;
 }

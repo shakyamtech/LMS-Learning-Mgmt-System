@@ -6,19 +6,19 @@ const testimonials = [
   {
     quote: "My time at Lagankhel IT Academy has been nothing short of amazing. The professors actually care about your success, and the campus community is incredibly welcoming.",
     name: "Aarohi Shrestha",
-    class: "Class of 2024",
+    class: "Class of 2026",
     avatar: "/avatar1.png"
   },
   {
     quote: "The diverse environment and the modern computer science facilities completely transformed my career trajectory. I found my passion here.",
     name: "Sriya Maharjan",
-    class: "Class of 2025",
+    class: "Class of 2026",
     avatar: "/avatar2.png"
   },
   {
     quote: "Joining the academic clubs gave me practical skills I could never learn in a classroom alone. It's truly a place that builds leaders.",
     name: "Priya Thapa",
-    class: "Class of 2023",
+    class: "Class of 2026",
     avatar: "/avatar3.png"
   }
 ];
