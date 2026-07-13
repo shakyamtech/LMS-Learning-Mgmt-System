@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
 import HeroSlider from "@/components/HeroSlider";
+import TestimonialSlider from "@/components/TestimonialSlider";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -275,20 +276,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 10. Testimonials */}
-      <section className="section-pad" style={{ backgroundColor: "var(--college-bg-cream)", textAlign: "center" }}>
-        <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 4rem 0", color: "var(--college-primary)" }}>
-          What Our Students <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Say</span>
-        </h2>
-        <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "white", padding: "4rem 2rem", borderRadius: "8px", boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
-          <div style={{ width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#eee", margin: "0 auto 1.5rem auto" }}></div>
-          <p style={{ fontSize: "1.25rem", fontStyle: "italic", color: "#555", lineHeight: 1.6, marginBottom: "2rem" }}>
-            "My time at Carolina College has been nothing short of amazing. The professors actually care about your success, and the campus community is incredibly welcoming."
-          </p>
-          <h4 style={{ margin: "0 0 0.25rem 0", color: "var(--college-primary)", fontSize: "1.1rem" }}>Tom Peterson</h4>
-          <span style={{ fontSize: "0.85rem", color: "#999" }}>Class of 2023</span>
-        </div>
-      </section>
+      {/* 10. Testimonials Slider */}
+      <TestimonialSlider />
 
       {/* 11. Got any questions? (Contact Form) */}
       <section className="section-pad" style={{ backgroundColor: "white", textAlign: "center" }}>
