@@ -64,8 +64,8 @@ export default function HeroSlider() {
         </div>
 
         <div className="mobile-col" style={{ display: "flex", gap: "1.5rem", alignItems: "center", position: "relative", zIndex: 3 }}>
-          <Link href="/register" style={{ padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px", textAlign: "center" }}>Explore Admission</Link>
-          <Link href="#" style={{ color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold", textAlign: "center" }}>Academics →</Link>
+          <Link href="/register" className="btn-primary">Explore Admission</Link>
+          <Link href="#" className="btn-text">Academics →</Link>
         </div>
         
         {/* Slider Dots */}

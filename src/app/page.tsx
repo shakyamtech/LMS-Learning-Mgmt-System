@@ -211,8 +211,8 @@ export default async function Home() {
             We are currently accepting applications for the upcoming fall semester. Join thousands of students making a difference.
           </p>
           <div className="mobile-col" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-            <Link href="/register" style={{ padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px" }}>Send a Request</Link>
-            <Link href="#" style={{ padding: "1rem 2rem", border: "2px solid var(--college-accent)", color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", borderRadius: "4px" }}>Learn More</Link>
+            <Link href="/register" className="btn-primary">Send a Request</Link>
+            <Link href="#" className="btn-outline">Learn More</Link>
           </div>
         </div>
       </section>

@@ -252,3 +252,57 @@ a:hover {
   animation: gradientShimmer 4s linear infinite;
   display: inline-block;
 }
+
+/* Button Hover Styles */
+.btn-primary {
+  padding: 1rem 2rem;
+  background-color: var(--college-primary);
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+  background-color: var(--college-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(27, 94, 32, 0.2);
+}
+
+.btn-text {
+  color: var(--college-primary);
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-text:hover {
+  color: var(--college-accent);
+  transform: translateX(4px);
+}
+
+.btn-outline {
+  padding: 1rem 2rem;
+  border: 2px solid var(--college-accent);
+  color: var(--college-accent);
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+  background-color: transparent;
+}
+
+.btn-outline:hover {
+  background-color: var(--college-accent);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+}
