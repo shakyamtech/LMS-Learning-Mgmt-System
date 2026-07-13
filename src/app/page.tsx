@@ -252,10 +252,8 @@ export default async function Home() {
             We believe that a world-class education should be accessible to everyone. Explore our extensive financial aid packages, grants, and merit-based scholarships designed to support your academic journey.
           </p>
         </div>
-        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#EAE6DF", position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#999", fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", padding: "2rem" }}>
-            [ Campus Grounds Photo ]
-          </div>
+        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#EAE6DF", position: "relative", overflow: "hidden" }}>
+          <img src="/campus.png" alt="Nepali Campus Grounds" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       </section>
 
