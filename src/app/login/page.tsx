@@ -9,10 +9,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="flex-center animate-fade-in" style={{ minHeight: "100vh", padding: "2rem", background: "radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%)" }}>
+    <div className="flex-center animate-fade-in bg-cream-pattern" style={{ minHeight: "100vh", padding: "2rem", backgroundColor: "var(--college-bg-cream)" }}>
       <div className="glass-panel" style={{ width: "100%", maxWidth: "440px", padding: "3rem 2.5rem", border: "1px solid var(--border)" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h1 className="text-h2 text-gradient" style={{ margin: "0 0 0.5rem 0" }}>Welcome Back</h1>
+          <h1 style={{ fontFamily: "Playfair Display, serif", color: "var(--college-primary)", fontSize: "2.5rem", fontWeight: 800, margin: "0 0 0.5rem 0" }}>Welcome Back</h1>
           <p className="text-muted" style={{ margin: 0, fontSize: "0.95rem" }}>
             Log in to manage your LMS dashboard
           </p>
@@ -54,7 +54,7 @@ export default function LoginPage() {
           <div className="input-group" style={{ marginBottom: "2rem" }}>
             <div className="flex-between" style={{ marginBottom: "0.5rem" }}>
               <label className="input-label" htmlFor="password" style={{ margin: 0 }}>Password</label>
-              <a href="#" style={{ fontSize: "0.8rem", color: "var(--text-muted)" }} onClick={(e) => e.preventDefault()}>
+              <a href="#" className="auth-login-link" style={{ fontSize: "0.8rem", color: "var(--text-muted)", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
                 Forgot password?
               </a>
             </div>
@@ -130,7 +130,7 @@ export default function LoginPage() {
 
         <p style={{ textAlign: "center", marginTop: "2rem", marginBottom: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
           Don't have an account?{" "}
-          <Link href="/register" style={{ fontWeight: 600, color: "var(--primary)" }}>
+          <Link href="/register" className="auth-login-link" style={{ fontWeight: 600, color: "var(--college-primary)" }}>
             Create one free
           </Link>
         </p>

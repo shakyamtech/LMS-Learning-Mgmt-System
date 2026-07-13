@@ -69,20 +69,21 @@ export default async function AdminDashboard() {
   const totalCourses = totalCoursesSnap.data().count;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--background)", padding: "2rem" }}>
+    <div className="bg-cream-pattern" style={{ minHeight: "100vh", backgroundColor: "var(--college-bg-cream)", padding: "2rem" }}>
       <header className="glass-panel" style={{
         padding: "1.25rem 2rem",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         marginBottom: "2rem",
-        border: "1px solid var(--border)"
+        border: "1px solid var(--border)",
+        backgroundColor: "white"
       }}>
         <div>
           <span style={{
             fontSize: "0.75rem",
-            backgroundColor: "rgba(239, 68, 68, 0.1)",
-            color: "var(--error)",
+            backgroundColor: "rgba(27, 94, 32, 0.08)",
+            color: "var(--college-primary)",
             fontWeight: 700,
             padding: "0.25rem 0.75rem",
             borderRadius: "var(--radius-full)",
@@ -91,7 +92,7 @@ export default async function AdminDashboard() {
           }}>
             ⚡ Admin Control Panel
           </span>
-          <h1 className="text-h3" style={{ margin: "0.5rem 0 0 0" }}>LMS Root Administrator</h1>
+          <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.75rem", fontWeight: 700, margin: "0.5rem 0 0 0", color: "var(--college-primary)" }}>LMS Root Administrator</h1>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
@@ -100,7 +101,7 @@ export default async function AdminDashboard() {
             <div className="text-muted" style={{ fontSize: "0.8rem" }}>{session.email}</div>
           </div>
           <form action={logout}>
-            <button className="btn btn-secondary" type="submit" style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}>
+            <button className="auth-register-btn" type="submit" style={{ padding: "0.5rem 1.25rem", border: "2px solid var(--college-accent)", borderRadius: "4px", backgroundColor: "var(--college-accent)", color: "var(--college-primary-dark)", fontWeight: "bold", fontSize: "0.85rem", cursor: "pointer" }}>
               Logout
             </button>
           </form>
@@ -109,28 +110,28 @@ export default async function AdminDashboard() {
 
       <main className="container" style={{ padding: 0 }}>
         <div style={{ marginBottom: "2rem" }}>
-          <h2 className="text-h2">LMS System Administration</h2>
+          <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>LMS System Administration</h2>
           <p className="text-muted">Monitor LMS performance, manage platform roles, audit security parameters, and toggle globally-shared resources.</p>
         </div>
 
         {/* Global System Stats */}
         <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
-          <div className="card">
+          <div className="card" style={{ backgroundColor: "white" }}>
             <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚙️</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>System Health</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--secondary)" }}>99.98%</p>
+            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>System Health</h3>
+            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--success)" }}>99.98%</p>
             <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>All core services active and optimal</p>
           </div>
-          <div className="card">
+          <div className="card" style={{ backgroundColor: "white" }}>
             <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Platform Users</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--primary)" }}>{totalUsers}</p>
+            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Platform Users</h3>
+            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalUsers}</p>
             <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active students, instructors, staff</p>
           </div>
-          <div className="card">
+          <div className="card" style={{ backgroundColor: "white" }}>
             <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Total Courses</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--primary)" }}>{totalCourses}</p>
+            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Total Courses</h3>
+            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalCourses}</p>
             <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active teaching courses</p>
           </div>
         </div>
@@ -138,8 +139,8 @@ export default async function AdminDashboard() {
         {/* System & Access Grid */}
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "2rem" }}>
           {/* Active Courses Table */}
-          <div className="card" style={{ height: "fit-content" }}>
-            <h3 className="text-h3" style={{ margin: "0 0 1.5rem 0" }}>Active Platform Courses</h3>
+          <div className="card" style={{ height: "fit-content", backgroundColor: "white" }}>
+            <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.5rem 0" }}>Active Platform Courses</h3>
             
             {courses.length === 0 ? (
               <div style={{ textAlign: "center", padding: "3rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
@@ -160,10 +161,10 @@ export default async function AdminDashboard() {
                     alignItems: "center"
                   }}>
                     <div>
-                      <span style={{ fontSize: "0.75rem", color: "var(--primary)", fontWeight: 700, backgroundColor: "rgba(79, 70, 229, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
+                      <span style={{ fontSize: "0.75rem", color: "var(--college-primary)", fontWeight: 700, backgroundColor: "rgba(27, 94, 32, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
                         {course.code}
                       </span>
-                      <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem" }}>{course.title}</h4>
+                      <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem", color: "var(--college-text)" }}>{course.title}</h4>
                       <p className="text-muted" style={{ margin: 0, fontSize: "0.8rem", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
                         {course.description}
                       </p>

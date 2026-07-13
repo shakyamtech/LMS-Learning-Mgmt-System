@@ -10,10 +10,10 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="flex-center animate-fade-in" style={{ minHeight: "100vh", padding: "2rem 1rem", background: "radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%)" }}>
+    <div className="flex-center animate-fade-in bg-cream-pattern" style={{ minHeight: "100vh", padding: "2rem 1rem", backgroundColor: "var(--college-bg-cream)" }}>
       <div className="glass-panel" style={{ width: "100%", maxWidth: "560px", padding: "3rem 2.5rem", border: "1px solid var(--border)" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h1 className="text-h2 text-gradient" style={{ margin: "0 0 0.5rem 0" }}>Create Account</h1>
+        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+          <h1 style={{ fontFamily: "Playfair Display, serif", color: "var(--college-primary)", fontSize: "2.5rem", fontWeight: 800, margin: "0 0 0.5rem 0" }}>Create Account</h1>
           <p className="text-muted" style={{ margin: 0, fontSize: "0.95rem" }}>
             Join our modern LMS platform today
           </p>
@@ -76,7 +76,6 @@ export default function RegisterPage() {
                 name="password"
                 placeholder="•••••••• (Min 6 characters)"
                 required
-                minLength={6}
                 disabled={isPending}
                 style={{ fontSize: "0.95rem", paddingRight: "3rem" }}
               />
@@ -126,14 +125,14 @@ export default function RegisterPage() {
               <div 
                 onClick={() => setSelectedRole("STUDENT")}
                 style={{
-                  border: selectedRole === "STUDENT" ? "2px solid var(--primary)" : "1px solid var(--border)",
-                  backgroundColor: selectedRole === "STUDENT" ? "rgba(79, 70, 229, 0.05)" : "var(--surface)",
+                  border: selectedRole === "STUDENT" ? "2px solid var(--college-primary)" : "1px solid var(--border)",
+                  backgroundColor: selectedRole === "STUDENT" ? "rgba(27, 94, 32, 0.05)" : "var(--surface)",
                   borderRadius: "var(--radius-md)",
                   padding: "1rem 0.5rem",
                   textAlign: "center",
                   cursor: "pointer",
                   transition: "all var(--transition-fast)",
-                  boxShadow: selectedRole === "STUDENT" ? "0 4px 12px rgba(79, 70, 229, 0.15)" : "none",
+                  boxShadow: selectedRole === "STUDENT" ? "0 4px 12px rgba(27, 94, 32, 0.15)" : "none",
                   transform: selectedRole === "STUDENT" ? "translateY(-2px)" : "none",
                   userSelect: "none"
                 }}
@@ -143,7 +142,7 @@ export default function RegisterPage() {
                     type="radio" 
                     checked={selectedRole === "STUDENT"} 
                     onChange={() => setSelectedRole("STUDENT")}
-                    style={{ accentColor: "var(--primary)", cursor: "pointer" }} 
+                    style={{ accentColor: "var(--college-primary)", cursor: "pointer" }} 
                   />
                 </div>
                 <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>🎓</div>
@@ -155,14 +154,14 @@ export default function RegisterPage() {
               <div 
                 onClick={() => setSelectedRole("TEACHER")}
                 style={{
-                  border: selectedRole === "TEACHER" ? "2px solid var(--primary)" : "1px solid var(--border)",
-                  backgroundColor: selectedRole === "TEACHER" ? "rgba(79, 70, 229, 0.05)" : "var(--surface)",
+                  border: selectedRole === "TEACHER" ? "2px solid var(--college-primary)" : "1px solid var(--border)",
+                  backgroundColor: selectedRole === "TEACHER" ? "rgba(27, 94, 32, 0.05)" : "var(--surface)",
                   borderRadius: "var(--radius-md)",
                   padding: "1rem 0.5rem",
                   textAlign: "center",
                   cursor: "pointer",
                   transition: "all var(--transition-fast)",
-                  boxShadow: selectedRole === "TEACHER" ? "0 4px 12px rgba(79, 70, 229, 0.15)" : "none",
+                  boxShadow: selectedRole === "TEACHER" ? "0 4px 12px rgba(27, 94, 32, 0.15)" : "none",
                   transform: selectedRole === "TEACHER" ? "translateY(-2px)" : "none",
                   userSelect: "none"
                 }}
@@ -172,7 +171,7 @@ export default function RegisterPage() {
                     type="radio" 
                     checked={selectedRole === "TEACHER"} 
                     onChange={() => setSelectedRole("TEACHER")}
-                    style={{ accentColor: "var(--primary)", cursor: "pointer" }} 
+                    style={{ accentColor: "var(--college-primary)", cursor: "pointer" }} 
                   />
                 </div>
                 <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>👨‍🏫</div>
@@ -184,14 +183,14 @@ export default function RegisterPage() {
               <div 
                 onClick={() => setSelectedRole("ADMIN")}
                 style={{
-                  border: selectedRole === "ADMIN" ? "2px solid var(--primary)" : "1px solid var(--border)",
-                  backgroundColor: selectedRole === "ADMIN" ? "rgba(79, 70, 229, 0.05)" : "var(--surface)",
+                  border: selectedRole === "ADMIN" ? "2px solid var(--college-primary)" : "1px solid var(--border)",
+                  backgroundColor: selectedRole === "ADMIN" ? "rgba(27, 94, 32, 0.05)" : "var(--surface)",
                   borderRadius: "var(--radius-md)",
                   padding: "1rem 0.5rem",
                   textAlign: "center",
                   cursor: "pointer",
                   transition: "all var(--transition-fast)",
-                  boxShadow: selectedRole === "ADMIN" ? "0 4px 12px rgba(79, 70, 229, 0.15)" : "none",
+                  boxShadow: selectedRole === "ADMIN" ? "0 4px 12px rgba(27, 94, 32, 0.15)" : "none",
                   transform: selectedRole === "ADMIN" ? "translateY(-2px)" : "none",
                   userSelect: "none"
                 }}
@@ -201,7 +200,7 @@ export default function RegisterPage() {
                     type="radio" 
                     checked={selectedRole === "ADMIN"} 
                     onChange={() => setSelectedRole("ADMIN")}
-                    style={{ accentColor: "var(--primary)", cursor: "pointer" }} 
+                    style={{ accentColor: "var(--college-primary)", cursor: "pointer" }} 
                   />
                 </div>
                 <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>⚡</div>
@@ -237,7 +236,7 @@ export default function RegisterPage() {
 
         <p style={{ textAlign: "center", marginTop: "2rem", marginBottom: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
           Already have an account?{" "}
-          <Link href="/login" style={{ fontWeight: 600, color: "var(--primary)" }}>
+          <Link href="/login" className="auth-login-link" style={{ fontWeight: 600, color: "var(--college-primary)" }}>
             Sign In
           </Link>
         </p>
