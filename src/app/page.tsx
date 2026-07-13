@@ -4,6 +4,9 @@ import Link from "next/link";
 import { logout } from "@/app/actions/auth";
 import HeroSlider from "@/components/HeroSlider";
 import TestimonialSlider from "@/components/TestimonialSlider";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -79,46 +82,7 @@ export default async function Home() {
         }
       `}} />
 
-      {/* 1. Top Utility Bar */}
-      <div className="top-bar-mobile" style={{ backgroundColor: "var(--college-primary-dark)", color: "white", padding: "0.5rem 2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
-        <span>📞 01-5430967</span>
-        <span>📍 Lagankhel, Lalitpur, Nepal</span>
-      </div>
-
-      {/* 2. Navigation Header */}
-      <header style={{ backgroundColor: "var(--college-primary)", color: "white", padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <img src="/logo.png" alt="Lagankhel IT Academy Logo" style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--college-accent)" }} />
-          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Lagankhel IT Academy</span>
-        </div>
-
-        <nav className="hide-mobile" style={{ gap: "2rem", fontWeight: 600, fontSize: "0.95rem" }}>
-          <Link href="/about" style={{ color: "white", textDecoration: "none" }}>About us</Link>
-          <Link href="/admissions" style={{ color: "white", textDecoration: "none" }}>Admissions</Link>
-          <Link href="/academics" style={{ color: "white", textDecoration: "none" }}>Academics</Link>
-          <Link href="/campus-life" style={{ color: "white", textDecoration: "none" }}>Campus Life</Link>
-        </nav>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          {session ? (
-            <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-              <Link href={getDashboardUrl(session.role)} style={{ padding: "0.6rem 1.5rem", border: "2px solid var(--college-accent)", borderRadius: "4px", color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>
-                Console ⚡
-              </Link>
-              <form action={logout}>
-                <button type="submit" className="hide-mobile" style={{ padding: "0.6rem 1.5rem", backgroundColor: "var(--college-accent)", border: "none", borderRadius: "4px", color: "white", fontWeight: "bold", cursor: "pointer" }}>Logout</button>
-              </form>
-            </div>
-          ) : (
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <Link href="/login" className="hide-mobile" style={{ color: "white", textDecoration: "none", alignSelf: "center", fontWeight: "bold" }}>Login</Link>
-              <Link href="/register" style={{ padding: "0.6rem 1.5rem", border: "2px solid var(--college-accent)", borderRadius: "4px", color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold" }}>
-                Contact Us
-              </Link>
-            </div>
-          )}
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* 3. Hero Section Slider */}
       <HeroSlider />
@@ -297,62 +261,7 @@ export default async function Home() {
         </form>
       </section>
 
-      {/* 12. Footer */}
-      <footer style={{ backgroundColor: "var(--college-primary-dark)", color: "white", padding: "4rem 2rem 2rem 2rem" }}>
-        <div className="grid-4" style={{ marginBottom: "4rem" }}>
-          {/* Col 1 */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
-              <img src="/logo.png" alt="Lagankhel IT Academy Logo" style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--college-accent)" }} />
-              <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Lagankhel IT Academy</span>
-            </div>
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.8 }}>
-              Dedicated to excellence in IT education, research, and community. Shaping the leaders of tomorrow.
-            </p>
-          </div>
-
-          {/* Col 2 */}
-          <div>
-            <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Quick Links</h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
-              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>About us</Link>
-              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>Admissions</Link>
-              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>Academics</Link>
-              <Link href="#" style={{ color: "white", textDecoration: "none", opacity: 0.8 }}>Campus Life</Link>
-            </div>
-          </div>
-
-          {/* Col 3 */}
-          <div>
-            <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Contact Us</h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem", opacity: 0.8 }}>
-              <span>📞 01-5430967</span>
-              <span>📍 Lagankhel, Lalitpur, Nepal</span>
-              <span>✉️ info@lagankhelit.edu.np</span>
-            </div>
-          </div>
-
-          {/* Col 4 */}
-          <div>
-            <h4 style={{ margin: "0 0 1.5rem 0", color: "var(--college-accent)", fontSize: "1.1rem" }}>Stay Connected</h4>
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.8, marginBottom: "1rem" }}>Subscribe to our newsletter for the latest updates.</p>
-            <div style={{ display: "flex" }}>
-              <input type="email" placeholder="Your email address" style={{ flex: 1, padding: "0.75rem", border: "none", borderRadius: "4px 0 0 4px", width: "100%" }} />
-              <button type="button" style={{ padding: "0.75rem 1.5rem", backgroundColor: "var(--college-accent)", color: "white", border: "none", borderRadius: "0 4px 4px 0", fontWeight: "bold", cursor: "pointer" }}>Join</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="mobile-col" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem", opacity: 0.6, gap: "1rem", textAlign: "center", alignItems: "center" }}>
-          <span>© {new Date().getFullYear()} Lagankhel IT Academy. All rights reserved.</span>
-          <div className="mobile-center" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-            <Link href="#" style={{ color: "white", textDecoration: "none" }}>Privacy Policy</Link>
-            <Link href="#" style={{ color: "white", textDecoration: "none" }}>Terms & Conditions</Link>
-            <a href="#top" style={{ padding: "0.4rem 1rem", border: "1px solid rgba(255,255,255,0.3)", borderRadius: "20px", color: "white", textDecoration: "none", fontWeight: "bold", marginLeft: "1rem", transition: "all 0.2s" }}>↑ Go to Top</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
