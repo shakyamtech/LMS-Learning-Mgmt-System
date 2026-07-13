@@ -183,9 +183,10 @@ export default async function SiteHeader() {
                 className="auth-console-btn"
                 style={{
                   padding: "0.6rem 1.5rem",
+                  backgroundColor: "var(--college-accent)",
                   border: "2px solid var(--college-accent)",
                   borderRadius: "4px",
-                  color: "var(--college-accent)",
+                  color: "var(--college-primary-dark)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
@@ -231,9 +232,10 @@ export default async function SiteHeader() {
                 className="auth-register-btn"
                 style={{
                   padding: "0.6rem 1.5rem",
+                  backgroundColor: "var(--college-accent)",
                   border: "2px solid var(--college-accent)",
                   borderRadius: "4px",
-                  color: "var(--college-accent)",
+                  color: "var(--college-primary-dark)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",

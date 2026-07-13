@@ -909,18 +909,18 @@ a:hover {
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 .auth-register-btn:hover {
-  background-color: var(--college-accent) !important;
-  color: var(--college-primary-dark) !important;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35) !important;
+  background-color: transparent !important;
+  color: var(--college-accent) !important;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
 }
 
 .auth-console-btn {
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 .auth-console-btn:hover {
-  background-color: var(--college-accent) !important;
-  color: var(--college-primary-dark) !important;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35) !important;
+  background-color: transparent !important;
+  color: var(--college-accent) !important;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
 }
 
 .auth-logout-btn {
