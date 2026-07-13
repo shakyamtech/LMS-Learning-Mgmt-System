@@ -3,6 +3,7 @@ import Link from "next/link";
 import { decryptSession } from "@/lib/auth-utils";
 import { logout } from "@/app/actions/auth";
 import HeaderScrollHandler from "./HeaderScrollHandler";
+import MobileMenu from "./MobileMenu";
 
 export default async function SiteHeader() {
   const cookieStore = await cookies();
@@ -28,8 +29,6 @@ export default async function SiteHeader() {
   return (
     <>
       <HeaderScrollHandler />
-      <input type="checkbox" id="mobile-menu-toggle" className="menu-toggle-checkbox" />
-      <label htmlFor="mobile-menu-toggle" className="mobile-menu-overlay"></label>
       
       {/* Top Utility Bar */}
       <div
@@ -242,97 +241,13 @@ export default async function SiteHeader() {
           )}
         </div>
 
-        {/* Hamburger Mobile Menu Trigger Button */}
-        <label htmlFor="mobile-menu-toggle" className="mobile-menu-btn">
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
+        {/* React State Stateful Mobile Navigation Menu */}
+        <MobileMenu 
+          session={session} 
+          dashboardUrl={getDashboardUrl(session?.role || "STUDENT")} 
+          logoutAction={logout} 
+        />
       </header>
-
-      {/* Mobile Navigation Drawer */}
-      <div className="mobile-nav-drawer">
-        {/* Close Button X */}
-        <label htmlFor="mobile-menu-toggle" className="mobile-drawer-close">
-          ✕
-        </label>
-
-        <Link href="/" className="mobile-drawer-link">Home</Link>
-        <Link href="/about" className="mobile-drawer-link">About Us</Link>
-        <Link href="/admissions" className="mobile-drawer-link">Admissions</Link>
-        <Link href="/academics" className="mobile-drawer-link">Academics</Link>
-        <Link href="/campus-life" className="mobile-drawer-link">Campus Life</Link>
-
-        <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {session ? (
-            <>
-              <Link
-                href={getDashboardUrl(session.role)}
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "1rem",
-                  border: "2px solid var(--college-accent)",
-                  borderRadius: "6px",
-                  color: "var(--college-accent)",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                Console ⚡
-              </Link>
-              <form action={logout} style={{ width: "100%" }}>
-                <button
-                  type="submit"
-                  style={{
-                    width: "100%",
-                    padding: "1rem",
-                    backgroundColor: "var(--college-accent)",
-                    border: "none",
-                    borderRadius: "6px",
-                    color: "white",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                  }}
-                >
-                  Logout
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "1rem",
-                  color: "white",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "1rem",
-                  backgroundColor: "var(--college-accent)",
-                  borderRadius: "6px",
-                  color: "white",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
     </>
   );
 }

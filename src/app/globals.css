@@ -752,22 +752,19 @@ a:hover {
   animation: headerSlideDown 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* ─── Responsive & Mobile Navigation ─── */
-.menu-toggle-checkbox {
-  display: none;
-}
-
-/* Mobile Hamburger Button */
-.mobile-menu-btn {
+/* ─── Responsive & Mobile Navigation (React State version) ─── */
+.mobile-menu-btn-react {
   display: none;
   flex-direction: column;
   gap: 6px;
   cursor: pointer;
   z-index: 1200;
   padding: 0.5rem;
+  background: none;
+  border: none;
 }
 
-.mobile-menu-btn span {
+.mobile-menu-btn-react span {
   display: block;
   width: 26px;
   height: 3px;
@@ -776,20 +773,21 @@ a:hover {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Semi-transparent overlay behind active drawer */
-.mobile-menu-overlay {
+.mobile-menu-overlay-react {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
   z-index: 1050;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
-/* Mobile Slide-out Drawer (from right) */
-.mobile-nav-drawer {
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mobile-nav-drawer-react {
   position: fixed;
   top: 0;
   right: 0;
@@ -809,6 +807,10 @@ a:hover {
   border-left: 1px solid rgba(212, 175, 55, 0.2);
 }
 
+.mobile-nav-drawer-react.open {
+  transform: translateX(0);
+}
+
 .mobile-drawer-link {
   font-family: "Playfair Display", serif;
   font-size: 1.4rem;
@@ -825,8 +827,7 @@ a:hover {
   padding-left: 0.5rem;
 }
 
-/* Close button inside mobile drawer */
-.mobile-drawer-close {
+.mobile-drawer-close-react {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
@@ -839,36 +840,29 @@ a:hover {
   color: white;
   cursor: pointer;
   z-index: 1150;
+  background: none;
+  border: none;
   transition: color 0.2s;
 }
-.mobile-drawer-close:hover {
+
+.mobile-drawer-close-react:hover {
   color: var(--college-accent);
 }
 
-/* Trigger Mobile Drawer & Overlay display */
-.menu-toggle-checkbox:checked ~ .mobile-menu-overlay {
-  opacity: 1;
-  visibility: visible;
-}
-
-.menu-toggle-checkbox:checked ~ .mobile-nav-drawer {
-  transform: translateX(0);
-}
-
-/* Transform Hamburger bars to X Close Icon when Checked */
-.menu-toggle-checkbox:checked ~ header .mobile-menu-btn span:nth-child(1) {
+/* Hamburger animations when active */
+.mobile-menu-btn-react.active span:nth-child(1) {
   transform: translateY(9px) rotate(45deg);
 }
 
-.menu-toggle-checkbox:checked ~ header .mobile-menu-btn span:nth-child(2) {
+.mobile-menu-btn-react.active span:nth-child(2) {
   opacity: 0;
 }
 
-.menu-toggle-checkbox:checked ~ header .mobile-menu-btn span:nth-child(3) {
+.mobile-menu-btn-react.active span:nth-child(3) {
   transform: translateY(-9px) rotate(-45deg);
 }
 
-/* Responsive Breakpoints */
+/* Breakpoints */
 @media (max-width: 1024px) {
   .desktop-nav {
     display: none !important;
@@ -876,7 +870,7 @@ a:hover {
   .desktop-auth {
     display: none !important;
   }
-  .mobile-menu-btn {
+  .mobile-menu-btn-react {
     display: flex !important;
   }
 }
@@ -889,7 +883,7 @@ a:hover {
 
 @media (max-width: 480px) {
   .brand-name {
-    display: none !important; /* Hide long name on tiny screens, show logo only to avoid wrap */
+    display: none !important;
   }
 }
 
