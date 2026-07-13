@@ -21,7 +21,7 @@ export default function SiteFooter() {
       >
         {/* Col 1 — Brand */}
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
+          <Link href="/" className="footer-brand-link">
             <img
               src="/logo.png"
               alt="Lagankhel IT Academy Logo"
@@ -30,7 +30,7 @@ export default function SiteFooter() {
             <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.3rem", fontWeight: 700 }}>
               Lagankhel IT Academy
             </span>
-          </div>
+          </Link>
           <p style={{ fontSize: "0.9rem", lineHeight: 1.7, opacity: 0.8 }}>
             Dedicated to excellence in IT education, research, and community. Shaping the leaders of tomorrow.
           </p>
@@ -47,7 +47,7 @@ export default function SiteFooter() {
               { label: "Campus Life", href: "/campus-life" },
               { label: "Login",       href: "/login" },
             ].map((l) => (
-              <Link key={l.href} href={l.href} style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none", transition: "color 0.2s" }}>
+              <Link key={l.href} href={l.href} className="footer-link">
                 {l.label}
               </Link>
             ))}
@@ -57,11 +57,11 @@ export default function SiteFooter() {
         {/* Col 3 — Contact */}
         <div>
           <h4 style={{ margin: "0 0 1.25rem 0", color: "var(--college-accent)", fontSize: "1rem", fontWeight: 700 }}>Contact Us</h4>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem", opacity: 0.8 }}>
-            <span>📞 01-5430967</span>
-            <span>📍 Lagankhel, Lalitpur, Nepal</span>
-            <span>✉️ info@lagankhelit.edu.np</span>
-            <span>🕐 Sun–Fri: 9am–5pm</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
+            <span className="footer-contact-item" style={{ opacity: 0.8 }}>📞 01-5430967</span>
+            <span className="footer-contact-item" style={{ opacity: 0.8 }}>📍 Lagankhel, Lalitpur, Nepal</span>
+            <span className="footer-contact-item" style={{ opacity: 0.8 }}>✉️ info@lagankhelit.edu.np</span>
+            <span className="footer-contact-item" style={{ opacity: 0.8 }}>🕐 Sun–Fri: 9am–5pm</span>
           </div>
         </div>
 
@@ -75,14 +75,15 @@ export default function SiteFooter() {
             <input
               type="email"
               placeholder="Your email address"
-              style={{ flex: 1, padding: "0.75rem 1rem", border: "none", borderRadius: "4px 0 0 4px", fontSize: "0.9rem", outline: "none" }}
+              style={{ flex: 1, padding: "0.75rem 1rem", border: "none", borderRadius: "4px 0 0 4px", fontSize: "0.9rem", outline: "none", color: "#333" }}
             />
             <button
               type="button"
+              className="footer-newsletter-btn"
               style={{
                 padding: "0.75rem 1.25rem",
                 backgroundColor: "var(--college-accent)",
-                color: "white",
+                color: "var(--college-primary-dark)",
                 border: "none",
                 borderRadius: "0 4px 4px 0",
                 fontWeight: "bold",
@@ -107,23 +108,15 @@ export default function SiteFooter() {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: "0.85rem",
-          opacity: 0.6,
         }}
       >
-        <span>© {new Date().getFullYear()} Lagankhel IT Academy. All rights reserved.</span>
+        <span style={{ opacity: 0.6 }}>© {new Date().getFullYear()} Lagankhel IT Academy. All rights reserved.</span>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Privacy Policy</Link>
-          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Terms & Conditions</Link>
+          <Link href="#" className="footer-bottom-link">Privacy Policy</Link>
+          <Link href="#" className="footer-bottom-link">Terms & Conditions</Link>
           <a
             href="#"
-            style={{
-              padding: "0.35rem 0.9rem",
-              border: "1px solid rgba(255,255,255,0.3)",
-              borderRadius: "20px",
-              color: "white",
-              textDecoration: "none",
-              fontWeight: "bold",
-            }}
+            className="footer-top-btn"
           >
             ↑ Top
           </a>

@@ -1005,6 +1005,81 @@ a:hover {
   transform: scale(1.08);
 }
 
+/* Footer Hover Effects */
+.footer-link {
+  color: rgba(255, 255, 255, 0.8) !important;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+.footer-link:hover {
+  color: var(--college-accent) !important;
+  transform: translateX(4px);
+}
+
+.footer-bottom-link {
+  color: rgba(255, 255, 255, 0.6) !important;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-bottom-link:hover {
+  color: var(--college-accent) !important;
+}
+
+.footer-top-btn {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  color: rgba(255,255,255,0.8) !important;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+.footer-top-btn:hover {
+  background-color: var(--college-accent);
+  border-color: var(--college-accent);
+  color: var(--college-primary-dark) !important;
+  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+.footer-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  width: fit-content;
+}
+.footer-brand-link:hover {
+  transform: scale(1.03);
+}
+
+.footer-contact-item {
+  transition: color 0.2s ease, transform 0.2s ease;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.footer-contact-item:hover {
+  color: var(--college-accent);
+  transform: translateX(3px);
+}
+
+.footer-newsletter-btn {
+  transition: all 0.2s ease;
+}
+.footer-newsletter-btn:hover {
+  background-color: var(--college-accent) !important;
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+}
+
 
 
 
