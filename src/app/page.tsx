@@ -88,17 +88,15 @@ export default async function Home() {
       {/* 2. Navigation Header */}
       <header style={{ backgroundColor: "var(--college-primary)", color: "white", padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <div style={{ width: "40px", height: "40px", backgroundColor: "var(--college-accent)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "white" }}>
-            L
-          </div>
+          <img src="/logo.png" alt="Lagankhel IT Academy Logo" style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--college-accent)" }} />
           <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Lagankhel IT Academy</span>
         </div>
 
         <nav className="hide-mobile" style={{ gap: "2rem", fontWeight: 600, fontSize: "0.95rem" }}>
-          <Link href="#" style={{ color: "white", textDecoration: "none" }}>About us</Link>
-          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Admissions</Link>
-          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Academics</Link>
-          <Link href="#" style={{ color: "white", textDecoration: "none" }}>Campus Life</Link>
+          <Link href="/about" style={{ color: "white", textDecoration: "none" }}>About us</Link>
+          <Link href="/admissions" style={{ color: "white", textDecoration: "none" }}>Admissions</Link>
+          <Link href="/academics" style={{ color: "white", textDecoration: "none" }}>Academics</Link>
+          <Link href="/campus-life" style={{ color: "white", textDecoration: "none" }}>Campus Life</Link>
         </nav>
 
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -126,7 +124,7 @@ export default async function Home() {
       <HeroSlider />
 
       {/* 4. About Our College Section */}
-      <section className="flex-row section-pad" style={{ backgroundColor: "white", gap: "4rem" }}>
+      <section id="about" className="flex-row section-pad" style={{ backgroundColor: "white", gap: "4rem" }}>
         <div style={{ flex: 1 }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 2rem 0", color: "var(--college-primary)" }}>
             About Our College
@@ -141,7 +139,7 @@ export default async function Home() {
               </li>
             ))}
           </ul>
-          <Link href="#" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", fontSize: "1.1rem" }}>Explore our programs →</Link>
+          <Link href="#academics" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", fontSize: "1.1rem" }}>Explore our programs →</Link>
 
           <div className="grid-3" style={{ marginTop: "4rem" }}>
             <div style={{ textAlign: "center" }}>
@@ -164,7 +162,7 @@ export default async function Home() {
       </section>
 
       {/* 5. Why Choose Us Section */}
-      <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
+      <section id="academics" className="flex-row" style={{ backgroundColor: "var(--college-bg-cream" }}>
         <div className="mobile-img-box" style={{ flex: 1, minHeight: "600px", backgroundColor: "#EAE6DF", position: "relative", overflow: "hidden" }}>
           <img src="/hero1.png" alt="Nepali Student Portrait" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
@@ -177,32 +175,32 @@ export default async function Home() {
               <div className="icon-wrap">🎓</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Best Programs</h3>
               <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>Our curriculum is globally recognized and highly competitive.</p>
-              <Link href="#" className="btn-text">Learn More →</Link>
+              <Link href="/register" className="btn-text">Learn More →</Link>
             </div>
             <div className="choose-card">
               <div className="icon-wrap">🔬</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Laboratories</h3>
               <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>State-of-the-art facilities for hands-on scientific research.</p>
-              <Link href="#" className="btn-text">Learn More →</Link>
+              <Link href="/register" className="btn-text">Learn More →</Link>
             </div>
             <div className="choose-card">
               <div className="icon-wrap">🏀</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Variety of Sports</h3>
               <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>Engage in over 20+ collegiate level athletic programs.</p>
-              <Link href="#" className="btn-text">Learn More →</Link>
+              <Link href="#events" className="btn-text">Learn More →</Link>
             </div>
             <div className="choose-card">
               <div className="icon-wrap">🍎</div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.3rem" }}>Great Canteens</h3>
               <p style={{ color: "#555", marginBottom: "1.5rem", lineHeight: 1.5 }}>Nutritious, globally-inspired meal plans available 24/7.</p>
-              <Link href="#" className="btn-text">Learn More →</Link>
+              <Link href="#about" className="btn-text">Learn More →</Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* 6. "Want to study here?" (CTA Box) */}
-      <section className="section-pad" style={{ position: "relative", display: "flex", justifyContent: "center", backgroundColor: "#D4AF37", backgroundImage: "linear-gradient(to right, rgba(27, 94, 32, 0.9), rgba(27, 94, 32, 0.7))" }}>
+      <section id="admissions" className="section-pad" style={{ position: "relative", display: "flex", justifyContent: "center", backgroundColor: "#D4AF37", backgroundImage: "linear-gradient(to right, rgba(27, 94, 32, 0.9), rgba(27, 94, 32, 0.7))" }}>
         <div style={{ backgroundColor: "white", padding: "4rem 2rem", borderRadius: "8px", maxWidth: "700px", textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.1)", zIndex: 1, width: "100%" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
             Want to study here?
@@ -212,13 +210,13 @@ export default async function Home() {
           </p>
           <div className="mobile-col" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
             <Link href="/register" className="btn-primary">Send a Request</Link>
-            <Link href="#" className="btn-outline">Learn More</Link>
+            <Link href="#about" className="btn-outline">Learn More</Link>
           </div>
         </div>
       </section>
 
       {/* 7. Latest Events */}
-      <section className="section-pad" style={{ backgroundColor: "var(--college-primary-dark)", color: "white" }}>
+      <section id="events" className="section-pad" style={{ backgroundColor: "var(--college-primary-dark)", color: "white" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: 0 }}>
             Latest Events
@@ -237,7 +235,7 @@ export default async function Home() {
               </div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.4rem" }}>{event.title}</h3>
               <p style={{ color: "#555", marginBottom: "2rem", lineHeight: 1.5, flex: 1 }}>{event.desc}</p>
-              <Link href="#" className="btn-text">Read More →</Link>
+              <Link href="#admissions" className="btn-text">Read More →</Link>
             </div>
           ))}
         </div>
@@ -305,7 +303,7 @@ export default async function Home() {
           {/* Col 1 */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
-              <div style={{ width: "40px", height: "40px", backgroundColor: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "var(--college-primary)" }}>L</div>
+              <img src="/logo.png" alt="Lagankhel IT Academy Logo" style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--college-accent)" }} />
               <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Lagankhel IT Academy</span>
             </div>
             <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.8 }}>
