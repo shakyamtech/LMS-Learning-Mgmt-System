@@ -386,3 +386,88 @@ a:hover {
   color: var(--college-accent);
   transform: translateX(6px);
 }
+
+/* Financial Aid Image Panel */
+.financial-aid-img {
+  flex: 1;
+  min-height: 500px;
+  background-color: #EAE6DF;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.financial-aid-img img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.financial-aid-img:hover img {
+  transform: scale(1.05);
+}
+
+/* Graduation Section */
+.graduation-img-panel {
+  flex: 1;
+  min-height: 500px;
+  background-color: #154A1A;
+  position: relative;
+  overflow: hidden;
+}
+
+.graduation-img-panel img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.graduation-img-panel:hover img {
+  transform: scale(1.05);
+}
+
+/* Graduation Read More Button */
+.graduation-btn {
+  padding: 1rem 2rem;
+  border: 2px solid white;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  display: inline-block;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.graduation-btn:hover {
+  background-color: white;
+  color: var(--college-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Testimonial Avatar */
+.testimonial-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem auto;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  border: 3px solid var(--college-bg-cream);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s ease;
+  cursor: pointer;
+}
+
+.testimonial-avatar:hover {
+  transform: scale(1.15) translateY(-4px);
+  box-shadow: 0 12px 28px rgba(27, 94, 32, 0.3);
+  border-color: var(--college-accent);
+}

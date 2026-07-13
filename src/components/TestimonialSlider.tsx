@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const testimonials = [
   {
-    quote: "My time at Carolina College has been nothing short of amazing. The professors actually care about your success, and the campus community is incredibly welcoming.",
+    quote: "My time at Lagankhel IT Academy has been nothing short of amazing. The professors actually care about your success, and the campus community is incredibly welcoming.",
     name: "Aarohi Shrestha",
     class: "Class of 2024",
     avatar: "/avatar1.png"
@@ -55,17 +55,10 @@ export default function TestimonialSlider() {
               transition: "opacity 0.5s ease-in-out, visibility 0.5s ease-in-out",
             }}
           >
-            <div style={{ 
-              width: "90px", 
-              height: "90px", 
-              borderRadius: "50%", 
-              margin: "0 auto 1.5rem auto",
-              backgroundImage: `url(${testim.avatar})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-              border: "3px solid var(--college-bg-cream)"
-            }}></div>
+            <div
+              className="testimonial-avatar"
+              style={{ backgroundImage: `url(${testim.avatar})` }}
+            />
             <p style={{ fontSize: "1.25rem", fontStyle: "italic", color: "#555", lineHeight: 1.6, marginBottom: "2rem" }}>
               "{testim.quote}"
             </p>

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const slides = [
   {
-    title: "This is \n Carolina!",
+    title: "Lagankhel IT \n Academy!",
     subtitle: "Experience an academic environment designed to foster critical thinking, global perspectives, and career readiness.",
     image: "/hero_slide_3.png",
   },

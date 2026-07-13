@@ -89,9 +89,9 @@ export default async function Home() {
       <header style={{ backgroundColor: "var(--college-primary)", color: "white", padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <div style={{ width: "40px", height: "40px", backgroundColor: "var(--college-accent)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "white" }}>
-            C
+            L
           </div>
-          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Carolina College</span>
+          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Lagankhel IT Academy</span>
         </div>
 
         <nav className="hide-mobile" style={{ gap: "2rem", fontWeight: 600, fontSize: "0.95rem" }}>
@@ -132,7 +132,7 @@ export default async function Home() {
             About Our College
           </h2>
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#555", marginBottom: "2rem" }}>
-            Carolina College of Arts and Sciences offers a transformative educational experience. We pride ourselves on offering flexible schedules, extensive scholarship opportunities, and career assistance to ensure you succeed.
+            Lagankhel IT Academy offers a transformative educational experience. We pride ourselves on offering flexible schedules, extensive scholarship opportunities, and career assistance to ensure you succeed.
           </p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0 0 2rem 0" }}>
             {["Convenient schedules", "Generous scholarships", "Accelerated timetables", "Dedicated career assistance"].map((item, i) => (
@@ -253,15 +253,15 @@ export default async function Home() {
             We believe that a world-class education should be accessible to everyone. Explore our extensive financial aid packages, grants, and merit-based scholarships designed to support your academic journey.
           </p>
         </div>
-        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#EAE6DF", position: "relative", overflow: "hidden" }}>
-          <img src="/campus.png" alt="Nepali Campus Grounds" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
+        <div className="financial-aid-img mobile-img-box">
+          <img src="/campus.png" alt="Nepali Campus Grounds" />
         </div>
       </section>
 
       {/* 9. Graduation */}
       <section className="flex-row" style={{ backgroundColor: "var(--college-primary)", color: "white" }}>
-        <div className="mobile-img-box" style={{ flex: 1, minHeight: "500px", backgroundColor: "#154A1A", position: "relative", overflow: "hidden" }}>
-          <img src="/graduation.png" alt="Nepali Graduates Celebrating" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
+        <div className="graduation-img-panel mobile-img-box">
+          <img src="/graduation.png" alt="Nepali Graduates Celebrating" />
         </div>
         <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3.5rem", margin: "0 0 1.5rem 0" }}>Graduation</h2>
@@ -269,7 +269,7 @@ export default async function Home() {
             Join us in celebrating the extraordinary achievements of the Class of 2024. Discover the stories of our alumni and their next steps into the professional world.
           </p>
           <div>
-            <Link href="#" style={{ padding: "1rem 2rem", border: "2px solid white", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px", display: "inline-block" }}>Read More →</Link>
+            <Link href="#" className="graduation-btn">Read More →</Link>
           </div>
         </div>
       </section>
@@ -305,11 +305,11 @@ export default async function Home() {
           {/* Col 1 */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
-              <div style={{ width: "40px", height: "40px", backgroundColor: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "var(--college-primary)" }}>C</div>
-              <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Carolina College</span>
+              <div style={{ width: "40px", height: "40px", backgroundColor: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "1.2rem", color: "var(--college-primary)" }}>L</div>
+              <span style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", fontWeight: 700 }}>Lagankhel IT Academy</span>
             </div>
             <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.8 }}>
-              Dedicated to excellence in education, research, and campus life. Shaping the leaders of tomorrow since 1892.
+              Dedicated to excellence in IT education, research, and community. Shaping the leaders of tomorrow.
             </p>
           </div>
 
@@ -330,7 +330,7 @@ export default async function Home() {
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem", opacity: 0.8 }}>
               <span>📞 01-5430967</span>
               <span>📍 Lagankhel, Lalitpur, Nepal</span>
-              <span>✉️ info@carolina.edu</span>
+              <span>✉️ info@lagankhelit.edu.np</span>
             </div>
           </div>
 
@@ -347,7 +347,7 @@ export default async function Home() {
 
         {/* Bottom Bar */}
         <div className="mobile-col" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem", opacity: 0.6, gap: "1rem", textAlign: "center", alignItems: "center" }}>
-          <span>© {new Date().getFullYear()} Carolina College. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Lagankhel IT Academy. All rights reserved.</span>
           <div className="mobile-center" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
             <Link href="#" style={{ color: "white", textDecoration: "none" }}>Privacy Policy</Link>
             <Link href="#" style={{ color: "white", textDecoration: "none" }}>Terms & Conditions</Link>
