@@ -910,7 +910,7 @@ a:hover {
 }
 .auth-register-btn:hover {
   background-color: var(--college-accent) !important;
-  color: white !important;
+  color: var(--college-primary-dark) !important;
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35) !important;
 }
 
@@ -919,7 +919,7 @@ a:hover {
 }
 .auth-console-btn:hover {
   background-color: var(--college-accent) !important;
-  color: white !important;
+  color: var(--college-primary-dark) !important;
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35) !important;
 }
 
