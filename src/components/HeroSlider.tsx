@@ -54,7 +54,7 @@ export default function HeroSlider() {
               }}
             >
               <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "4.5rem", fontWeight: 800, margin: "0 0 1.5rem 0", lineHeight: 1.1, color: "var(--college-text)", whiteSpace: "pre-line" }}>
-                {slide.title.split('\n')[0]} <br /><span style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>{slide.title.split('\n')[1]?.trim() || ''}</span>
+                {slide.title.split('\n')[0]} <br /><span className="animate-shimmer" style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>{slide.title.split('\n')[1]?.trim() || ''}</span>
               </h1>
               <p style={{ fontSize: "1.2rem", lineHeight: 1.6, marginBottom: "2.5rem", maxWidth: "500px", color: "#555" }}>
                 {slide.subtitle}

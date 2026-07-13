@@ -236,3 +236,19 @@ a:hover {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+@keyframes gradientShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--college-accent) 0%, #ff8a00 25%, #e52e71 50%, #ff8a00 75%, var(--college-accent) 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gradientShimmer 4s linear infinite;
+  display: inline-block;
+}
