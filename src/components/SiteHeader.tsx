@@ -28,6 +28,9 @@ export default async function SiteHeader() {
   return (
     <>
       <HeaderScrollHandler />
+      <input type="checkbox" id="mobile-menu-toggle" className="menu-toggle-checkbox" />
+      <label htmlFor="mobile-menu-toggle" className="mobile-menu-overlay"></label>
+      
       {/* Top Utility Bar */}
       <div
         style={{
@@ -79,6 +82,7 @@ export default async function SiteHeader() {
             }}
           />
           <span
+            className="brand-name"
             style={{
               fontFamily: "Playfair Display, serif",
               fontSize: "1.4rem",
@@ -89,8 +93,9 @@ export default async function SiteHeader() {
           </span>
         </Link>
 
-        {/* Nav Links with Dropdowns */}
+        {/* Nav Links with Dropdowns (Desktop only) */}
         <nav
+          className="desktop-nav"
           style={{
             display: "flex",
             gap: "2rem",
@@ -170,8 +175,8 @@ export default async function SiteHeader() {
           ))}
         </nav>
 
-        {/* Auth Buttons */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        {/* Auth Buttons (Desktop only) */}
+        <div className="desktop-auth" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {session ? (
             <>
               <Link
@@ -236,7 +241,98 @@ export default async function SiteHeader() {
             </>
           )}
         </div>
+
+        {/* Hamburger Mobile Menu Trigger Button */}
+        <label htmlFor="mobile-menu-toggle" className="mobile-menu-btn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
       </header>
+
+      {/* Mobile Navigation Drawer */}
+      <div className="mobile-nav-drawer">
+        {/* Close Button X */}
+        <label htmlFor="mobile-menu-toggle" className="mobile-drawer-close">
+          ✕
+        </label>
+
+        <Link href="/" className="mobile-drawer-link">Home</Link>
+        <Link href="/about" className="mobile-drawer-link">About Us</Link>
+        <Link href="/admissions" className="mobile-drawer-link">Admissions</Link>
+        <Link href="/academics" className="mobile-drawer-link">Academics</Link>
+        <Link href="/campus-life" className="mobile-drawer-link">Campus Life</Link>
+
+        <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {session ? (
+            <>
+              <Link
+                href={getDashboardUrl(session.role)}
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "1rem",
+                  border: "2px solid var(--college-accent)",
+                  borderRadius: "6px",
+                  color: "var(--college-accent)",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Console ⚡
+              </Link>
+              <form action={logout} style={{ width: "100%" }}>
+                <button
+                  type="submit"
+                  style={{
+                    width: "100%",
+                    padding: "1rem",
+                    backgroundColor: "var(--college-accent)",
+                    border: "none",
+                    borderRadius: "6px",
+                    color: "white",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  Logout
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "1rem",
+                  color: "white",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "1rem",
+                  backgroundColor: "var(--college-accent)",
+                  borderRadius: "6px",
+                  color: "white",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
     </>
   );
 }
