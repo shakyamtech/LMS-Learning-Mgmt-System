@@ -129,7 +129,7 @@ export default async function Home() {
       <section className="flex-row section-pad" style={{ backgroundColor: "white", gap: "4rem" }}>
         <div style={{ flex: 1 }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 2rem 0", color: "var(--college-primary)" }}>
-            About <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Our College</span>
+            About Our College
           </h2>
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#555", marginBottom: "2rem" }}>
             Carolina College of Arts and Sciences offers a transformative educational experience. We pride ourselves on offering flexible schedules, extensive scholarship opportunities, and career assistance to ensure you succeed.
@@ -170,7 +170,7 @@ export default async function Home() {
         </div>
         <div className="section-pad" style={{ flex: 1 }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 3rem 0", color: "var(--college-primary)" }}>
-            Why <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Choose Us</span>
+            Why Choose Us
           </h2>
           <div className="grid-2">
             <div>
@@ -205,7 +205,7 @@ export default async function Home() {
       <section className="section-pad" style={{ position: "relative", display: "flex", justifyContent: "center", backgroundColor: "#D4AF37", backgroundImage: "linear-gradient(to right, rgba(27, 94, 32, 0.9), rgba(27, 94, 32, 0.7))" }}>
         <div style={{ backgroundColor: "white", padding: "4rem 2rem", borderRadius: "8px", maxWidth: "700px", textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.1)", zIndex: 1, width: "100%" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.5rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
-            Want to <span style={{ borderBottom: "3px solid var(--college-accent)" }}>study here?</span>
+            Want to study here?
           </h2>
           <p style={{ fontSize: "1.1rem", color: "#555", marginBottom: "2rem", lineHeight: 1.6 }}>
             We are currently accepting applications for the upcoming fall semester. Join thousands of students making a difference.
@@ -221,7 +221,7 @@ export default async function Home() {
       <section className="section-pad" style={{ backgroundColor: "var(--college-primary-dark)", color: "white" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: 0 }}>
-            Latest <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Events</span>
+            Latest Events
           </h2>
         </div>
         <div className="grid-3">
@@ -247,7 +247,7 @@ export default async function Home() {
       <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
         <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 2rem 0", color: "var(--college-primary)" }}>
-            Financial Aid and <br className="hide-mobile" /><span style={{ borderBottom: "3px solid var(--college-accent)" }}>Scholarships</span>
+            Financial Aid and Scholarships
           </h2>
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#555", maxWidth: "500px" }}>
             We believe that a world-class education should be accessible to everyone. Explore our extensive financial aid packages, grants, and merit-based scholarships designed to support your academic journey.
@@ -282,7 +282,7 @@ export default async function Home() {
       {/* 11. Got any questions? (Contact Form) */}
       <section className="section-pad" style={{ backgroundColor: "white", textAlign: "center" }}>
         <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 1rem 0", color: "var(--college-primary)" }}>
-          Got any <span style={{ borderBottom: "3px solid var(--college-accent)" }}>questions?</span>
+          Got any questions?
         </h2>
         <p style={{ fontSize: "1.1rem", color: "#555", marginBottom: "3rem" }}>Leave your details and we will contact you as soon as possible.</p>
 

@@ -36,7 +36,7 @@ export default function TestimonialSlider() {
   return (
     <section className="section-pad" style={{ backgroundColor: "var(--college-bg-cream)", textAlign: "center" }}>
       <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "3rem", margin: "0 0 4rem 0", color: "var(--college-primary)" }}>
-        What Our Students <span style={{ borderBottom: "3px solid var(--college-accent)" }}>Say</span>
+        What Our Students Say
       </h2>
       <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "white", padding: "4rem 2rem", borderRadius: "8px", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", position: "relative", minHeight: "350px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         
