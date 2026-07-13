@@ -257,7 +257,7 @@ a:hover {
 .btn-primary {
   padding: 1rem 2rem;
   background-color: var(--college-primary);
-  color: white;
+  color: white !important;
   text-decoration: none;
   font-weight: bold;
   border-radius: 4px;
@@ -269,6 +269,7 @@ a:hover {
 
 .btn-primary:hover {
   background-color: var(--college-primary-dark);
+  color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(27, 94, 32, 0.2);
 }
