@@ -724,8 +724,7 @@ a:hover {
   z-index: 1000;
   transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Glassmorphism and compact padding on scroll */
@@ -738,18 +737,6 @@ a:hover {
   border-bottom: 1px solid rgba(212, 175, 55, 0.15);
 }
 
-/* Fixed setup when scrolling deep */
-.site-main-header.scrolling-active {
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-}
-
-/* Slide up out of view on scroll down */
-.site-main-header.header-hidden {
-  transform: translateY(-100%);
-}
 
 
 
