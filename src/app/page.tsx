@@ -29,12 +29,14 @@ export default async function Home() {
   };
 
   return (
-    <div style={{
+    <div id="top" style={{
+      margin: "0 0.5in",
       minHeight: "100vh",
       backgroundColor: "var(--college-bg-cream)",
       color: "var(--college-text)",
       fontFamily: "var(--font-geist-sans), Arial, sans-serif",
-      overflowX: "hidden"
+      overflowX: "hidden",
+      boxShadow: "0 0 30px rgba(0,0,0,0.1)"
     }}>
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -121,7 +123,7 @@ export default async function Home() {
       </header>
 
       {/* 3. Hero Section ("This is Carolina!") */}
-      <section className="flex-row" style={{ backgroundColor: "var(--college-bg-cream)" }}>
+      <section className="flex-row" style={{ minHeight: "calc(100vh - 120px)", backgroundColor: "var(--college-bg-cream)" }}>
         <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "4.5rem", fontWeight: 800, margin: "0 0 1.5rem 0", lineHeight: 1.1, color: "var(--college-text)" }}>
             This is <br /><span style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>Carolina!</span>
@@ -376,11 +378,12 @@ export default async function Home() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mobile-col" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem", opacity: 0.6, gap: "1rem", textAlign: "center" }}>
+        <div className="mobile-col" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", fontSize: "0.85rem", opacity: 0.6, gap: "1rem", textAlign: "center", alignItems: "center" }}>
           <span>© {new Date().getFullYear()} Carolina College. All rights reserved.</span>
-          <div className="mobile-center" style={{ display: "flex", gap: "1.5rem" }}>
+          <div className="mobile-center" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
             <Link href="#" style={{ color: "white", textDecoration: "none" }}>Privacy Policy</Link>
             <Link href="#" style={{ color: "white", textDecoration: "none" }}>Terms & Conditions</Link>
+            <a href="#top" style={{ padding: "0.4rem 1rem", border: "1px solid rgba(255,255,255,0.3)", borderRadius: "20px", color: "white", textDecoration: "none", fontWeight: "bold", marginLeft: "1rem", transition: "all 0.2s" }}>↑ Go to Top</a>
           </div>
         </div>
       </footer>
