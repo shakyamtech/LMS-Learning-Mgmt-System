@@ -355,3 +355,34 @@ a:hover {
   color: var(--college-primary);
   transform: translateX(6px);
 }
+
+/* Latest Event Cards */
+.event-card {
+  background-color: white;
+  color: var(--college-text);
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  border: 1px solid transparent;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.event-card .btn-text {
+  color: var(--college-primary);
+  align-self: flex-start;
+  margin-top: auto;
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .btn-text {
+  color: var(--college-accent);
+  transform: translateX(6px);
+}

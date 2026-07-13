@@ -230,14 +230,14 @@ export default async function Home() {
             { tag: "CAMPUS LIFE", date: "August 12, 2024", title: "Freshman Orientation Week", desc: "Welcome to campus! Get to know your peers." },
             { tag: "ACADEMICS", date: "September 5, 2024", title: "Guest Lecture: Global Econ", desc: "A special lecture by Dr. Alan Smith on global markets." }
           ].map((event, i) => (
-            <div key={i} style={{ backgroundColor: "white", color: "var(--college-text)", borderRadius: "8px", padding: "2rem", display: "flex", flexDirection: "column" }}>
+            <div key={i} className="event-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
                 <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: "var(--college-accent)", letterSpacing: "0.05em" }}>{event.tag}</span>
                 <span style={{ fontSize: "0.85rem", color: "#999" }}>{event.date}</span>
               </div>
               <h3 style={{ margin: "0 0 1rem 0", color: "var(--college-primary)", fontSize: "1.4rem" }}>{event.title}</h3>
               <p style={{ color: "#555", marginBottom: "2rem", lineHeight: 1.5, flex: 1 }}>{event.desc}</p>
-              <Link href="#" style={{ color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold" }}>Read More →</Link>
+              <Link href="#" className="btn-text">Read More →</Link>
             </div>
           ))}
         </div>
