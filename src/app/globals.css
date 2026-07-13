@@ -727,14 +727,29 @@ a:hover {
               box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+@keyframes headerSlideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 /* Glassmorphism and compact padding on scroll */
 .site-main-header.scrolled {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   padding-top: 0.85rem !important;
   padding-bottom: 0.85rem !important;
   background-color: rgba(18, 61, 21, 0.96) !important;
   backdrop-filter: blur(12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
   border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  animation: headerSlideDown 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 

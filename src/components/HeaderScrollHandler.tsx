@@ -13,7 +13,7 @@ export default function HeaderScrollHandler() {
       const currentScrollY = window.scrollY;
 
       // 1. Add general scrolled class for style changes (glassmorphism, compact padding)
-      if (currentScrollY > 60) {
+      if (currentScrollY > 150) {
         header.classList.add("scrolled");
       } else {
         header.classList.remove("scrolled");
