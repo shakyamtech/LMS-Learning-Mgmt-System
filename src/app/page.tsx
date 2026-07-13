@@ -98,24 +98,24 @@ export default async function Home() {
           </p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0 0 2rem 0" }}>
             {["Convenient schedules", "Generous scholarships", "Accelerated timetables", "Dedicated career assistance"].map((item, i) => (
-              <li key={i} style={{ paddingLeft: "1.5rem", position: "relative", marginBottom: "0.75rem", fontSize: "1.1rem", color: "#333" }}>
+              <li key={i} className="about-list-item" style={{ paddingLeft: "1.5rem", position: "relative", marginBottom: "0.75rem", fontSize: "1.1rem", color: "#333" }}>
                 <span style={{ position: "absolute", left: 0, color: "var(--college-primary)", fontWeight: "bold" }}>✓</span> {item}
               </li>
             ))}
           </ul>
-          <Link href="#academics" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", fontSize: "1.1rem" }}>Explore our programs →</Link>
+          <Link href="#academics" className="about-explore-link" style={{ color: "var(--college-accent)", textDecoration: "none", fontWeight: "bold", fontSize: "1.1rem" }}>Explore our programs →</Link>
 
           <div className="grid-3" style={{ marginTop: "4rem" }}>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>👨‍🏫</div>
+            <div className="about-badge-item" style={{ textAlign: "center" }}>
+              <div className="badge-circle" style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>👨‍🏫</div>
               <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1rem" }}>Experienced Tutors</h4>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🌍</div>
+            <div className="about-badge-item" style={{ textAlign: "center" }}>
+              <div className="badge-circle" style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🌍</div>
               <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1rem" }}>Students from 40+ countries</h4>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🦉</div>
+            <div className="about-badge-item" style={{ textAlign: "center" }}>
+              <div className="badge-circle" style={{ width: "60px", height: "60px", margin: "0 auto 1rem auto", borderRadius: "50%", backgroundColor: "var(--college-bg-cream)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🦉</div>
               <h4 style={{ margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1rem" }}>Modern teaching methods</h4>
             </div>
           </div>

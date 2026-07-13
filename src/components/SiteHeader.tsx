@@ -180,6 +180,7 @@ export default async function SiteHeader() {
             <>
               <Link
                 href={getDashboardUrl(session.role)}
+                className="auth-console-btn"
                 style={{
                   padding: "0.6rem 1.5rem",
                   border: "2px solid var(--college-accent)",
@@ -195,6 +196,7 @@ export default async function SiteHeader() {
               <form action={logout}>
                 <button
                   type="submit"
+                  className="auth-logout-btn"
                   style={{
                     padding: "0.6rem 1.5rem",
                     backgroundColor: "var(--college-accent)",
@@ -214,6 +216,7 @@ export default async function SiteHeader() {
             <>
               <Link
                 href="/login"
+                className="auth-login-link"
                 style={{
                   color: "white",
                   textDecoration: "none",
@@ -225,6 +228,7 @@ export default async function SiteHeader() {
               </Link>
               <Link
                 href="/register"
+                className="auth-register-btn"
                 style={{
                   padding: "0.6rem 1.5rem",
                   border: "2px solid var(--college-accent)",
