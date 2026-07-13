@@ -99,6 +99,7 @@ export default async function SiteHeader() {
           }}
         >
           {[
+            { label: "Home",        href: "/" },
             { label: "About Us",     href: "/about" },
             { label: "Admissions",   href: "/admissions" },
             { label: "Academics",    href: "/academics" },
