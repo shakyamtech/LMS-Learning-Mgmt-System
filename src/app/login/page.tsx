@@ -12,8 +12,29 @@ export default function LoginPage() {
     <div className="flex-center animate-fade-in bg-cream-pattern" style={{ minHeight: "100vh", padding: "2rem", backgroundColor: "var(--college-bg-cream)" }}>
       <div className="glass-panel" style={{ width: "100%", maxWidth: "440px", padding: "3rem 2.5rem", border: "1px solid var(--border)" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h1 style={{ fontFamily: "Playfair Display, serif", color: "var(--college-primary)", fontSize: "2.5rem", fontWeight: 800, margin: "0 0 0.5rem 0" }}>Welcome Back</h1>
-          <p className="text-muted" style={{ margin: 0, fontSize: "0.95rem" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.85rem", margin: "0 auto" }}>
+            <Link href="/">
+              <img
+                src="/logo.png"
+                alt="Lagankhel IT Academy Logo"
+                style={{
+                  width: "46px",
+                  height: "46px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "2px solid var(--college-accent)",
+                  cursor: "pointer",
+                  transition: "transform 0.2s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.08)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+              />
+            </Link>
+            <h1 style={{ fontFamily: "Playfair Display, serif", color: "var(--college-primary)", fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
+              Welcome Back
+            </h1>
+          </div>
+          <p className="text-muted" style={{ margin: "0.5rem 0 0 0", fontSize: "0.95rem" }}>
             Log in to manage your LMS dashboard
           </p>
         </div>
