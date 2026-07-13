@@ -2,6 +2,7 @@ import { decryptSession } from "@/lib/auth-utils";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
+import HeroSlider from "@/components/HeroSlider";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -120,24 +121,8 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* 3. Hero Section ("This is Carolina!") */}
-      <section className="flex-row" style={{ minHeight: "calc(100vh - 120px)", backgroundColor: "var(--college-bg-cream)" }}>
-        <div className="section-pad" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "4.5rem", fontWeight: 800, margin: "0 0 1.5rem 0", lineHeight: 1.1, color: "var(--college-text)" }}>
-            This is <br /><span style={{ borderBottom: "4px solid var(--college-accent)", paddingBottom: "0.2rem" }}>Carolina!</span>
-          </h1>
-          <p style={{ fontSize: "1.2rem", lineHeight: 1.6, marginBottom: "2.5rem", maxWidth: "500px", color: "#555" }}>
-            Experience an academic environment designed to foster critical thinking, global perspectives, and career readiness.
-          </p>
-          <div className="mobile-col" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-            <Link href="/register" style={{ padding: "1rem 2rem", backgroundColor: "var(--college-primary)", color: "white", textDecoration: "none", fontWeight: "bold", borderRadius: "4px", textAlign: "center" }}>Explore Admission</Link>
-            <Link href="#" style={{ color: "var(--college-primary)", textDecoration: "none", fontWeight: "bold", textAlign: "center" }}>Academics →</Link>
-          </div>
-        </div>
-        <div className="hero-img-box mobile-img-box" style={{ flex: 1, backgroundColor: "#EAE6DF", position: "relative" }}>
-          <img src="/hero3.png" alt="Nepali Students Walking" style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover" }} />
-        </div>
-      </section>
+      {/* 3. Hero Section Slider */}
+      <HeroSlider />
 
       {/* 4. About Our College Section */}
       <section className="flex-row section-pad" style={{ backgroundColor: "white", gap: "4rem" }}>
