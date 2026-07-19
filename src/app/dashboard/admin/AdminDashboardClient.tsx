@@ -356,20 +356,32 @@ export default function AdminDashboardClient({
                             setNotifications(prev => prev.filter(n => n.id !== notif.id));
                           }}
                           style={{
-                            background: "none",
+                            background: "#f3f4f6",
                             border: "none",
-                            color: "#9ca3af",
-                            fontSize: "1.1rem",
+                            color: "#4b5563",
+                            fontSize: "0.85rem",
                             cursor: "pointer",
-                            padding: "0.2rem",
+                            width: "22px",
+                            height: "22px",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                             lineHeight: 1,
-                            transition: "color 0.2s ease"
+                            transition: "all 0.2s ease",
+                            flexShrink: 0
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = "#ef4444"}
-                          onMouseLeave={(e) => e.currentTarget.style.color = "#9ca3af"}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = "#fee2e2";
+                            e.currentTarget.style.color = "#ef4444";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = "#f3f4f6";
+                            e.currentTarget.style.color = "#4b5563";
+                          }}
                           title="Dismiss"
                         >
-                          ×
+                          ✕
                         </button>
                       </div>
                     ))
