@@ -185,21 +185,6 @@ export default function AdminDashboardClient({
               <span>👥</span> Students
             </a>
           </li>
-          <li>
-            <a href="/academics" className="admin-sidebar-link" target="_blank" rel="noopener noreferrer">
-              <span>📖</span> Academics Site
-            </a>
-          </li>
-          <li>
-            <a href="/campus-life" className="admin-sidebar-link" target="_blank" rel="noopener noreferrer">
-              <span>🏛️</span> Campus Life
-            </a>
-          </li>
-          <li>
-            <a href="/" className="admin-sidebar-link">
-              <span>🏠</span> Main Website
-            </a>
-          </li>
         </ul>
 
         <div className="admin-sidebar-footer">
