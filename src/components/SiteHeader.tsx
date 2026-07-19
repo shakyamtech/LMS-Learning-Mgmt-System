@@ -184,7 +184,7 @@ export default async function SiteHeader() {
                 style={{
                   padding: "0.6rem 1.5rem",
                   backgroundColor: "var(--college-accent)",
-                  border: "2px solid var(--college-accent)",
+                  border: "none",
                   borderRadius: "4px",
                   color: "var(--college-primary-dark)",
                   textDecoration: "none",
@@ -203,7 +203,7 @@ export default async function SiteHeader() {
                     backgroundColor: "var(--college-accent)",
                     border: "none",
                     borderRadius: "4px",
-                    color: "white",
+                    color: "var(--college-primary-dark)",
                     fontWeight: "bold",
                     cursor: "pointer",
                     fontSize: "0.9rem",
