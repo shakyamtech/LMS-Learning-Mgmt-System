@@ -63,6 +63,11 @@ export default function AdminDashboardClient({
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "New student Mahesh Shakya registered", time: "2 minutes ago" },
+    { id: 2, title: "Course CS-201 assigned to Teacher Ram", time: "1 hour ago" },
+    { id: 3, title: "System Database backup successful", time: "4 hours ago" }
+  ]);
 
   const notificationsRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -138,11 +143,7 @@ export default function AdminDashboardClient({
     );
   });
 
-  const mockNotifications = [
-    { id: 1, title: "New student Mahesh Shakya registered", time: "2 minutes ago" },
-    { id: 2, title: "Course CS-201 assigned to Teacher Ram", time: "1 hour ago" },
-    { id: 3, title: "System Database backup successful", time: "4 hours ago" }
-  ];
+
 
   const mockSettings = [
     { id: 1, label: "⚙️ System Configuration" },
@@ -271,7 +272,7 @@ export default function AdminDashboardClient({
             </div>
 
             {/* Notification Dropdown Container */}
-            <div className="dropdown-container" ref={notificationsRef}>
+            <div className="dropdown-container" ref={notificationsRef} style={{ position: "relative" }}>
               <button
                 onClick={() => {
                   setShowNotifications(!showNotifications);
@@ -290,16 +291,77 @@ export default function AdminDashboardClient({
               >
                 🔔
               </button>
+              {notifications.length > 0 && (
+                <span style={{
+                  position: "absolute",
+                  top: "-2px",
+                  right: "-2px",
+                  width: "16px",
+                  height: "16px",
+                  backgroundColor: "#ef4444",
+                  color: "white",
+                  borderRadius: "50%",
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  pointerEvents: "none"
+                }}>
+                  {notifications.length}
+                </span>
+              )}
 
               {showNotifications && (
                 <div className="dropdown-popover">
-                  <div className="dropdown-popover-header">System Notifications</div>
-                  {mockNotifications.map((notif) => (
-                    <div key={notif.id} className="dropdown-popover-item">
-                      <span className="dropdown-popover-item-title">{notif.title}</span>
-                      <span className="dropdown-popover-item-time">🕒 {notif.time}</span>
+                  <div className="dropdown-popover-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span>System Notifications</span>
+                    {notifications.length > 0 && (
+                      <button
+                        onClick={() => setNotifications([])}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#ef4444",
+                          fontSize: "0.7rem",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          padding: 0
+                        }}
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "1.5rem 1rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                      🎉 No new notifications!
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map((notif) => (
+                      <div key={notif.id} className="dropdown-popover-item" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
+                        <div style={{ flexGrow: 1 }}>
+                          <span className="dropdown-popover-item-title">{notif.title}</span>
+                          <span className="dropdown-popover-item-time">🕒 {notif.time}</span>
+                        </div>
+                        <button
+                          onClick={() => setNotifications(prev => prev.filter(n => n.id !== notif.id))}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "#9ca3af",
+                            fontSize: "0.9rem",
+                            cursor: "pointer",
+                            padding: "0 0.2rem",
+                            lineHeight: 1
+                          }}
+                          title="Dismiss"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
             </div>
