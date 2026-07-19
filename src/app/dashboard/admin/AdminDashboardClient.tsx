@@ -339,22 +339,34 @@ export default function AdminDashboardClient({
                     </div>
                   ) : (
                     notifications.map((notif) => (
-                      <div key={notif.id} className="dropdown-popover-item" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                        <div style={{ flexGrow: 1 }}>
+                      <div key={notif.id} className="dropdown-popover-item" style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "0.75rem"
+                      }}>
+                        <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: "0.2rem" }}>
                           <span className="dropdown-popover-item-title">{notif.title}</span>
                           <span className="dropdown-popover-item-time">🕒 {notif.time}</span>
                         </div>
                         <button
-                          onClick={() => setNotifications(prev => prev.filter(n => n.id !== notif.id))}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setNotifications(prev => prev.filter(n => n.id !== notif.id));
+                          }}
                           style={{
                             background: "none",
                             border: "none",
                             color: "#9ca3af",
-                            fontSize: "0.9rem",
+                            fontSize: "1.1rem",
                             cursor: "pointer",
-                            padding: "0 0.2rem",
-                            lineHeight: 1
+                            padding: "0.2rem",
+                            lineHeight: 1,
+                            transition: "color 0.2s ease"
                           }}
+                          onMouseEnter={(e) => e.currentTarget.style.color = "#ef4444"}
+                          onMouseLeave={(e) => e.currentTarget.style.color = "#9ca3af"}
                           title="Dismiss"
                         >
                           ×
