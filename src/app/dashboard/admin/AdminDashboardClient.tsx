@@ -98,6 +98,8 @@ export default function AdminDashboardClient({
   const notificationsRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
 
+  const [isMounted, setIsMounted] = useState(false);
+
   // Sync prop changes if they occur
   useEffect(() => {
     setLocalStudents(students);
@@ -105,29 +107,40 @@ export default function AdminDashboardClient({
 
   // Load dismissed notifications from localStorage on mount
   useEffect(() => {
-    const dismissed = localStorage.getItem("dismissedNotifications");
-    if (dismissed) {
-      const dismissedIds = JSON.parse(dismissed) as number[];
-      setNotifications(prev => prev.filter(n => !dismissedIds.includes(n.id)));
+    setIsMounted(true);
+    try {
+      const dismissed = localStorage.getItem("dismissedNotifications");
+      if (dismissed) {
+        const dismissedIds = JSON.parse(dismissed) as number[];
+        setNotifications(prev => prev.filter(n => !dismissedIds.includes(n.id)));
+      }
+    } catch (e) {
+      console.error("Failed to load dismissed notifications from localStorage:", e);
     }
   }, []);
 
   const dismissNotification = (id: number) => {
-    setNotifications(prev => {
-      const updated = prev.filter(n => n.id !== id);
-      const dismissedIds = JSON.parse(localStorage.getItem("dismissedNotifications") || "[]") as number[];
+    setNotifications(prev => prev.filter(n => n.id !== id));
+    try {
+      const dismissed = localStorage.getItem("dismissedNotifications");
+      const dismissedIds = dismissed ? (JSON.parse(dismissed) as number[]) : [];
       if (!dismissedIds.includes(id)) {
         dismissedIds.push(id);
       }
       localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
-      return updated;
-    });
+    } catch (e) {
+      console.error("Failed to persist dismissed notification:", e);
+    }
   };
 
   const clearAllNotifications = () => {
     setNotifications([]);
-    const allIds = [1, 2, 3];
-    localStorage.setItem("dismissedNotifications", JSON.stringify(allIds));
+    try {
+      const allIds = [1, 2, 3];
+      localStorage.setItem("dismissedNotifications", JSON.stringify(allIds));
+    } catch (e) {
+      console.error("Failed to clear all notifications:", e);
+    }
   };
 
   // Close dropdowns on clicking outside
@@ -341,7 +354,7 @@ export default function AdminDashboardClient({
               >
                 🔔
               </button>
-              {notifications.length > 0 && (
+              {isMounted && notifications.length > 0 && (
                 <span style={{
                   position: "absolute",
                   top: "-2px",
@@ -366,7 +379,7 @@ export default function AdminDashboardClient({
                 <div className="dropdown-popover">
                   <div className="dropdown-popover-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span>System Notifications</span>
-                    {notifications.length > 0 && (
+                    {isMounted && notifications.length > 0 && (
                       <button
                         onClick={clearAllNotifications}
                         style={{
@@ -383,7 +396,7 @@ export default function AdminDashboardClient({
                       </button>
                     )}
                   </div>
-                  {notifications.length === 0 ? (
+                  {!isMounted || notifications.length === 0 ? (
                     <div style={{ textAlign: "center", padding: "1.5rem 1rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
                       🎉 No new notifications!
                     </div>
