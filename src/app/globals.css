@@ -1080,6 +1080,66 @@ a:hover {
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
 }
 
+/* ─── Auth Card & Form Elements for Cohesive College Theme ─── */
+.auth-card {
+  background: #ffffff !important;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 25px -5px rgba(27, 94, 32, 0.1), 0 8px 10px -6px rgba(27, 94, 32, 0.05);
+  border: 1px solid rgba(27, 94, 32, 0.12) !important;
+  color: #333333 !important;
+}
+
+.auth-input-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--college-primary) !important;
+}
+
+.auth-input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #d1d5db !important;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  transition: all var(--transition-fast);
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.auth-input-field:focus {
+  border-color: var(--college-primary) !important;
+  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.15) !important;
+}
+
+.auth-submit-btn {
+  background-color: var(--college-primary) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  padding: 0.875rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.auth-submit-btn:hover {
+  background-color: var(--college-primary-dark) !important;
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25) !important;
+}
+
+.auth-submit-btn:active {
+  transform: scale(0.98);
+}
+
+
 
 
 

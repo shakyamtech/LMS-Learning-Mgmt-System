@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex-center animate-fade-in bg-cream-pattern" style={{ minHeight: "100vh", padding: "2rem", backgroundColor: "var(--college-bg-cream)" }}>
-      <div className="glass-panel" style={{ width: "100%", maxWidth: "440px", padding: "3rem 2.5rem", border: "1px solid var(--border)" }}>
+      <div className="auth-card" style={{ width: "100%", maxWidth: "440px", padding: "3rem 2.5rem", border: "1px solid rgba(27, 94, 32, 0.12)" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.85rem", margin: "0 auto" }}>
             <Link href="/">
@@ -59,9 +59,9 @@ export default function LoginPage() {
           )}
 
           <div className="input-group">
-            <label className="input-label" htmlFor="email">Email Address</label>
+            <label className="auth-input-label" htmlFor="email">Email Address</label>
             <input
-              className="input-field"
+              className="auth-input-field"
               type="email"
               id="email"
               name="email"
@@ -74,14 +74,14 @@ export default function LoginPage() {
 
           <div className="input-group" style={{ marginBottom: "2rem" }}>
             <div className="flex-between" style={{ marginBottom: "0.5rem" }}>
-              <label className="input-label" htmlFor="password" style={{ margin: 0 }}>Password</label>
+              <label className="auth-input-label" htmlFor="password" style={{ margin: 0 }}>Password</label>
               <a href="#" className="auth-login-link" style={{ fontSize: "0.8rem", color: "var(--text-muted)", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
                 Forgot password?
               </a>
             </div>
             <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
               <input
-                className="input-field"
+                className="auth-input-field"
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
@@ -126,7 +126,7 @@ export default function LoginPage() {
           </div>
 
           <button
-            className="btn btn-primary"
+            className="auth-submit-btn"
             type="submit"
             disabled={isPending}
             style={{ width: "100%", padding: "0.875rem", display: "flex", gap: "0.5rem", position: "relative" }}
