@@ -925,11 +925,12 @@ a:hover {
 }
 
 .auth-logout-btn {
-  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 .auth-logout-btn:hover {
-  background-color: var(--college-primary-dark) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background-color: transparent !important;
+  color: var(--college-accent) !important;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
 }
 
 /* About Section Hover interactions */
