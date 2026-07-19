@@ -182,9 +182,9 @@ export default async function SiteHeader() {
                 href={getDashboardUrl(session.role)}
                 className="auth-console-btn"
                 style={{
-                  padding: "0.6rem 1.5rem",
+                  padding: "0.5rem 1.5rem",
                   backgroundColor: "var(--college-accent)",
-                  border: "none",
+                  border: "2px solid var(--college-accent)",
                   borderRadius: "4px",
                   color: "var(--college-primary-dark)",
                   textDecoration: "none",
@@ -199,9 +199,9 @@ export default async function SiteHeader() {
                   type="submit"
                   className="auth-logout-btn"
                   style={{
-                    padding: "0.6rem 1.5rem",
+                    padding: "0.5rem 1.5rem",
                     backgroundColor: "var(--college-accent)",
-                    border: "none",
+                    border: "2px solid var(--college-accent)",
                     borderRadius: "4px",
                     color: "var(--college-primary-dark)",
                     fontWeight: "bold",
