@@ -25,8 +25,8 @@ export default function CourseForm({ teachers }: CourseFormProps) {
   }, [state]);
 
   return (
-    <div className="card" style={{ height: "fit-content" }}>
-      <h3 className="text-h3" style={{ margin: "0 0 1.5rem 0" }}>Create New Course</h3>
+    <div className="card" style={{ height: "fit-content", backgroundColor: "white", color: "var(--college-text)" }}>
+      <h3 className="text-h3" style={{ margin: "0 0 1.5rem 0", color: "var(--college-primary)" }}>Create New Course</h3>
       
       <form ref={formRef} action={formAction}>
         {state?.error && (
@@ -66,7 +66,7 @@ export default function CourseForm({ teachers }: CourseFormProps) {
         )}
 
         <div className="input-group">
-          <label className="input-label" htmlFor="code">Course Code</label>
+          <label className="input-label" htmlFor="code" style={{ color: "var(--college-text)" }}>Course Code</label>
           <input
             className="input-field"
             type="text"
@@ -75,11 +75,12 @@ export default function CourseForm({ teachers }: CourseFormProps) {
             placeholder="e.g. CS-201"
             required
             disabled={isPending}
+            style={{ backgroundColor: "white", color: "#111827", borderColor: "#d1d5db" }}
           />
         </div>
 
         <div className="input-group">
-          <label className="input-label" htmlFor="title">Course Title</label>
+          <label className="input-label" htmlFor="title" style={{ color: "var(--college-text)" }}>Course Title</label>
           <input
             className="input-field"
             type="text"
@@ -88,11 +89,12 @@ export default function CourseForm({ teachers }: CourseFormProps) {
             placeholder="e.g. Advanced AI & ML"
             required
             disabled={isPending}
+            style={{ backgroundColor: "white", color: "#111827", borderColor: "#d1d5db" }}
           />
         </div>
 
         <div className="input-group">
-          <label className="input-label" htmlFor="description">Description</label>
+          <label className="input-label" htmlFor="description" style={{ color: "var(--college-text)" }}>Description</label>
           <textarea
             className="input-field"
             id="description"
@@ -101,12 +103,12 @@ export default function CourseForm({ teachers }: CourseFormProps) {
             required
             disabled={isPending}
             rows={3}
-            style={{ fontFamily: "inherit", resize: "none" }}
+            style={{ fontFamily: "inherit", resize: "none", backgroundColor: "white", color: "#111827", borderColor: "#d1d5db" }}
           />
         </div>
 
         <div className="input-group" style={{ marginBottom: "1.75rem" }}>
-          <label className="input-label" htmlFor="teacherId">Assign Instructor</label>
+          <label className="input-label" htmlFor="teacherId" style={{ color: "var(--college-text)" }}>Assign Instructor</label>
           <select
             className="input-field"
             id="teacherId"
@@ -114,11 +116,11 @@ export default function CourseForm({ teachers }: CourseFormProps) {
             required
             disabled={isPending}
             defaultValue=""
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", backgroundColor: "white", color: "#111827", borderColor: "#d1d5db" }}
           >
-            <option value="" disabled>Choose a teacher...</option>
+            <option value="" disabled style={{ color: "#9ca3af" }}>Choose a teacher...</option>
             {teachers.map((teacher) => (
-              <option key={teacher.id} value={teacher.id}>
+              <option key={teacher.id} value={teacher.id} style={{ color: "#111827" }}>
                 {teacher.name || teacher.email?.split("@")[0]} ({teacher.email})
               </option>
             ))}
@@ -129,7 +131,7 @@ export default function CourseForm({ teachers }: CourseFormProps) {
           className="btn btn-primary"
           type="submit"
           disabled={isPending || teachers.length === 0}
-          style={{ width: "100%", padding: "0.75rem", fontSize: "0.9rem" }}
+          style={{ width: "100%", padding: "0.75rem", fontSize: "0.9rem", backgroundColor: "var(--college-primary)", color: "white" }}
         >
           {isPending ? "Creating..." : "Create Course"}
         </button>
