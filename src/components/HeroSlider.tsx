@@ -3,7 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const slides = [
+interface Slide {
+  title: string;
+  subtitle: string;
+  image: string;
+}
+
+interface HeroSliderProps {
+  initialSlides?: Slide[];
+}
+
+const defaultSlides = [
   {
     title: "Lagankhel IT \n Academy!",
     subtitle: "Experience an academic environment designed to foster critical thinking, global perspectives, and career readiness.",
@@ -21,7 +31,8 @@ const slides = [
   }
 ];
 
-export default function HeroSlider() {
+export default function HeroSlider({ initialSlides }: HeroSliderProps) {
+  const slides = initialSlides || defaultSlides;
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

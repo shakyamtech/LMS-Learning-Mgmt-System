@@ -78,11 +78,17 @@ export default async function AdminDashboard() {
     approved: doc.data().approved !== false,
   }));
 
+  // 5. Fetch Homepage CMS Config
+  const homepageConfigSnap = await db.collection("config").doc("homepage").get();
+  const homepageConfigData = homepageConfigSnap.exists ? homepageConfigSnap.data() : null;
+  const cmsConfig = homepageConfigData && homepageConfigData.slides ? homepageConfigData.slides : null;
+
   return (
     <AdminDashboardClient
       teachers={teachers}
       courses={courses}
       students={students}
+      cmsConfig={cmsConfig}
       totalUsers={totalUsers}
       totalCourses={totalCourses}
       session={{ email: session.email }}

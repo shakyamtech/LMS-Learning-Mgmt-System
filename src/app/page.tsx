@@ -6,6 +6,7 @@ import HeroSlider from "@/components/HeroSlider";
 import TestimonialSlider from "@/components/TestimonialSlider";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import { db } from "@/lib/firebase";
 
 
 export default async function Home() {
@@ -19,6 +20,18 @@ export default async function Home() {
     } catch (e) {
       console.error("Stale session key ignored:", e);
     }
+  }
+
+  // Fetch homepage slider CMS config if it exists
+  let cmsSlides = undefined;
+  try {
+    const configSnap = await db.collection("config").doc("homepage").get();
+    const configData = configSnap.exists ? configSnap.data() : null;
+    if (configData && configData.slides) {
+      cmsSlides = configData.slides;
+    }
+  } catch (err) {
+    console.error("Error loading homepage slider CMS config:", err);
   }
 
   const getDashboardUrl = (role: string) => {
@@ -85,7 +98,7 @@ export default async function Home() {
       <SiteHeader />
 
       {/* 3. Hero Section Slider */}
-      <HeroSlider />
+      <HeroSlider initialSlides={cmsSlides} />
 
       {/* 4. About Our College Section */}
       <section id="about" className="flex-row section-pad" style={{ backgroundColor: "white", gap: "4rem" }}>

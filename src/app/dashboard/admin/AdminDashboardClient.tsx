@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import CourseForm from "./CourseForm";
 import { approveStudent, rejectStudent } from "@/app/actions/auth";
+import { saveHomepageConfig } from "@/app/actions/cms";
 
 interface Teacher {
   id: string;
@@ -43,6 +44,7 @@ interface AdminDashboardClientProps {
   teachers: Teacher[];
   courses: Course[];
   students: Student[];
+  cmsConfig?: Array<{ title: string; subtitle: string; image: string }> | null;
   totalUsers: number;
   totalCourses: number;
   session: Session;
@@ -53,16 +55,40 @@ export default function AdminDashboardClient({
   teachers,
   courses,
   students,
+  cmsConfig,
   totalUsers,
   totalCourses,
   session,
   logout
 }: AdminDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "students">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "students" | "cms">("dashboard");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
+  
+  const defaultSlides = [
+    {
+      title: "Lagankhel IT \n Academy!",
+      subtitle: "Experience an academic environment designed to foster critical thinking, global perspectives, and career readiness.",
+      image: "/hero_slide_3.png",
+    },
+    {
+      title: "Empowering \n Futures",
+      subtitle: "Join a diverse community of learners and educators dedicated to excellence and innovation.",
+      image: "/hero_slide_2.png",
+    },
+    {
+      title: "Lead with \n Purpose",
+      subtitle: "Discover your passion and develop the skills to make a lasting impact on the world.",
+      image: "/hero_slide_1.png",
+    }
+  ];
+
+  const [cmsSlides, setCmsSlides] = useState(cmsConfig || defaultSlides);
+  const [cmsStatus, setCmsStatus] = useState<{ success?: boolean; error?: string } | null>(null);
+  const [cmsSaving, setCmsSaving] = useState(false);
+
   const [notifications, setNotifications] = useState([
     { id: 1, title: "New student Mahesh Shakya registered", time: "2 minutes ago" },
     { id: 2, title: "Course CS-201 assigned to Teacher Ram", time: "1 hour ago" },
@@ -210,6 +236,18 @@ export default function AdminDashboardClient({
               className={`admin-sidebar-link ${activeTab === "students" ? "active" : ""}`}
             >
               <span>👥</span> Students
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab("cms");
+              }}
+              className={`admin-sidebar-link ${activeTab === "cms" ? "active" : ""}`}
+            >
+              <span>⚙️</span> Manage Site (CMS)
             </a>
           </li>
         </ul>
@@ -532,7 +570,7 @@ export default function AdminDashboardClient({
                 <CourseForm teachers={teachers} />
               </div>
             </>
-          ) : (
+          ) : activeTab === "students" ? (
             /* ──── STUDENTS TAB VIEW ──── */
             <>
               <div style={{ marginBottom: "2rem" }}>
@@ -683,6 +721,197 @@ export default function AdminDashboardClient({
                 )}
               </div>
             </>
+          ) : (
+            /* ──── CMS TAB VIEW ──── */
+            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+              <div style={{ marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Manage Site Settings (CMS)</h2>
+                <p className="text-muted">Configure dynamic landing page aspects including Hero Section sliders and images.</p>
+              </div>
+
+              <div className="card" style={{ backgroundColor: "white", padding: "2.5rem" }}>
+                <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 2rem 0" }}>
+                  Homepage Hero Slider Settings
+                </h3>
+
+                {cmsStatus?.success && (
+                  <div style={{ padding: "1rem", backgroundColor: "#d1fae5", border: "1px solid #10b981", borderRadius: "var(--radius-md)", color: "#065f46", fontWeight: 600, marginBottom: "1.5rem" }}>
+                    ✓ Homepage hero section configuration updated successfully!
+                  </div>
+                )}
+
+                {cmsStatus?.error && (
+                  <div style={{ padding: "1rem", backgroundColor: "#fee2e2", border: "1px solid #ef4444", borderRadius: "var(--radius-md)", color: "#991b1b", fontWeight: 600, marginBottom: "1.5rem" }}>
+                    ⚠ {cmsStatus.error}
+                  </div>
+                )}
+
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  setCmsSaving(true);
+                  setCmsStatus(null);
+                  const res = await saveHomepageConfig(cmsSlides);
+                  setCmsSaving(false);
+                  if (res?.success) {
+                    setCmsStatus({ success: true });
+                  } else {
+                    setCmsStatus({ error: res?.error || "Failed to save settings." });
+                  }
+                }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
+                    {cmsSlides.map((slide, index) => (
+                      <div key={index} style={{ borderBottom: index < cmsSlides.length - 1 ? "1px solid #e5e7eb" : "none", paddingBottom: index < cmsSlides.length - 1 ? "2.5rem" : 0 }}>
+                        <h4 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.25rem", color: "var(--college-primary)", marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                          <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "var(--college-primary)", color: "white", fontSize: "0.85rem", fontWeight: "bold" }}>
+                            {index + 1}
+                          </span>
+                          Hero Slide {index + 1}
+                        </h4>
+                        
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
+                          {/* Inputs */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                            <div>
+                              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                                Title (Use \n for line breaks)
+                              </label>
+                              <input
+                                type="text"
+                                value={slide.title}
+                                onChange={(e) => {
+                                  const updated = [...cmsSlides];
+                                  updated[index] = { ...updated[index], title: e.target.value };
+                                  setCmsSlides(updated);
+                                }}
+                                required
+                                style={{
+                                  width: "100%",
+                                  padding: "0.6rem 0.85rem",
+                                  borderRadius: "var(--radius-md)",
+                                  border: "1px solid #d1d5db",
+                                  outline: "none",
+                                  fontSize: "0.9rem"
+                                }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                                Subtitle
+                              </label>
+                              <textarea
+                                value={slide.subtitle}
+                                onChange={(e) => {
+                                  const updated = [...cmsSlides];
+                                  updated[index] = { ...updated[index], subtitle: e.target.value };
+                                  setCmsSlides(updated);
+                                }}
+                                required
+                                rows={3}
+                                style={{
+                                  width: "100%",
+                                  padding: "0.6rem 0.85rem",
+                                  borderRadius: "var(--radius-md)",
+                                  border: "1px solid #d1d5db",
+                                  outline: "none",
+                                  fontSize: "0.9rem",
+                                  resize: "vertical",
+                                  fontFamily: "inherit"
+                                }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                                Image Path / URL
+                              </label>
+                              <input
+                                type="text"
+                                value={slide.image}
+                                onChange={(e) => {
+                                  const updated = [...cmsSlides];
+                                  updated[index] = { ...updated[index], image: e.target.value };
+                                  setCmsSlides(updated);
+                                }}
+                                required
+                                placeholder="e.g., /hero_slide_1.png or external https:// url"
+                                style={{
+                                  width: "100%",
+                                  padding: "0.6rem 0.85rem",
+                                  borderRadius: "var(--radius-md)",
+                                  border: "1px solid #d1d5db",
+                                  outline: "none",
+                                  fontSize: "0.9rem"
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Image preview */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                            <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "#374151" }}>
+                              Slide Preview
+                            </label>
+                            <div style={{
+                              flexGrow: 1,
+                              border: "1px dashed #d1d5db",
+                              borderRadius: "var(--radius-md)",
+                              backgroundColor: "#f9fafb",
+                              overflow: "hidden",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              minHeight: "180px",
+                              position: "relative"
+                            }}>
+                              {slide.image ? (
+                                <img
+                                  src={slide.image}
+                                  alt="Slide Preview"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    position: "absolute"
+                                  }}
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = "none";
+                                  }}
+                                />
+                              ) : null}
+                              <span style={{ fontSize: "0.8rem", color: "#9ca3af", zIndex: 1, pointerEvents: "none" }}>
+                                Preview not available
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ marginTop: "2.5rem", borderTop: "1px solid #e5e7eb", paddingTop: "1.5rem", display: "flex", justifyContent: "flex-end" }}>
+                    <button
+                      type="submit"
+                      disabled={cmsSaving}
+                      style={{
+                        backgroundColor: "var(--college-primary)",
+                        color: "white",
+                        border: "2px solid var(--college-primary)",
+                        padding: "0.65rem 1.75rem",
+                        borderRadius: "var(--radius-md)",
+                        fontSize: "0.9rem",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.2s ease"
+                      }}
+                      className="auth-logout-btn"
+                    >
+                      {cmsSaving ? "Saving Settings..." : "Save Homepage Config"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           )}
 
         </main>
