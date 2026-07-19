@@ -20,16 +20,16 @@ export default async function SiteHeader() {
 
   const getDashboardUrl = (role: string) => {
     switch (role) {
-      case "ADMIN":   return "/dashboard/admin";
+      case "ADMIN": return "/dashboard/admin";
       case "TEACHER": return "/dashboard/teacher";
-      default:        return "/dashboard/student";
+      default: return "/dashboard/student";
     }
   };
 
   return (
     <>
       <HeaderScrollHandler />
-      
+
       {/* Top Utility Bar */}
       <div
         style={{
@@ -248,10 +248,10 @@ export default async function SiteHeader() {
         </div>
 
         {/* React State Stateful Mobile Navigation Menu */}
-        <MobileMenu 
-          session={session} 
-          dashboardUrl={getDashboardUrl(session?.role || "STUDENT")} 
-          logoutAction={logout} 
+        <MobileMenu
+          session={session}
+          dashboardUrl={getDashboardUrl(session?.role || "STUDENT")}
+          logoutAction={logout}
         />
       </header>
     </>

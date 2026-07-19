@@ -18,8 +18,8 @@ export default function MobileMenu({ session, dashboardUrl, logoutAction }: Mobi
   return (
     <>
       {/* Hamburger Button */}
-      <button 
-        onClick={toggleMenu} 
+      <button
+        onClick={toggleMenu}
         className={`mobile-menu-btn-react ${isOpen ? "active" : ""}`}
         aria-label="Toggle Menu"
       >
@@ -30,18 +30,18 @@ export default function MobileMenu({ session, dashboardUrl, logoutAction }: Mobi
 
       {/* Overlay */}
       {isOpen && (
-        <div 
-          onClick={closeMenu} 
+        <div
+          onClick={closeMenu}
           className="mobile-menu-overlay-react"
         />
       )}
 
       {/* Slide-out Drawer */}
-      <div 
+      <div
         className={`mobile-nav-drawer-react ${isOpen ? "open" : ""}`}
       >
         {/* Close Button X */}
-        <button 
+        <button
           onClick={closeMenu}
           className="mobile-drawer-close-react"
         >
