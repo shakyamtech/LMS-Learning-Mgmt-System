@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import CourseForm from "./CourseForm";
+import { approveStudent, rejectStudent } from "@/app/actions/auth";
 
 interface Teacher {
   id: string;
@@ -31,6 +32,7 @@ interface Student {
   id: string;
   name: string | null;
   email: string | null;
+  approved: boolean;
 }
 
 interface Session {
@@ -60,9 +62,15 @@ export default function AdminDashboardClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [localStudents, setLocalStudents] = useState<Student[]>(students);
 
   const notificationsRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
+
+  // Sync prop changes if they occur
+  useEffect(() => {
+    setLocalStudents(students);
+  }, [students]);
 
   // Close dropdowns on clicking outside
   useEffect(() => {
@@ -85,6 +93,27 @@ export default function AdminDashboardClient({
     setSearchQuery("");
   }, [activeTab]);
 
+  const handleApprove = async (studentId: string) => {
+    const res = await approveStudent(studentId);
+    if (res?.success) {
+      setLocalStudents(prev =>
+        prev.map(s => (s.id === studentId ? { ...s, approved: true } : s))
+      );
+    } else {
+      alert(res?.error || "Failed to approve student.");
+    }
+  };
+
+  const handleReject = async (studentId: string) => {
+    if (!confirm("Are you sure you want to reject and delete this student account?")) return;
+    const res = await rejectStudent(studentId);
+    if (res?.success) {
+      setLocalStudents(prev => prev.filter(s => s.id !== studentId));
+    } else {
+      alert(res?.error || "Failed to reject student.");
+    }
+  };
+
   const initials = session.email.substring(0, 2).toUpperCase();
   const displayName = session.email.split("@")[0];
 
@@ -101,7 +130,7 @@ export default function AdminDashboardClient({
   });
 
   // Filter students based on query
-  const filteredStudents = students.filter((student) => {
+  const filteredStudents = localStudents.filter((student) => {
     const query = searchQuery.toLowerCase();
     return (
       (student.name && student.name.toLowerCase().includes(query)) ||
@@ -456,28 +485,98 @@ export default function AdminDashboardClient({
                             alignItems: "center",
                             justifyContent: "center",
                             fontWeight: 700,
-                            fontSize: "1.1rem"
+                            fontSize: "1.1rem",
+                            flexShrink: 0
                           }}>
                             {studentInitials}
                           </div>
-                          <div style={{ overflow: "hidden" }}>
+                          <div style={{ overflow: "hidden", flexGrow: 1 }}>
                             <h4 style={{ margin: "0 0 0.15rem 0", fontSize: "0.95rem", color: "var(--college-text)", fontWeight: 600 }}>
                               {student.name || "Unnamed Student"}
                             </h4>
                             <p className="text-muted" style={{ margin: "0 0 0.5rem 0", fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {student.email}
                             </p>
-                            <span style={{
-                              fontSize: "0.65rem",
-                              backgroundColor: "rgba(34, 197, 94, 0.1)",
-                              color: "var(--success)",
-                              padding: "0.15rem 0.5rem",
-                              borderRadius: "var(--radius-full)",
-                              fontWeight: 700,
-                              textTransform: "uppercase"
-                            }}>
-                              🟢 Active Student
-                            </span>
+                            
+                            {student.approved ? (
+                              <>
+                                <span style={{
+                                  fontSize: "0.65rem",
+                                  backgroundColor: "rgba(34, 197, 94, 0.1)",
+                                  color: "var(--success)",
+                                  padding: "0.15rem 0.5rem",
+                                  borderRadius: "var(--radius-full)",
+                                  fontWeight: 700,
+                                  textTransform: "uppercase"
+                                }}>
+                                  🟢 Active Student
+                                </span>
+                                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
+                                  <button
+                                    onClick={() => handleReject(student.id)}
+                                    style={{
+                                      fontSize: "0.7rem",
+                                      backgroundColor: "none",
+                                      color: "#ef4444",
+                                      border: "1px solid #ef4444",
+                                      padding: "0.25rem 0.6rem",
+                                      borderRadius: "4px",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                      background: "none"
+                                    }}
+                                  >
+                                    Remove Account
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <span style={{
+                                  fontSize: "0.65rem",
+                                  backgroundColor: "rgba(234, 179, 8, 0.1)",
+                                  color: "#ca8a04",
+                                  padding: "0.15rem 0.5rem",
+                                  borderRadius: "var(--radius-full)",
+                                  fontWeight: 700,
+                                  textTransform: "uppercase"
+                                }}>
+                                  🔴 Pending Approval
+                                </span>
+                                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
+                                  <button
+                                    onClick={() => handleApprove(student.id)}
+                                    style={{
+                                      fontSize: "0.7rem",
+                                      backgroundColor: "var(--college-primary)",
+                                      color: "white",
+                                      border: "none",
+                                      padding: "0.25rem 0.6rem",
+                                      borderRadius: "4px",
+                                      cursor: "pointer",
+                                      fontWeight: 600
+                                    }}
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleReject(student.id)}
+                                    style={{
+                                      fontSize: "0.7rem",
+                                      backgroundColor: "#ef4444",
+                                      color: "white",
+                                      border: "none",
+                                      padding: "0.25rem 0.6rem",
+                                      borderRadius: "4px",
+                                      cursor: "pointer",
+                                      fontWeight: 600
+                                    }}
+                                  >
+                                    Reject
+                                  </button>
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                       );

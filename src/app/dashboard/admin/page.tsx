@@ -75,6 +75,7 @@ export default async function AdminDashboard() {
     id: doc.id,
     name: (doc.data().name as string | undefined) || null,
     email: (doc.data().email as string | undefined) || null,
+    approved: doc.data().approved !== false,
   }));
 
   return (

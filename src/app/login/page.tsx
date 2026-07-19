@@ -2,7 +2,33 @@
 
 import { login } from "@/app/actions/auth";
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+
+function PendingBanner() {
+  const searchParams = useSearchParams();
+  const isPendingRegistration = searchParams.get("pending") === "true";
+
+  if (!isPendingRegistration) return null;
+
+  return (
+    <div style={{
+      backgroundColor: "rgba(34, 197, 94, 0.1)",
+      border: "1px solid var(--success)",
+      color: "var(--success)",
+      padding: "0.75rem 1rem",
+      borderRadius: "var(--radius-md)",
+      marginBottom: "1.5rem",
+      fontSize: "0.875rem",
+      fontWeight: 500,
+      display: "flex",
+      alignItems: "center",
+      gap: "0.5rem"
+    }}>
+      <span>✅</span> Account created! Please wait for admin approval before logging in.
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(login, null);
@@ -40,6 +66,9 @@ export default function LoginPage() {
         </div>
 
         <form action={formAction}>
+          <Suspense fallback={null}>
+            <PendingBanner />
+          </Suspense>
           {state?.error && (
             <div style={{
               backgroundColor: "rgba(239, 68, 68, 0.1)",

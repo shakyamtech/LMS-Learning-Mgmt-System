@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/firebase";
-import { encryptSession } from "@/lib/auth-utils";
+import { encryptSession, decryptSession } from "@/lib/auth-utils";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -53,31 +53,37 @@ export async function register(prevState: any, formData: FormData) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const isStudent = role === Role.STUDENT;
     const docRef = await usersRef.add({
       name,
       email,
       password: hashedPassword,
       role: role,
+      approved: !isStudent,
       createdAt: new Date().toISOString(),
     });
 
-    const sessionToken = await encryptSession({
-      userId: docRef.id,
-      email: email,
-      role: role,
-    });
+    if (isStudent) {
+      targetPath = "/login?pending=true";
+    } else {
+      const sessionToken = await encryptSession({
+        userId: docRef.id,
+        email: email,
+        role: role,
+      });
 
-    // Set cookie
-    const cookieStore = await cookies();
-    cookieStore.set("session", sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24, // 24 hours
-    });
+      // Set cookie
+      const cookieStore = await cookies();
+      cookieStore.set("session", sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24, // 24 hours
+      });
 
-    targetPath = `/dashboard/${role.toLowerCase()}`;
+      targetPath = `/dashboard/${role.toLowerCase()}`;
+    }
   } catch (error: any) {
     console.error("Registration error:", error);
     return { error: "Something went wrong. Please try again." };
@@ -122,6 +128,10 @@ export async function login(prevState: any, formData: FormData) {
       return { error: "Invalid email or password." };
     }
 
+    if (user.role === "STUDENT" && user.approved === false) {
+      return { error: "Your account is pending administrator approval." };
+    }
+
     const sessionToken = await encryptSession({
       userId: user.id,
       email: user.email!,
@@ -154,3 +164,42 @@ export async function logout() {
   cookieStore.delete("session");
   redirect("/login");
 }
+
+export async function approveStudent(studentId: string) {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || session.role !== "ADMIN") {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    await db.collection("users").doc(studentId).update({ approved: true });
+    return { success: true };
+  } catch (error: any) {
+    console.error("Approve student error:", error);
+    return { error: "Failed to approve student." };
+  }
+}
+
+export async function rejectStudent(studentId: string) {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || session.role !== "ADMIN") {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    await db.collection("users").doc(studentId).delete();
+    return { success: true };
+  } catch (error: any) {
+    console.error("Reject student error:", error);
+    return { error: "Failed to reject student." };
+  }
+}
+
