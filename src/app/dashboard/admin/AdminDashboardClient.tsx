@@ -77,6 +77,33 @@ export default function AdminDashboardClient({
     setLocalStudents(students);
   }, [students]);
 
+  // Load dismissed notifications from localStorage on mount
+  useEffect(() => {
+    const dismissed = localStorage.getItem("dismissedNotifications");
+    if (dismissed) {
+      const dismissedIds = JSON.parse(dismissed) as number[];
+      setNotifications(prev => prev.filter(n => !dismissedIds.includes(n.id)));
+    }
+  }, []);
+
+  const dismissNotification = (id: number) => {
+    setNotifications(prev => {
+      const updated = prev.filter(n => n.id !== id);
+      const dismissedIds = JSON.parse(localStorage.getItem("dismissedNotifications") || "[]") as number[];
+      if (!dismissedIds.includes(id)) {
+        dismissedIds.push(id);
+      }
+      localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
+      return updated;
+    });
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+    const allIds = [1, 2, 3];
+    localStorage.setItem("dismissedNotifications", JSON.stringify(allIds));
+  };
+
   // Close dropdowns on clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -303,7 +330,7 @@ export default function AdminDashboardClient({
                     <span>System Notifications</span>
                     {notifications.length > 0 && (
                       <button
-                        onClick={() => setNotifications([])}
+                        onClick={clearAllNotifications}
                         style={{
                           background: "none",
                           border: "none",
@@ -338,7 +365,7 @@ export default function AdminDashboardClient({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setNotifications(prev => prev.filter(n => n.id !== notif.id));
+                            dismissNotification(notif.id);
                           }}
                           style={{
                             background: "#f3f4f6",
