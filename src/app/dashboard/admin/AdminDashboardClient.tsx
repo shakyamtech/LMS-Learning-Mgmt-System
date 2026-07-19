@@ -27,6 +27,12 @@ interface Course {
   enrollments?: Enrollment[];
 }
 
+interface Student {
+  id: string;
+  name: string | null;
+  email: string | null;
+}
+
 interface Session {
   email: string;
 }
@@ -34,6 +40,7 @@ interface Session {
 interface AdminDashboardClientProps {
   teachers: Teacher[];
   courses: Course[];
+  students: Student[];
   totalUsers: number;
   totalCourses: number;
   session: Session;
@@ -43,11 +50,13 @@ interface AdminDashboardClientProps {
 export default function AdminDashboardClient({
   teachers,
   courses,
+  students,
   totalUsers,
   totalCourses,
   session,
   logout
 }: AdminDashboardClientProps) {
+  const [activeTab, setActiveTab] = useState<"dashboard" | "students">("dashboard");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -71,6 +80,11 @@ export default function AdminDashboardClient({
     };
   }, []);
 
+  // Clear search query when tab changes
+  useEffect(() => {
+    setSearchQuery("");
+  }, [activeTab]);
+
   const initials = session.email.substring(0, 2).toUpperCase();
   const displayName = session.email.split("@")[0];
 
@@ -83,6 +97,15 @@ export default function AdminDashboardClient({
       course.description.toLowerCase().includes(query) ||
       (course.teacher?.name && course.teacher.name.toLowerCase().includes(query)) ||
       (course.teacher?.email && course.teacher.email.toLowerCase().includes(query))
+    );
+  });
+
+  // Filter students based on query
+  const filteredStudents = students.filter((student) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (student.name && student.name.toLowerCase().includes(query)) ||
+      (student.email && student.email.toLowerCase().includes(query))
     );
   });
 
@@ -109,8 +132,27 @@ export default function AdminDashboardClient({
 
         <ul className="admin-sidebar-menu">
           <li>
-            <a href="/dashboard/admin" className="admin-sidebar-link active">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab("dashboard");
+              }}
+              className={`admin-sidebar-link ${activeTab === "dashboard" ? "active" : ""}`}
+            >
               <span>📊</span> Dashboard
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab("students");
+              }}
+              className={`admin-sidebar-link ${activeTab === "students" ? "active" : ""}`}
+            >
+              <span>👥</span> Students
             </a>
           </li>
           <li>
@@ -165,7 +207,9 @@ export default function AdminDashboardClient({
             }}>
               ⚡ Admin Control Panel
             </span>
-            <h1 className="admin-navbar-title">LMS Root Administrator</h1>
+            <h1 className="admin-navbar-title">
+              {activeTab === "dashboard" ? "LMS Root Administrator" : "Registered Students"}
+            </h1>
           </div>
 
           <div className="admin-navbar-right" style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
@@ -182,7 +226,7 @@ export default function AdminDashboardClient({
             }}>
               <input
                 type="text"
-                placeholder="Search courses..."
+                placeholder={activeTab === "dashboard" ? "Search courses..." : "Search students..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -272,90 +316,178 @@ export default function AdminDashboardClient({
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
-          <div style={{ marginBottom: "2rem" }}>
-            <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>LMS System Administration</h2>
-            <p className="text-muted">Monitor LMS performance, manage platform roles, audit security parameters, and toggle globally-shared resources.</p>
-          </div>
+          
+          {activeTab === "dashboard" ? (
+            /* ──── DASHBOARD TAB VIEW ──── */
+            <>
+              <div style={{ marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>LMS System Administration</h2>
+                <p className="text-muted">Monitor LMS performance, manage platform roles, audit security parameters, and toggle globally-shared resources.</p>
+              </div>
 
-          {/* Global System Stats (Original Cards) */}
-          <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
-            <div className="card" style={{ backgroundColor: "white" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚙️</div>
-              <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>System Health</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--success)" }}>99.98%</p>
-              <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>All core services active and optimal</p>
-            </div>
-            <div className="card" style={{ backgroundColor: "white" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
-              <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Platform Users</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalUsers}</p>
-              <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active students, instructors, staff</p>
-            </div>
-            <div className="card" style={{ backgroundColor: "white" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
-              <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Total Courses</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalCourses}</p>
-              <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active teaching courses</p>
-            </div>
-          </div>
-
-          {/* System & Access Grid (Original Layout and Forms) */}
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "2rem" }}>
-            {/* Active Courses Table */}
-            <div className="card" style={{ height: "fit-content", backgroundColor: "white" }}>
-              <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.5rem 0" }}>
-                Active Platform Courses
-                {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredCourses.length} found)</span>}
-              </h3>
-              
-              {filteredCourses.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "3rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>📖</div>
-                  <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
-                    {searchQuery ? "No matching courses found" : "No Courses Available"}
-                  </h4>
-                  <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
-                    {searchQuery ? "Try altering your search keywords." : "Use the panel to the right to register a new course."}
-                  </p>
+              {/* Global System Stats (Original Cards) */}
+              <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
+                <div className="card" style={{ backgroundColor: "white" }}>
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚙️</div>
+                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>System Health</h3>
+                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--success)" }}>99.98%</p>
+                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>All core services active and optimal</p>
                 </div>
-              ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                  {filteredCourses.map((course) => (
-                    <div key={course.id} style={{
-                      padding: "1.25rem",
-                      border: "1px solid var(--border)",
-                      borderRadius: "var(--radius-md)",
-                      backgroundColor: "var(--surface-hover)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center"
-                    }}>
-                      <div>
-                        <span style={{ fontSize: "0.75rem", color: "var(--college-primary)", fontWeight: 700, backgroundColor: "rgba(27, 94, 32, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
-                          {course.code}
-                        </span>
-                        <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem", color: "var(--college-text)" }}>{course.title}</h4>
-                        <p className="text-muted" style={{ margin: 0, fontSize: "0.8rem", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
-                          {course.description}
-                        </p>
-                      </div>
-                      <div style={{ textAlign: "right" }}>
-                        <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>
-                          👨‍🏫 {course.teacher?.name || course.teacher?.email?.split("@")[0]}
-                        </span>
-                        <div className="text-muted" style={{ fontSize: "0.75rem", marginTop: "0.15rem" }}>
-                          👥 {course.enrollments?.length || 0} Enrolled
-                        </div>
-                      </div>
+                <div className="card" style={{ backgroundColor: "white" }}>
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
+                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Platform Users</h3>
+                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalUsers}</p>
+                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active students, instructors, staff</p>
+                </div>
+                <div className="card" style={{ backgroundColor: "white" }}>
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
+                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Total Courses</h3>
+                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalCourses}</p>
+                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active teaching courses</p>
+                </div>
+              </div>
+
+              {/* System & Access Grid (Original Layout and Forms) */}
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "2rem" }}>
+                {/* Active Courses Table */}
+                <div className="card" style={{ height: "fit-content", backgroundColor: "white" }}>
+                  <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.5rem 0" }}>
+                    Active Platform Courses
+                    {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredCourses.length} found)</span>}
+                  </h3>
+                  
+                  {filteredCourses.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "3rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
+                      <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>📖</div>
+                      <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
+                        {searchQuery ? "No matching courses found" : "No Courses Available"}
+                      </h4>
+                      <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
+                        {searchQuery ? "Try altering your search keywords." : "Use the panel to the right to register a new course."}
+                      </p>
                     </div>
-                  ))}
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                      {filteredCourses.map((course) => (
+                        <div key={course.id} style={{
+                          padding: "1.25rem",
+                          border: "1px solid var(--border)",
+                          borderRadius: "var(--radius-md)",
+                          backgroundColor: "var(--surface-hover)",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center"
+                        }}>
+                          <div>
+                            <span style={{ fontSize: "0.75rem", color: "var(--college-primary)", fontWeight: 700, backgroundColor: "rgba(27, 94, 32, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
+                              {course.code}
+                            </span>
+                            <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem", color: "var(--college-text)" }}>{course.title}</h4>
+                            <p className="text-muted" style={{ margin: 0, fontSize: "0.8rem", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
+                              {course.description}
+                            </p>
+                          </div>
+                          <div style={{ textAlign: "right" }}>
+                            <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+                              👨‍🏫 {course.teacher?.name || course.teacher?.email?.split("@")[0]}
+                            </span>
+                            <div className="text-muted" style={{ fontSize: "0.75rem", marginTop: "0.15rem" }}>
+                              👥 {course.enrollments?.length || 0} Enrolled
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Course Creation Form */}
-            <CourseForm teachers={teachers} />
-          </div>
+                {/* Course Creation Form */}
+                <CourseForm teachers={teachers} />
+              </div>
+            </>
+          ) : (
+            /* ──── STUDENTS TAB VIEW ──── */
+            <>
+              <div style={{ marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Student Directory</h2>
+                <p className="text-muted">Browse all registered students currently enrolled in Lagankhel IT Academy LMS.</p>
+              </div>
+
+              <div className="card" style={{ backgroundColor: "white", padding: "2rem" }}>
+                <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.5rem 0" }}>
+                  Active Student Registrations
+                  {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredStudents.length} found)</span>}
+                </h3>
+
+                {filteredStudents.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "4rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>👥</div>
+                    <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
+                      {searchQuery ? "No matching students found" : "No Registered Students"}
+                    </h4>
+                    <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
+                      {searchQuery ? "Check spelling or search terms." : "Student records will show up once users register with the Student role."}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem" }}>
+                    {filteredStudents.map((student) => {
+                      const studentInitials = (student.name || student.email || "ST").substring(0, 2).toUpperCase();
+                      return (
+                        <div
+                          key={student.id}
+                          style={{
+                            padding: "1.25rem",
+                            border: "1px solid var(--border)",
+                            borderRadius: "var(--radius-md)",
+                            backgroundColor: "var(--surface-hover)",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem"
+                          }}
+                        >
+                          <div style={{
+                            width: "48px",
+                            height: "48px",
+                            borderRadius: "50%",
+                            backgroundColor: "rgba(27, 94, 32, 0.08)",
+                            color: "var(--college-primary)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            fontSize: "1.1rem"
+                          }}>
+                            {studentInitials}
+                          </div>
+                          <div style={{ overflow: "hidden" }}>
+                            <h4 style={{ margin: "0 0 0.15rem 0", fontSize: "0.95rem", color: "var(--college-text)", fontWeight: 600 }}>
+                              {student.name || "Unnamed Student"}
+                            </h4>
+                            <p className="text-muted" style={{ margin: "0 0 0.5rem 0", fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {student.email}
+                            </p>
+                            <span style={{
+                              fontSize: "0.65rem",
+                              backgroundColor: "rgba(34, 197, 94, 0.1)",
+                              color: "var(--success)",
+                              padding: "0.15rem 0.5rem",
+                              borderRadius: "var(--radius-full)",
+                              fontWeight: 700,
+                              textTransform: "uppercase"
+                            }}>
+                              🟢 Active Student
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
         </main>
       </div>
     </div>
