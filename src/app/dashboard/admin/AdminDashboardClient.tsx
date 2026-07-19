@@ -838,25 +838,86 @@ export default function AdminDashboardClient({
                               <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
                                 Image Path / URL
                               </label>
-                              <input
-                                type="text"
-                                value={slide.image}
-                                onChange={(e) => {
-                                  const updated = [...cmsSlides];
-                                  updated[index] = { ...updated[index], image: e.target.value };
-                                  setCmsSlides(updated);
-                                }}
-                                required
-                                placeholder="e.g., /hero_slide_1.png or external https:// url"
-                                style={{
-                                  width: "100%",
-                                  padding: "0.6rem 0.85rem",
-                                  borderRadius: "var(--radius-md)",
+                              <div style={{ display: "flex", gap: "0.5rem" }}>
+                                <input
+                                  type="text"
+                                  value={slide.image}
+                                  onChange={(e) => {
+                                    const updated = [...cmsSlides];
+                                    updated[index] = { ...updated[index], image: e.target.value };
+                                    setCmsSlides(updated);
+                                  }}
+                                  required
+                                  placeholder="e.g., /hero_slide_1.png or upload a file"
+                                  style={{
+                                    flexGrow: 1,
+                                    padding: "0.6rem 0.85rem",
+                                    borderRadius: "var(--radius-md)",
+                                    border: "1px solid #d1d5db",
+                                    outline: "none",
+                                    fontSize: "0.9rem"
+                                  }}
+                                />
+                                <label style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  backgroundColor: "#f3f4f6",
                                   border: "1px solid #d1d5db",
-                                  outline: "none",
-                                  fontSize: "0.9rem"
+                                  borderRadius: "var(--radius-md)",
+                                  padding: "0 1rem",
+                                  fontSize: "0.85rem",
+                                  fontWeight: 600,
+                                  cursor: "pointer",
+                                  color: "#374151",
+                                  transition: "all 0.2s ease",
+                                  whiteSpace: "nowrap"
                                 }}
-                              />
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = "var(--college-primary-dark)";
+                                  e.currentTarget.style.color = "white";
+                                  e.currentTarget.style.borderColor = "var(--college-primary-dark)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = "#f3f4f6";
+                                  e.currentTarget.style.color = "#374151";
+                                  e.currentTarget.style.borderColor = "#d1d5db";
+                                }}
+                                >
+                                  📁 Upload File
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    style={{ display: "none" }}
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (!file) return;
+
+                                      const uploadFormData = new FormData();
+                                      uploadFormData.append("file", file);
+
+                                      try {
+                                        setCmsStatus(null);
+                                        const response = await fetch("/api/upload", {
+                                          method: "POST",
+                                          body: uploadFormData
+                                        });
+                                        const data = await response.json();
+                                        if (data.url) {
+                                          const updated = [...cmsSlides];
+                                          updated[index] = { ...updated[index], image: data.url };
+                                          setCmsSlides(updated);
+                                        } else {
+                                          setCmsStatus({ error: data.error || "Failed to upload image." });
+                                        }
+                                      } catch (err) {
+                                        console.error("Upload error:", err);
+                                        setCmsStatus({ error: "Network error during upload." });
+                                      }
+                                    }}
+                                  />
+                                </label>
+                              </div>
                             </div>
                           </div>
 
