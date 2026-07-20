@@ -356,6 +356,8 @@ export default function AdminDashboardClient({
     const formData = new FormData(e.currentTarget);
     const studentId = formData.get("studentId") as string;
     const amountStr = formData.get("amount") as string;
+    const feeType = formData.get("feeType") as string;
+    const totalFeeStr = formData.get("totalFee") as string;
     const paymentMethod = formData.get("paymentMethod") as string;
     const date = formData.get("date") as string;
     const notes = formData.get("notes") as string;
@@ -372,19 +374,21 @@ export default function AdminDashboardClient({
       return;
     }
 
-    const title = `Student Fee: ${studentObj.name || studentObj.email}`;
+    const customTotalFee = totalFeeStr !== "" && !isNaN(parseFloat(totalFeeStr)) ? parseFloat(totalFeeStr) : undefined;
+    const title = `Student Fee (${feeType || "Fee Payment"}): ${studentObj.name || studentObj.email}`;
 
     startTxTransition(async () => {
       const res = await addTransaction({
         type: "STUDENT_FEE",
         title,
         amount,
-        category: "Student Fee Collection",
+        category: `Student Fee (${feeType || "General"})`,
         paymentMethod,
         date: date || new Date().toISOString().split("T")[0],
         studentId,
         studentName: studentObj.name || studentObj.email || undefined,
-        notes
+        notes,
+        setTotalFee: customTotalFee
       });
 
       if (res?.error) {
@@ -395,7 +399,7 @@ export default function AdminDashboardClient({
           type: "STUDENT_FEE",
           title,
           amount,
-          category: "Student Fee Collection",
+          category: `Student Fee (${feeType || "General"})`,
           paymentMethod,
           date: date || new Date().toISOString().split("T")[0],
           studentId,
@@ -405,11 +409,15 @@ export default function AdminDashboardClient({
 
         setTransactions(prev => [newRecord, ...prev]);
 
-        // Update student paidFee in local users state
+        // Update student paidFee & totalFee in local users state
         setLocalUsers(prev => prev.map(u => {
           if (u.id === studentId) {
             const currentPaid = u.paidFee || 0;
-            const updatedUser = { ...u, paidFee: currentPaid + amount };
+            const updatedUser = {
+              ...u,
+              paidFee: currentPaid + amount,
+              totalFee: customTotalFee !== undefined ? customTotalFee : u.totalFee
+            };
             if (viewingUser?.id === studentId) {
               setViewingUser(updatedUser);
             }
@@ -2337,7 +2345,7 @@ export default function AdminDashboardClient({
                 </label>
                 <select
                   name="studentId"
-                  defaultValue={selectedFeeStudentId}
+                  value={selectedFeeStudentId}
                   required
                   onChange={(e) => setSelectedFeeStudentId(e.target.value)}
                   style={{
@@ -2354,20 +2362,112 @@ export default function AdminDashboardClient({
                   {localUsers
                     .filter((u) => u.role === "STUDENT")
                     .map((s) => {
-                      const due = (s.totalFee || 0) - (s.paidFee || 0);
+                      const total = s.totalFee || 0;
+                      const paid = s.paidFee || 0;
+                      const due = total - paid;
                       return (
                         <option key={s.id} value={s.id}>
-                          🎓 {s.name || s.email} {s.faculty ? `(${s.faculty})` : ""} - Due: Rs. {due.toLocaleString()}
+                          🎓 {s.name || s.email} {s.faculty ? `(${s.faculty})` : ""} — Total: Rs. {total.toLocaleString()} | Due: Rs. {due.toLocaleString()}
                         </option>
                       );
                     })}
                 </select>
               </div>
 
+              {/* Student Financial Summary Box if student selected */}
+              {(() => {
+                const selStudent = localUsers.find(u => u.id === selectedFeeStudentId);
+                if (!selStudent) return null;
+                const total = selStudent.totalFee || 0;
+                const paid = selStudent.paidFee || 0;
+                const due = Math.max(0, total - paid);
+
+                return (
+                  <div style={{
+                    backgroundColor: "#f9fafb",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "var(--radius-md)",
+                    padding: "1rem",
+                    marginBottom: "1.25rem"
+                  }}>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-primary)", marginBottom: "0.65rem" }}>
+                      📊 Financial Summary for {selStudent.name || selStudent.email}
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: "0.75rem" }}>
+                      <div>
+                        <label style={{ display: "block", fontSize: "0.7rem", color: "#6b7280", fontWeight: 600, marginBottom: "0.2rem" }}>
+                          TOTAL COURSE FEE (RS.)
+                        </label>
+                        <input
+                          type="number"
+                          name="totalFee"
+                          key={`totalFee-${selStudent.id}-${total}`}
+                          defaultValue={total > 0 ? total : ""}
+                          placeholder="Set Total Fee"
+                          min="0"
+                          style={{
+                            width: "100%",
+                            padding: "0.4rem 0.6rem",
+                            borderRadius: "var(--radius-sm)",
+                            border: "1px solid #d1d5db",
+                            fontSize: "0.85rem",
+                            fontWeight: 700,
+                            color: "#1f2937",
+                            backgroundColor: "#ffffff"
+                          }}
+                        />
+                      </div>
+
+                      <div style={{ backgroundColor: "#ffffff", padding: "0.5rem 0.6rem", borderRadius: "var(--radius-sm)", border: "1px solid #e5e7eb" }}>
+                        <div style={{ fontSize: "0.7rem", color: "var(--success)", fontWeight: 600 }}>ALREADY PAID</div>
+                        <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--success)", marginTop: "0.2rem" }}>
+                          Rs. {paid.toLocaleString()}
+                        </div>
+                      </div>
+
+                      <div style={{ backgroundColor: "#ffffff", padding: "0.5rem 0.6rem", borderRadius: "var(--radius-sm)", border: "1px solid #e5e7eb" }}>
+                        <div style={{ fontSize: "0.7rem", color: due > 0 ? "var(--error)" : "#15803d", fontWeight: 600 }}>REMAINING DUE</div>
+                        <div style={{ fontSize: "0.95rem", fontWeight: 700, color: due > 0 ? "var(--error)" : "#15803d", marginTop: "0.2rem" }}>
+                          Rs. {due.toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
-                    Payment Amount (Rs.)
+                    Payment Title / Type
+                  </label>
+                  <select
+                    name="feeType"
+                    defaultValue="1st Installment"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="1st Installment">1st Installment</option>
+                    <option value="2nd Installment">2nd Installment</option>
+                    <option value="3rd Installment">3rd Installment</option>
+                    <option value="Monthly Fee">Monthly Fee</option>
+                    <option value="Admission Fee">Admission Fee</option>
+                    <option value="Exam Fee">Exam Fee</option>
+                    <option value="Partial Payment">Partial / Custom Payment</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Payment Amount Paying Today (Rs.)
                   </label>
                   <input
                     type="number"
@@ -2380,13 +2480,14 @@ export default function AdminDashboardClient({
                       width: "100%",
                       padding: "0.65rem 0.85rem",
                       borderRadius: "var(--radius-md)",
-                      border: "1px solid #d1d5db",
                       outline: "none",
                       fontSize: "0.9rem"
                     }}
                   />
                 </div>
+              </div>
 
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
                     Payment Method

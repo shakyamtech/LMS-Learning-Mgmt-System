@@ -14,6 +14,7 @@ export interface TransactionPayload {
   studentId?: string;
   studentName?: string;
   notes?: string;
+  setTotalFee?: number;
 }
 
 export async function addTransaction(data: TransactionPayload) {
@@ -33,18 +34,30 @@ export async function addTransaction(data: TransactionPayload) {
   try {
     const timestamp = new Date().toISOString();
     const docRef = await db.collection("transactions").add({
-      ...data,
+      type: data.type,
+      title: data.title,
+      amount: data.amount,
+      category: data.category,
+      paymentMethod: data.paymentMethod,
+      date: data.date,
+      studentId: data.studentId || null,
+      studentName: data.studentName || null,
+      notes: data.notes || null,
       createdAt: timestamp,
     });
 
-    // If this is a student fee payment, update the student's paidFee in Firestore
+    // If this is a student fee payment, update the student's paidFee and optionally totalFee in Firestore
     if (data.type === "STUDENT_FEE" && data.studentId) {
       const userRef = db.collection("users").doc(data.studentId);
       const userSnap = await userRef.get();
       if (userSnap.exists) {
         const currentPaid = typeof userSnap.data()?.paidFee === "number" ? userSnap.data()?.paidFee : 0;
         const newPaid = currentPaid + data.amount;
-        await userRef.update({ paidFee: newPaid });
+        const updateObj: Record<string, any> = { paidFee: newPaid };
+        if (typeof data.setTotalFee === "number" && data.setTotalFee >= 0) {
+          updateObj.totalFee = data.setTotalFee;
+        }
+        await userRef.update(updateObj);
       }
     }
 
