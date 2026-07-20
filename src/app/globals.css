@@ -1154,6 +1154,19 @@ a:hover {
   background-color: var(--college-bg-cream);
 }
 
+@media (max-width: 900px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+  .admin-sidebar {
+    height: auto !important;
+    position: relative !important;
+  }
+  .admin-main {
+    height: auto !important;
+  }
+}
+
 .admin-sidebar {
   background-color: var(--college-primary-dark);
   color: white;
