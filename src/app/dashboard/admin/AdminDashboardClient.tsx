@@ -116,6 +116,8 @@ export default function AdminDashboardClient({
 
   // Accounting State
   const [txFilter, setTxFilter] = useState<"ALL" | "STUDENT_FEE" | "INCOME" | "EXPENSE">("ALL");
+  const [dateRangeFilter, setDateRangeFilter] = useState<"ALL" | "TODAY" | "THIS_MONTH" | "CUSTOM">("ALL");
+  const [selectedCustomDate, setSelectedCustomDate] = useState<string>("");
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [selectedFeeStudentId, setSelectedFeeStudentId] = useState("");
   const [showIncomeModal, setShowIncomeModal] = useState(false);
@@ -571,13 +573,36 @@ export default function AdminDashboardClient({
 
   const netBalance = totalIncome - totalExpense;
 
+  const todayStr = new Date().toISOString().split("T")[0];
+  const currentMonthStr = todayStr.substring(0, 7);
+
   const filteredTransactions = transactions.filter(t => {
     const matchesCategory = txFilter === "ALL" || t.type === txFilter;
     const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           t.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           (t.studentName && t.studentName.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
+
+    let matchesDate = true;
+    if (dateRangeFilter === "TODAY") {
+      matchesDate = t.date === todayStr;
+    } else if (dateRangeFilter === "THIS_MONTH") {
+      matchesDate = t.date.startsWith(currentMonthStr);
+    } else if (dateRangeFilter === "CUSTOM" && selectedCustomDate) {
+      matchesDate = t.date === selectedCustomDate;
+    }
+
+    return matchesCategory && matchesSearch && matchesDate;
   });
+
+  const filteredPeriodIncome = filteredTransactions
+    .filter(t => t.type === "INCOME" || t.type === "STUDENT_FEE")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const filteredPeriodExpense = filteredTransactions
+    .filter(t => t.type === "EXPENSE")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const filteredPeriodNet = filteredPeriodIncome - filteredPeriodExpense;
 
   const mockSettings = [
     { id: 1, label: "⚙️ System Configuration" },
@@ -1294,27 +1319,166 @@ export default function AdminDashboardClient({
                 </div>
               </div>
 
-              {/* Filter Tabs */}
-              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
-                {(["ALL", "STUDENT_FEE", "INCOME", "EXPENSE"] as const).map((key) => (
-                  <button
-                    key={key}
-                    onClick={() => setTxFilter(key)}
-                    style={{
-                      padding: "0.5rem 1.25rem",
-                      borderRadius: "var(--radius-md)",
-                      border: txFilter === key ? "1px solid var(--college-primary)" : "1px solid var(--border)",
-                      backgroundColor: txFilter === key ? "var(--college-primary)" : "white",
-                      color: txFilter === key ? "white" : "var(--college-text)",
-                      fontWeight: 600,
-                      fontSize: "0.85rem",
-                      cursor: "pointer",
-                      transition: "all var(--transition-fast)"
-                    }}
-                  >
-                    {key === "ALL" ? `All Transactions (${transactions.length})` : key === "STUDENT_FEE" ? "Student Fees" : key === "INCOME" ? "General Income" : "Expenses"}
-                  </button>
-                ))}
+              {/* Category & Date Filter Controls */}
+              <div style={{
+                backgroundColor: "#ffffff",
+                padding: "1.25rem",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid #e5e7eb",
+                marginBottom: "1.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem"
+              }}>
+                {/* Row 1: Category Tabs */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+                  <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                    🏷️ Category Filter:
+                  </div>
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    {(["ALL", "STUDENT_FEE", "INCOME", "EXPENSE"] as const).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => setTxFilter(key)}
+                        style={{
+                          padding: "0.45rem 1rem",
+                          borderRadius: "var(--radius-md)",
+                          border: txFilter === key ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                          backgroundColor: txFilter === key ? "var(--college-primary)" : "white",
+                          color: txFilter === key ? "white" : "var(--college-text)",
+                          fontWeight: 600,
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          transition: "all var(--transition-fast)"
+                        }}
+                      >
+                        {key === "ALL" ? `All Categories (${transactions.length})` : key === "STUDENT_FEE" ? "Student Fees" : key === "INCOME" ? "General Income" : "Expenses"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ borderTop: "1px dashed #e5e7eb" }} />
+
+                {/* Row 2: Date & Calendar Toolbar */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                      📅 Date / Calendar Filter:
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <button
+                      onClick={() => {
+                        setDateRangeFilter("ALL");
+                        setSelectedCustomDate("");
+                      }}
+                      style={{
+                        padding: "0.45rem 0.9rem",
+                        borderRadius: "var(--radius-md)",
+                        border: dateRangeFilter === "ALL" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                        backgroundColor: dateRangeFilter === "ALL" ? "rgba(27, 94, 32, 0.1)" : "white",
+                        color: dateRangeFilter === "ALL" ? "var(--college-primary)" : "#4b5563",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer"
+                      }}
+                    >
+                      All Time
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setDateRangeFilter("TODAY");
+                        setSelectedCustomDate(todayStr);
+                      }}
+                      style={{
+                        padding: "0.45rem 0.9rem",
+                        borderRadius: "var(--radius-md)",
+                        border: dateRangeFilter === "TODAY" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                        backgroundColor: dateRangeFilter === "TODAY" ? "rgba(27, 94, 32, 0.1)" : "white",
+                        color: dateRangeFilter === "TODAY" ? "var(--college-primary)" : "#4b5563",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer"
+                      }}
+                    >
+                      📅 Today
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setDateRangeFilter("THIS_MONTH");
+                        setSelectedCustomDate("");
+                      }}
+                      style={{
+                        padding: "0.45rem 0.9rem",
+                        borderRadius: "var(--radius-md)",
+                        border: dateRangeFilter === "THIS_MONTH" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                        backgroundColor: dateRangeFilter === "THIS_MONTH" ? "rgba(27, 94, 32, 0.1)" : "white",
+                        color: dateRangeFilter === "THIS_MONTH" ? "var(--college-primary)" : "#4b5563",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer"
+                      }}
+                    >
+                      🗓️ This Month
+                    </button>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                      <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Pick Date:</span>
+                      <input
+                        type="date"
+                        value={dateRangeFilter === "TODAY" ? todayStr : selectedCustomDate}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            setSelectedCustomDate(e.target.value);
+                            setDateRangeFilter("CUSTOM");
+                          } else {
+                            setDateRangeFilter("ALL");
+                          }
+                        }}
+                        style={{
+                          padding: "0.35rem 0.65rem",
+                          borderRadius: "var(--radius-md)",
+                          border: "1px solid #d1d5db",
+                          fontSize: "0.8rem",
+                          backgroundColor: "#ffffff",
+                          outline: "none"
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filtered Date Period Banner */}
+                {dateRangeFilter !== "ALL" && (
+                  <div style={{
+                    backgroundColor: "rgba(27, 94, 32, 0.06)",
+                    border: "1px solid rgba(27, 94, 32, 0.2)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "0.75rem 1rem",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "0.5rem"
+                  }}>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                      📆 Filtered Period ({dateRangeFilter === "TODAY" ? `Today: ${todayStr}` : dateRangeFilter === "THIS_MONTH" ? `This Month: ${currentMonthStr}` : `Date: ${selectedCustomDate}`}):
+                      <span style={{ marginLeft: "0.5rem", fontWeight: 600, color: "#374151" }}>{filteredTransactions.length} Transactions</span>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.85rem", fontWeight: 700 }}>
+                      <span style={{ color: "var(--success)" }}>Income: +Rs. {filteredPeriodIncome.toLocaleString()}</span>
+                      <span style={{ color: "#ef4444" }}>Expenses: -Rs. {filteredPeriodExpense.toLocaleString()}</span>
+                      <span style={{ color: filteredPeriodNet >= 0 ? "var(--college-primary)" : "#ef4444" }}>
+                        Net Flow: Rs. {filteredPeriodNet.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Transactions Ledger Table */}
