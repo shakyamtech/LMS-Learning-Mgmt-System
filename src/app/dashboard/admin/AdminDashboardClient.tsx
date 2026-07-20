@@ -73,7 +73,7 @@ export default function AdminDashboardClient({
   session,
   logout
 }: AdminDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "students" | "cms">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "cms">("dashboard");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -142,50 +142,52 @@ export default function AdminDashboardClient({
         const dismissedIds = JSON.parse(dismissed) as number[];
         setNotifications(prev => prev.filter(n => !dismissedIds.includes(n.id)));
       }
-    } catch (e) {
-      console.error("Failed to load dismissed notifications from localStorage:", e);
+    } catch {
+      // Ignore localStorage errors
     }
   }, []);
 
-  const dismissNotification = (id: number) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-    try {
-      const dismissed = localStorage.getItem("dismissedNotifications");
-      const dismissedIds = dismissed ? (JSON.parse(dismissed) as number[]) : [];
-      if (!dismissedIds.includes(id)) {
-        dismissedIds.push(id);
-      }
-      localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
-    } catch (e) {
-      console.error("Failed to persist dismissed notification:", e);
-    }
-  };
-
-  const clearAllNotifications = () => {
-    setNotifications([]);
-    try {
-      const allIds = [1, 2, 3];
-      localStorage.setItem("dismissedNotifications", JSON.stringify(allIds));
-    } catch (e) {
-      console.error("Failed to clear all notifications:", e);
-    }
-  };
-
-  // Close dropdowns on clicking outside
+  // Close popovers on click outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
       if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
         setShowSettings(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleDismissNotification = (id: number) => {
+    const updated = notifications.filter(n => n.id !== id);
+    setNotifications(updated);
+    try {
+      const dismissed = localStorage.getItem("dismissedNotifications");
+      const dismissedIds = dismissed ? (JSON.parse(dismissed) as number[]) : [];
+      if (!dismissedIds.includes(id)) {
+        dismissedIds.push(id);
+        localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+  };
+
+  const handleClearAllNotifications = () => {
+    const allIds = notifications.map(n => n.id);
+    setNotifications([]);
+    try {
+      const dismissed = localStorage.getItem("dismissedNotifications");
+      const dismissedIds = dismissed ? (JSON.parse(dismissed) as number[]) : [];
+      const combined = Array.from(new Set([...dismissedIds, ...allIds]));
+      localStorage.setItem("dismissedNotifications", JSON.stringify(combined));
+    } catch {
+      // Ignore localStorage errors
+    }
+  };
 
   // Clear search query when tab changes
   useEffect(() => {
@@ -193,25 +195,21 @@ export default function AdminDashboardClient({
     setSearchQuery("");
   }, [activeTab]);
 
-  const handleApprove = async (studentId: string) => {
-    const res = await approveStudent(studentId);
-    if (res?.success) {
-      setLocalStudents(prev =>
-        prev.map(s => (s.id === studentId ? { ...s, approved: true } : s))
-      );
-    } else {
-      alert(res?.error || "Failed to approve student.");
-    }
+  const handleApprove = (studentId: string) => {
+    startUserTransition(async () => {
+      await approveStudent(studentId);
+      setLocalStudents((prev) => prev.map((s) => (s.id === studentId ? { ...s, approved: true } : s)));
+      setLocalUsers((prev) => prev.map((u) => (u.id === studentId ? { ...u, approved: true } : u)));
+    });
   };
 
-  const handleReject = async (studentId: string) => {
-    if (!confirm("Are you sure you want to reject and delete this student account?")) return;
-    const res = await rejectStudent(studentId);
-    if (res?.success) {
-      setLocalStudents(prev => prev.filter(s => s.id !== studentId));
-    } else {
-      alert(res?.error || "Failed to reject student.");
-    }
+  const handleReject = (studentId: string) => {
+    if (!confirm("Are you sure you want to reject and remove this student registration?")) return;
+    startUserTransition(async () => {
+      await rejectStudent(studentId);
+      setLocalStudents((prev) => prev.filter((s) => s.id !== studentId));
+      setLocalUsers((prev) => prev.filter((u) => u.id !== studentId));
+    });
   };
 
   const initials = session.email.substring(0, 2).toUpperCase();
@@ -219,26 +217,12 @@ export default function AdminDashboardClient({
 
   // Filter courses based on query
   const filteredCourses = courses.filter((course) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      course.code.toLowerCase().includes(query) ||
-      course.title.toLowerCase().includes(query) ||
-      course.description.toLowerCase().includes(query) ||
-      (course.teacher?.name && course.teacher.name.toLowerCase().includes(query)) ||
-      (course.teacher?.email && course.teacher.email.toLowerCase().includes(query))
-    );
+    const matchesSearch =
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesSearch;
   });
-
-  // Filter students based on query
-  const filteredStudents = localStudents.filter((student) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      (student.name && student.name.toLowerCase().includes(query)) ||
-      (student.email && student.email.toLowerCase().includes(query))
-    );
-  });
-
-
 
   const handleSaveUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -282,7 +266,6 @@ export default function AdminDashboardClient({
     return matchesSearch && matchesRole;
   });
 
-  const pendingStudentsCount = localStudents.filter(s => !s.approved).length;
   const pendingUsersCount = localUsers.filter(u => !u.approved).length;
 
   const mockSettings = [
@@ -328,34 +311,6 @@ export default function AdminDashboardClient({
               </div>
               {pendingUsersCount > 0 && (
                 <span style={{
-                  backgroundColor: "var(--college-accent)",
-                  color: "var(--college-primary-dark)",
-                  fontSize: "0.75rem",
-                  fontWeight: 700,
-                  padding: "0.15rem 0.55rem",
-                  borderRadius: "9999px",
-                  lineHeight: "1"
-                }}>
-                  {pendingUsersCount}
-                </span>
-              )}
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("students");
-              }}
-              className={`admin-sidebar-link ${activeTab === "students" ? "active" : ""}`}
-              style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-                <span>🎓</span> Students Approval
-              </div>
-              {pendingStudentsCount > 0 && (
-                <span style={{
                   backgroundColor: "#ef4444",
                   color: "#ffffff",
                   fontSize: "0.75rem",
@@ -365,7 +320,7 @@ export default function AdminDashboardClient({
                   boxShadow: "0 2px 6px rgba(239, 68, 68, 0.4)",
                   lineHeight: "1"
                 }}>
-                  {pendingStudentsCount}
+                  {pendingUsersCount}
                 </span>
               )}
             </a>
@@ -500,7 +455,7 @@ export default function AdminDashboardClient({
                     <span>System Notifications</span>
                     {isMounted && notifications.length > 0 && (
                       <button
-                        onClick={clearAllNotifications}
+                        onClick={handleClearAllNotifications}
                         style={{
                           background: "none",
                           border: "none",
@@ -535,7 +490,7 @@ export default function AdminDashboardClient({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            dismissNotification(notif.id);
+                            handleDismissNotification(notif.id);
                           }}
                           style={{
                             background: "#f3f4f6",
@@ -821,6 +776,24 @@ export default function AdminDashboardClient({
                               </td>
                               <td style={{ padding: "1rem", textAlign: "right" }}>
                                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                                  {!user.approved && (
+                                    <button
+                                      onClick={() => handleApprove(user.id)}
+                                      style={{
+                                        padding: "0.4rem 0.85rem",
+                                        borderRadius: "var(--radius-md)",
+                                        border: "1px solid rgba(34, 197, 94, 0.4)",
+                                        backgroundColor: "rgba(34, 197, 94, 0.1)",
+                                        color: "var(--success)",
+                                        fontSize: "0.8rem",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        transition: "all 0.2s"
+                                      }}
+                                    >
+                                      ✅ Approve
+                                    </button>
+                                  )}
                                   <button
                                     onClick={() => setEditingUser(user)}
                                     style={{
@@ -860,158 +833,6 @@ export default function AdminDashboardClient({
                         })}
                       </tbody>
                     </table>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : activeTab === "students" ? (
-            /* ──── STUDENTS TAB VIEW ──── */
-            <>
-              <div style={{ marginBottom: "2rem" }}>
-                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Student Directory</h2>
-                <p className="text-muted">Browse all registered students currently enrolled in Lagankhel IT Academy LMS.</p>
-              </div>
-
-              <div className="card" style={{ backgroundColor: "white", padding: "2rem" }}>
-                <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.5rem 0" }}>
-                  Active Student Registrations
-                  {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredStudents.length} found)</span>}
-                </h3>
-
-                {filteredStudents.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "4rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
-                    <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>👥</div>
-                    <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
-                      {searchQuery ? "No matching students found" : "No Registered Students"}
-                    </h4>
-                    <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
-                      {searchQuery ? "Check spelling or search terms." : "Student records will show up once users register with the Student role."}
-                    </p>
-                  </div>
-                ) : (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem" }}>
-                    {filteredStudents.map((student) => {
-                      const studentInitials = (student.name || student.email || "ST").substring(0, 2).toUpperCase();
-                      return (
-                        <div
-                          key={student.id}
-                          style={{
-                            padding: "1.25rem",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "var(--radius-md)",
-                            backgroundColor: "#ffffff",
-                            colorScheme: "light",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1rem"
-                          }}
-                        >
-                          <div style={{
-                            width: "48px",
-                            height: "48px",
-                            borderRadius: "50%",
-                            backgroundColor: "rgba(27, 94, 32, 0.08)",
-                            color: "var(--college-primary)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: 700,
-                            fontSize: "1.1rem",
-                            flexShrink: 0
-                          }}>
-                            {studentInitials}
-                          </div>
-                          <div style={{ overflow: "hidden", flexGrow: 1 }}>
-                            <h4 style={{ margin: "0 0 0.15rem 0", fontSize: "0.95rem", color: "var(--college-text)", fontWeight: 600 }}>
-                              {student.name || "Unnamed Student"}
-                            </h4>
-                            <p className="text-muted" style={{ margin: "0 0 0.5rem 0", fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {student.email}
-                            </p>
-                            
-                            {student.approved ? (
-                              <>
-                                <span style={{
-                                  fontSize: "0.65rem",
-                                  backgroundColor: "rgba(34, 197, 94, 0.1)",
-                                  color: "var(--success)",
-                                  padding: "0.15rem 0.5rem",
-                                  borderRadius: "var(--radius-full)",
-                                  fontWeight: 700,
-                                  textTransform: "uppercase"
-                                }}>
-                                  🟢 Active Student
-                                </span>
-                                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
-                                  <button
-                                    onClick={() => handleReject(student.id)}
-                                    style={{
-                                      fontSize: "0.7rem",
-                                      backgroundColor: "none",
-                                      color: "#ef4444",
-                                      border: "1px solid #ef4444",
-                                      padding: "0.25rem 0.6rem",
-                                      borderRadius: "4px",
-                                      cursor: "pointer",
-                                      fontWeight: 600,
-                                      background: "none"
-                                    }}
-                                  >
-                                    Remove Account
-                                  </button>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <span style={{
-                                  fontSize: "0.65rem",
-                                  backgroundColor: "rgba(234, 179, 8, 0.1)",
-                                  color: "#ca8a04",
-                                  padding: "0.15rem 0.5rem",
-                                  borderRadius: "var(--radius-full)",
-                                  fontWeight: 700,
-                                  textTransform: "uppercase"
-                                }}>
-                                  🔴 Pending Approval
-                                </span>
-                                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
-                                  <button
-                                    onClick={() => handleApprove(student.id)}
-                                    style={{
-                                      fontSize: "0.7rem",
-                                      backgroundColor: "var(--college-primary)",
-                                      color: "white",
-                                      border: "none",
-                                      padding: "0.25rem 0.6rem",
-                                      borderRadius: "4px",
-                                      cursor: "pointer",
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    Approve
-                                  </button>
-                                  <button
-                                    onClick={() => handleReject(student.id)}
-                                    style={{
-                                      fontSize: "0.7rem",
-                                      backgroundColor: "#ef4444",
-                                      color: "white",
-                                      border: "none",
-                                      padding: "0.25rem 0.6rem",
-                                      borderRadius: "4px",
-                                      cursor: "pointer",
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    Reject
-                                  </button>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
                   </div>
                 )}
               </div>
