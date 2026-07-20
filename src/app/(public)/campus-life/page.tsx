@@ -40,7 +40,7 @@ export default function CampusLifePage() {
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Stay Connected</span>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.8rem", color: "var(--college-primary)", margin: "0.75rem 0 0.5rem 0" }}>Upcoming Events</h2>
-            <p style={{ color: "#777", fontSize: "1.1rem" }}>Don't miss what's happening on campus this semester.</p>
+            <p style={{ color: "#777", fontSize: "1.1rem" }}>Don&apos;t miss what&apos;s happening on campus this semester.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {events.map((e, i) => (

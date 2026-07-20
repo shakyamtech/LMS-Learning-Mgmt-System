@@ -21,7 +21,7 @@ export default async function TeacherDashboard() {
   // 1. Fetch courses taught by this specific teacher
   const coursesSnap = await db.collection("courses").where("teacherId", "==", session.userId).get();
   
-  let courses = [] as any[];
+  const courses = [] as any[];
 
   for (const courseDoc of coursesSnap.docs) {
     const courseData = courseDoc.data();
@@ -31,15 +31,15 @@ export default async function TeacherDashboard() {
     const enrollments = [] as any[];
     for (const eDoc of enrollsSnap.docs) {
       const eData = eDoc.data();
-      let student = { name: "Unknown", email: "" };
+      let student = { id: "", name: "Unknown", email: "" };
       if (eData.studentId) {
         const studentSnap = await db.collection("users").doc(eData.studentId).get();
         if (studentSnap.exists) {
           student = {
             id: studentSnap.id,
-            name: studentSnap.data()?.name,
-            email: studentSnap.data()?.email,
-          } as any;
+            name: studentSnap.data()?.name || "Unknown",
+            email: studentSnap.data()?.email || "",
+          };
         }
       }
       enrollments.push({ id: eDoc.id, ...eData, student });
@@ -55,15 +55,15 @@ export default async function TeacherDashboard() {
       const submissions = [] as any[];
       for (const sDoc of subsSnap.docs) {
         const sData = sDoc.data();
-        let student = { name: "Unknown", email: "" };
+        let student = { id: "", name: "Unknown", email: "" };
         if (sData.studentId) {
           const studentSnap = await db.collection("users").doc(sData.studentId).get();
           if (studentSnap.exists) {
             student = {
               id: studentSnap.id,
-              name: studentSnap.data()?.name,
-              email: studentSnap.data()?.email,
-            } as any;
+              name: studentSnap.data()?.name || "Unknown",
+              email: studentSnap.data()?.email || "",
+            };
           }
         }
         submissions.push({ id: sDoc.id, ...sData, student });
@@ -79,15 +79,15 @@ export default async function TeacherDashboard() {
     for (const anDoc of announcementsSnap.docs) {
       const anData = anDoc.data();
       
-      let author = { name: "Unknown", email: "" };
+      let author = { id: "", name: "Unknown", email: "" };
       if (anData.authorId) {
         const authorSnap = await db.collection("users").doc(anData.authorId).get();
         if (authorSnap.exists) {
           author = {
             id: authorSnap.id,
-            name: authorSnap.data()?.name,
-            email: authorSnap.data()?.email,
-          } as any;
+            name: authorSnap.data()?.name || "Unknown",
+            email: authorSnap.data()?.email || "",
+          };
         }
       }
 
@@ -95,15 +95,15 @@ export default async function TeacherDashboard() {
       const comments = [] as any[];
       for (const cDoc of commentsSnap.docs) {
         const cData = cDoc.data();
-        let commentAuthor = { name: "Unknown", email: "" };
+        let commentAuthor = { id: "", name: "Unknown", email: "" };
         if (cData.authorId) {
           const cAuthorSnap = await db.collection("users").doc(cData.authorId).get();
           if (cAuthorSnap.exists) {
             commentAuthor = {
               id: cAuthorSnap.id,
-              name: cAuthorSnap.data()?.name,
-              email: cAuthorSnap.data()?.email,
-            } as any;
+              name: cAuthorSnap.data()?.name || "Unknown",
+              email: cAuthorSnap.data()?.email || "",
+            };
           }
         }
         comments.push({ id: cDoc.id, ...cData, author: commentAuthor });
@@ -116,6 +116,9 @@ export default async function TeacherDashboard() {
 
     courses.push({
       id: courseDoc.id,
+      title: courseData.title || "",
+      description: courseData.description || "",
+      code: courseData.code || "",
       ...courseData,
       enrollments,
       assignments,
@@ -123,7 +126,7 @@ export default async function TeacherDashboard() {
     });
   }
 
-  courses.sort((a, b) => a.code.localeCompare(b.code));
+  courses.sort((a, b) => (a.code || "").localeCompare(b.code || ""));
 
   // 2. Compute dynamic stats for the active teacher
   const uniqueStudentsSet = new Set(
@@ -134,7 +137,7 @@ export default async function TeacherDashboard() {
   const allEnrollments = courses.flatMap((c) => c.enrollments);
   const classAverageProgress = allEnrollments.length
     ? Math.round(
-        allEnrollments.reduce((sum: number, e: any) => sum + e.progress, 0) / allEnrollments.length
+        allEnrollments.reduce((sum: number, e: any) => sum + (e.progress || 0), 0) / allEnrollments.length
       )
     : 0;
 

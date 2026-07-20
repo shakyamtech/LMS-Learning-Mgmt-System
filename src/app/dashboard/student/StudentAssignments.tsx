@@ -42,6 +42,7 @@ interface StudentAssignmentsProps {
 type FilterStatus = "ALL" | "PENDING" | "SUBMITTED" | "GRADED";
 
 export default function StudentAssignments({ enrollments }: StudentAssignmentsProps) {
+  const [now] = useState(() => Date.now());
   const [filter, setFilter] = useState<FilterStatus>("ALL");
   const [selectedAssignment, setSelectedAssignment] = useState<(Assignment & { courseCode: string; courseTitle: string }) | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,14 +59,14 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
   // Filter assignments based on active tab selection
   const filteredAssignments = allAssignments.filter((assignment) => {
     const submission = assignment.submissions?.[0] || null;
+    const isSubmitted = !!submission;
     const isGraded = submission?.status === "GRADED";
-    const isSubmitted = submission && submission.status === "PENDING";
 
     if (filter === "PENDING") {
       return !submission;
     }
     if (filter === "SUBMITTED") {
-      return isSubmitted;
+      return isSubmitted && !isGraded;
     }
     if (filter === "GRADED") {
       return isGraded;
@@ -76,7 +77,7 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
   const getStatusBadge = (assignment: typeof allAssignments[0]) => {
     const submission = assignment.submissions?.[0] || null;
     if (!submission) {
-      const isPastDue = new Date(assignment.dueDate).getTime() < Date.now();
+      const isPastDue = new Date(assignment.dueDate).getTime() < now;
       return (
         <span style={{
           fontSize: "0.7rem",

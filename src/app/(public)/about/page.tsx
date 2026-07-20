@@ -97,7 +97,7 @@ export default function AboutPage() {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.8rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Meet Our Leadership</h2>
-            <p style={{ color: "#777", fontSize: "1.1rem" }}>The dedicated team behind Lagankhel IT Academy's success.</p>
+            <p style={{ color: "#777", fontSize: "1.1rem" }}>The dedicated team behind Lagankhel IT Academy&apos;s success.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {team.map((member, i) => (

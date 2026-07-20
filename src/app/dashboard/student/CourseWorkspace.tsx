@@ -72,6 +72,7 @@ interface CourseWorkspaceProps {
 }
 
 export default function CourseWorkspace({ isOpen, onClose, course }: CourseWorkspaceProps) {
+  const [now] = useState(() => Date.now());
   const [activeTab, setActiveTab] = useState<"announcements" | "assignments">("announcements");
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
@@ -92,9 +93,8 @@ export default function CourseWorkspace({ isOpen, onClose, course }: CourseWorks
 
   if (!isOpen || !course) return null;
 
-  const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
     const form = e.currentTarget;
     const formData = new FormData(form);
 
@@ -115,7 +115,7 @@ export default function CourseWorkspace({ isOpen, onClose, course }: CourseWorks
   const getStatusBadge = (assignment: Assignment) => {
     const submission = assignment.submissions?.[0] || null;
     if (!submission) {
-      const isPastDue = new Date(assignment.dueDate).getTime() < Date.now();
+      const isPastDue = new Date(assignment.dueDate).getTime() < now;
       return (
         <span style={{
           fontSize: "0.65rem",

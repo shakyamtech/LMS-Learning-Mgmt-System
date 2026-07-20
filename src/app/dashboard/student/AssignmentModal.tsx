@@ -35,9 +35,12 @@ export default function AssignmentModal({ isOpen, onClose, assignment }: Assignm
   const existingSubmission = assignment?.submissions?.[0] || null;
   const isGraded = existingSubmission?.status === "GRADED";
 
+  const [now] = useState(() => Date.now());
+
   // Reset local showForm state and form errors when modal opens or assignment changes
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowForm(!existingSubmission || existingSubmission.status !== "GRADED");
     }
   }, [isOpen, assignment, existingSubmission]);
@@ -56,7 +59,7 @@ export default function AssignmentModal({ isOpen, onClose, assignment }: Assignm
   if (!isOpen || !assignment) return null;
 
   const dueDate = new Date(assignment.dueDate);
-  const isPastDue = dueDate.getTime() < Date.now();
+  const isPastDue = dueDate.getTime() < now;
 
   return (
     <div style={{

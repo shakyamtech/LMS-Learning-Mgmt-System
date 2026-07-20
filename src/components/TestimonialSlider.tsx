@@ -60,7 +60,7 @@ export default function TestimonialSlider() {
               style={{ backgroundImage: `url(${testim.avatar})` }}
             />
             <p style={{ fontSize: "1.25rem", fontStyle: "italic", color: "#555", lineHeight: 1.6, marginBottom: "2rem" }}>
-              "{testim.quote}"
+              &ldquo;{testim.quote}&rdquo;
             </p>
             <h4 className="testimonial-name" style={{ margin: "0 0 0.25rem 0", color: "var(--college-primary)", fontSize: "1.1rem" }}>{testim.name}</h4>
             <span style={{ fontSize: "0.9rem", color: "#999" }}>{testim.class}</span>

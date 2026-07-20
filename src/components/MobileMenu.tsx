@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 
+import { JWTPayload } from "@/lib/auth-utils";
+
 interface MobileMenuProps {
-  session: any;
+  session: JWTPayload | null;
   dashboardUrl: string;
-  logoutAction: any;
+  logoutAction: () => Promise<void>;
 }
 
 export default function MobileMenu({ session, dashboardUrl, logoutAction }: MobileMenuProps) {

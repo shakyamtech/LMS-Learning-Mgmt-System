@@ -179,7 +179,7 @@ export default function LoginPage() {
         </form>
 
         <p style={{ textAlign: "center", marginTop: "2rem", marginBottom: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="auth-login-link" style={{ fontWeight: 600, color: "var(--college-primary)" }}>
             Create one free
           </Link>

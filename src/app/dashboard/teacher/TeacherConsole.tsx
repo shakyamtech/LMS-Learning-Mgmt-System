@@ -92,6 +92,7 @@ export default function TeacherConsole({ courses }: TeacherConsoleProps) {
   // Auto collapse announcement creation form
   useEffect(() => {
     if (announceState?.success) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowAnnounceForm(false);
       announceFormRef.current?.reset();
     }
@@ -151,6 +152,7 @@ export default function TeacherConsole({ courses }: TeacherConsoleProps) {
   // Auto-collapse creation form upon successful completion
   useEffect(() => {
     if (createState?.success) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowCreateForm(false);
       createFormRef.current?.reset();
     }

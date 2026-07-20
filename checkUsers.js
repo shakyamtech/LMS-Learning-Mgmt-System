@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { Client } = require('pg');
 const client = new Client({
   connectionString: 'postgresql://postgres.muizmjnhbekatlrlepop:L60JHW3Ggh6ThEsN@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres'

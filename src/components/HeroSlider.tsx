@@ -40,7 +40,7 @@ export default function HeroSlider({ initialSlides }: HeroSliderProps) {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 5000); // 5 seconds per slide
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <section className="flex-row" style={{ minHeight: "calc(100vh - 120px)", backgroundColor: "#f8f6f0", position: "relative", overflow: "hidden" }}>

@@ -11,8 +11,8 @@ if (!getApps().length) {
         privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       }),
     });
-  } catch (error: any) {
-    console.error('Firebase admin initialization error', error.stack);
+  } catch (error) {
+    console.error('Firebase admin initialization error', error);
   }
 }
 

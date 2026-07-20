@@ -4,8 +4,6 @@ import { useEffect } from "react";
 
 export default function HeaderScrollHandler() {
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
       const header = document.querySelector(".site-main-header");
       if (!header) return;

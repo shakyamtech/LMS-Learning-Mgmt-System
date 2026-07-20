@@ -28,7 +28,7 @@ export default async function AdminDashboard() {
 
   // 2. Fetch all existing Courses
   const coursesSnap = await db.collection("courses").get();
-  let courses = [] as any[];
+  const courses = [];
   
   for (const doc of coursesSnap.docs) {
     const courseData = doc.data();

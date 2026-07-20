@@ -1,27 +1,11 @@
-import { decryptSession } from "@/lib/auth-utils";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { logout } from "@/app/actions/auth";
 import HeroSlider from "@/components/HeroSlider";
 import TestimonialSlider from "@/components/TestimonialSlider";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { db } from "@/lib/firebase";
 
-
 export default async function Home() {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("session")?.value;
-
-  let session = null;
-  if (sessionToken) {
-    try {
-      session = await decryptSession(sessionToken);
-    } catch (e) {
-      console.error("Stale session key ignored:", e);
-    }
-  }
-
   // Fetch homepage slider CMS config if it exists
   let cmsSlides = undefined;
   try {
@@ -33,18 +17,6 @@ export default async function Home() {
   } catch (err) {
     console.error("Error loading homepage slider CMS config:", err);
   }
-
-  const getDashboardUrl = (role: string) => {
-    switch (role) {
-      case "ADMIN":
-        return "/dashboard/admin";
-      case "TEACHER":
-        return "/dashboard/teacher";
-      case "STUDENT":
-      default:
-        return "/dashboard/student";
-    }
-  };
 
   return (
     <div id="top" style={{

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import CourseForm from "./CourseForm";
 import { approveStudent, rejectStudent } from "@/app/actions/auth";
 import { saveHomepageConfig } from "@/app/actions/cms";
@@ -103,11 +104,13 @@ export default function AdminDashboardClient({
 
   // Sync prop changes if they occur
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalStudents(students);
   }, [students]);
 
   // Load dismissed notifications from localStorage on mount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
     try {
       const dismissed = localStorage.getItem("dismissedNotifications");
@@ -162,6 +165,7 @@ export default function AdminDashboardClient({
 
   // Clear search query when tab changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchQuery("");
   }, [activeTab]);
 
@@ -222,10 +226,10 @@ export default function AdminDashboardClient({
     <div className="admin-layout">
       {/* Sidebar Navigation */}
       <aside className="admin-sidebar">
-        <a href="/" className="admin-sidebar-brand">
+        <Link href="/" className="admin-sidebar-brand">
           <img src="/logo.png" alt="Lagankhel IT Academy Logo" />
           <span className="admin-sidebar-brand-name">LITA Admin</span>
-        </a>
+        </Link>
 
         <ul className="admin-sidebar-menu">
           <li>

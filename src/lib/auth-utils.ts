@@ -23,7 +23,7 @@ export async function decryptSession(token: string): Promise<JWTPayload | null> 
       algorithms: ["HS256"],
     });
     return payload as unknown as JWTPayload;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
