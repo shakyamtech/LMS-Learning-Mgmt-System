@@ -131,79 +131,19 @@ export default async function StudentDashboard() {
     ? Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / enrollments.length)
     : 0;
 
+  // Fetch student name from Firestore
+  const studentUserSnap = await db.collection("users").doc(session.userId).get();
+  const studentName = studentUserSnap.exists ? (studentUserSnap.data()?.name || session.email.split("@")[0]) : session.email.split("@")[0];
+
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--background)", padding: "2rem" }}>
-      <header className="glass-panel" style={{
-        padding: "1.25rem 2rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "2rem",
-        border: "1px solid var(--border)"
-      }}>
-        <div>
-          <span style={{
-            fontSize: "0.75rem",
-            backgroundColor: "rgba(79, 70, 229, 0.1)",
-            color: "var(--primary)",
-            fontWeight: 700,
-            padding: "0.25rem 0.75rem",
-            borderRadius: "var(--radius-full)",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em"
-          }}>
-            🎓 Student Portal
-          </span>
-          <h1 className="text-h3" style={{ margin: "0.5rem 0 0 0" }}>LMS Learning Hub</h1>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{session.email.split("@")[0]}</div>
-            <div className="text-muted" style={{ fontSize: "0.8rem" }}>{session.email}</div>
-          </div>
-          <form action={logout}>
-            <button className="btn btn-secondary" type="submit" style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}>
-              Logout
-            </button>
-          </form>
-        </div>
-      </header>
-
-      <main className="container" style={{ padding: 0 }}>
-        <div style={{ marginBottom: "2rem" }}>
-          <h2 className="text-h2">Welcome back, Student!</h2>
-          <p className="text-muted">Here is an overview of your active courses, learning progress, and pending assignments.</p>
-        </div>
-
-        {/* Info Cards Row */}
-        <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
-          <div className="card">
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Enrolled Courses</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--primary)" }}>{enrollments.length}</p>
-            <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-              {activeCount} in-progress, {completedCount} completed
-            </p>
-          </div>
-          <div className="card">
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📈</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Average Progress</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--secondary)" }}>{averageProgress}%</p>
-            <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Across all enrolled courses</p>
-          </div>
-          <div className="card">
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚡</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Academic Status</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--warning)" }}>Good Standing</p>
-            <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Connected to Firebase database</p>
-          </div>
-        </div>
-
-        {/* Detailed Layout - Handled by interactive client StudentConsole */}
-        <StudentConsole enrollments={enrollments} availableCourses={availableCourses} />
-
-      </main>
-    </div>
+    <StudentConsole
+      enrollments={enrollments}
+      availableCourses={availableCourses}
+      activeCount={activeCount}
+      completedCount={completedCount}
+      averageProgress={averageProgress}
+      session={{ email: session.email, name: studentName }}
+      logout={logout}
+    />
   );
 }
