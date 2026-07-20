@@ -59,7 +59,7 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
   // Filter assignments based on active tab selection
   const filteredAssignments = allAssignments.filter((assignment) => {
     const submission = assignment.submissions?.[0] || null;
-    const isSubmitted = !!submission;
+    const isSubmitted = Boolean(submission);
     const isGraded = submission?.status === "GRADED";
 
     if (filter === "PENDING") {
@@ -84,8 +84,8 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
           fontWeight: 700,
           padding: "0.15rem 0.5rem",
           borderRadius: "var(--radius-sm)",
-          backgroundColor: isPastDue ? "rgba(239, 68, 68, 0.1)" : "rgba(100, 116, 139, 0.1)",
-          color: isPastDue ? "var(--error)" : "var(--text-muted)"
+          backgroundColor: isPastDue ? "#fee2e2" : "#f1f5f9",
+          color: isPastDue ? "#dc2626" : "#64748b"
         }}>
           {isPastDue ? "🔴 Missing" : "📝 Todo"}
         </span>
@@ -98,8 +98,8 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
           fontWeight: 700,
           padding: "0.15rem 0.5rem",
           borderRadius: "var(--radius-sm)",
-          backgroundColor: "rgba(34, 197, 94, 0.1)",
-          color: "var(--success)"
+          backgroundColor: "rgba(16, 185, 129, 0.1)",
+          color: "#059669"
         }}>
           🎉 Score: {submission.grade}%
         </span>
@@ -112,7 +112,7 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
         padding: "0.15rem 0.5rem",
         borderRadius: "var(--radius-sm)",
         backgroundColor: "rgba(245, 158, 11, 0.1)",
-        color: "var(--warning)"
+        color: "#d97706"
       }}>
         ⏳ Awaiting Grade
       </span>
@@ -125,17 +125,28 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
   };
 
   return (
-    <div className="card" style={{ height: "fit-content", marginTop: "2rem" }}>
+    <div style={{
+      backgroundColor: "#ffffff",
+      padding: "1.5rem",
+      borderRadius: "var(--radius-lg)",
+      border: "1px solid #e5e7eb",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+      height: "fit-content",
+      marginTop: "2rem"
+    }}>
       {/* Header and Filter Controls */}
-      <div className="flex-between" style={{
-        borderBottom: "1px solid var(--border)",
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        borderBottom: "1px solid #e5e7eb",
         paddingBottom: "1.25rem",
         marginBottom: "1.5rem",
         flexWrap: "wrap",
         gap: "1rem"
       }}>
         <div>
-          <h3 className="text-h3" style={{ margin: 0, fontSize: "1.25rem" }}>
+          <h3 style={{ fontFamily: "Playfair Display, serif", margin: 0, fontSize: "1.35rem", color: "#0e7490" }}>
             📝 Assignments & grading tasks
           </h3>
           <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
@@ -144,7 +155,7 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
         </div>
 
         {/* Filters Tabs */}
-        <div style={{ display: "flex", gap: "0.25rem", backgroundColor: "var(--surface-hover)", padding: "0.25rem", borderRadius: "var(--radius-md)" }}>
+        <div style={{ display: "flex", gap: "0.25rem", backgroundColor: "#f3f4f6", padding: "0.25rem", borderRadius: "var(--radius-md)" }}>
           {(["ALL", "PENDING", "SUBMITTED", "GRADED"] as FilterStatus[]).map((tab) => (
             <button
               key={tab}
@@ -152,14 +163,14 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
               style={{
                 padding: "0.35rem 0.75rem",
                 fontSize: "0.75rem",
-                fontWeight: 600,
+                fontWeight: 700,
                 borderRadius: "var(--radius-sm)",
                 border: "none",
                 cursor: "pointer",
-                backgroundColor: filter === tab ? "var(--surface)" : "transparent",
-                color: filter === tab ? "var(--primary)" : "var(--text-muted)",
-                boxShadow: filter === tab ? "var(--shadow-sm)" : "none",
-                transition: "all var(--transition-fast)"
+                backgroundColor: filter === tab ? "#0891b2" : "transparent",
+                color: filter === tab ? "#ffffff" : "#4b5563",
+                boxShadow: filter === tab ? "0 1px 2px rgba(0, 0, 0, 0.05)" : "none",
+                transition: "all 0.2s ease"
               }}
             >
               {tab === "ALL" && "All Tasks"}
@@ -176,12 +187,12 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
         <div style={{
           textAlign: "center",
           padding: "3.5rem 1rem",
-          border: "1px dashed var(--border)",
+          border: "1px dashed #e5e7eb",
           borderRadius: "var(--radius-md)",
-          backgroundColor: "var(--surface-hover)"
+          backgroundColor: "#f9fafb"
         }}>
           <span style={{ fontSize: "2.5rem" }}>✨</span>
-          <h4 style={{ margin: "0.5rem 0 0.25rem 0", color: "var(--text-main)", fontWeight: 600 }}>
+          <h4 style={{ margin: "0.5rem 0 0.25rem 0", color: "var(--college-text)", fontWeight: 700 }}>
             No Assignments Found
           </h4>
           <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>
@@ -204,22 +215,22 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
                 style={{
                   padding: "1.25rem",
                   borderRadius: "var(--radius-md)",
-                  border: "1px solid var(--border)",
-                  backgroundColor: "var(--surface-hover)",
+                  border: "1px solid #e5e7eb",
+                  backgroundColor: "#ffffff",
                   cursor: "pointer",
                   transition: "all 0.2s ease-in-out"
                 }}
-                className="assignment-card"
+                className="assignment-card-cyan"
               >
-                <div className="flex-between" style={{ marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
                   <span style={{
                     fontSize: "0.65rem",
                     fontWeight: 700,
-                    backgroundColor: "var(--surface)",
-                    border: "1px solid var(--border)",
+                    backgroundColor: "rgba(8, 145, 178, 0.08)",
+                    border: "1px solid rgba(8, 145, 178, 0.2)",
                     padding: "0.1rem 0.4rem",
                     borderRadius: "var(--radius-sm)",
-                    color: "var(--primary)"
+                    color: "#0891b2"
                   }}>
                     {assignment.courseCode}
                   </span>
@@ -229,8 +240,8 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
                 <h4 style={{
                   margin: "0 0 0.35rem 0",
                   fontSize: "0.95rem",
-                  fontWeight: 600,
-                  color: "var(--text-main)",
+                  fontWeight: 700,
+                  color: "var(--college-text)",
                   lineHeight: "1.3"
                 }}>
                   {assignment.title}
@@ -251,17 +262,17 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
                 </p>
 
                 <div style={{
-                  borderTop: "1px solid var(--border)",
+                  borderTop: "1px solid #e5e7eb",
                   paddingTop: "0.6rem",
                   marginTop: "0.25rem",
                   fontSize: "0.75rem",
-                  color: "var(--text-muted)",
+                  color: "#6b7280",
                   display: "flex",
                   justifyContent: "space-between"
                 }}>
                   <span>📅 Due: {dueDate.toLocaleDateString()}</span>
                   {submission && (
-                    <span style={{ color: "var(--secondary)", fontWeight: 600 }}>
+                    <span style={{ color: "#059669", fontWeight: 700 }}>
                       ✓ Submitted
                     </span>
                   )}
@@ -280,10 +291,10 @@ export default function StudentAssignments({ enrollments }: StudentAssignmentsPr
       />
 
       <style jsx global>{`
-        .assignment-card:hover {
-          background-color: var(--surface) !important;
-          border-color: var(--primary) !important;
-          box-shadow: var(--shadow-md);
+        .assignment-card-cyan:hover {
+          background-color: #ffffff !important;
+          border-color: #0891b2 !important;
+          box-shadow: 0 4px 12px rgba(8, 145, 178, 0.12);
           transform: translateY(-2px);
         }
       `}</style>

@@ -77,34 +77,39 @@ export default function AssignmentModal({ isOpen, onClose, assignment }: Assignm
       padding: "1.5rem",
       animation: "fadeIn 0.2s ease-out"
     }}>
-      <div className="glass-panel" style={{
+      <div style={{
         width: "100%",
         maxWidth: "600px",
         maxHeight: "90vh",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        border: "1px solid var(--border)",
-        boxShadow: "var(--shadow-glass)",
+        backgroundColor: "#ffffff",
+        borderRadius: "var(--radius-lg)",
+        border: "1px solid #e5e7eb",
+        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
         animation: "slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
         {/* Header */}
-        <div className="flex-between" style={{
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           padding: "1.5rem",
-          borderBottom: "1px solid var(--border)",
-          backgroundColor: "rgba(255, 255, 255, 0.05)"
+          borderBottom: "1px solid #e5e7eb",
+          backgroundColor: "#ffffff"
         }}>
           <div>
             <span style={{
               fontSize: "0.75rem",
               textTransform: "uppercase",
               fontWeight: 700,
-              color: "var(--primary)",
+              color: "#0891b2",
               letterSpacing: "0.05em"
             }}>
               📝 Course Assignment Task
             </span>
-            <h3 style={{ margin: "0.25rem 0 0 0", fontSize: "1.25rem", fontWeight: 700 }}>
+            <h3 style={{ margin: "0.25rem 0 0 0", fontSize: "1.25rem", fontWeight: 700, color: "var(--college-text)" }}>
               {assignment.title}
             </h3>
           </div>
