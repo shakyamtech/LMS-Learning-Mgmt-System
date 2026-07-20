@@ -282,6 +282,9 @@ export default function AdminDashboardClient({
     return matchesSearch && matchesRole;
   });
 
+  const pendingStudentsCount = localStudents.filter(s => !s.approved).length;
+  const pendingUsersCount = localUsers.filter(u => !u.approved).length;
+
   const mockSettings = [
     { id: 1, label: "⚙️ System Configuration" },
     { id: 2, label: "🔑 Security & API Keys" },
@@ -318,8 +321,24 @@ export default function AdminDashboardClient({
                 setActiveTab("users");
               }}
               className={`admin-sidebar-link ${activeTab === "users" ? "active" : ""}`}
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
             >
-              <span>👥</span> Users Management
+              <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+                <span>👥</span> Users Management
+              </div>
+              {pendingUsersCount > 0 && (
+                <span style={{
+                  backgroundColor: "var(--college-accent)",
+                  color: "var(--college-primary-dark)",
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  padding: "0.15rem 0.55rem",
+                  borderRadius: "9999px",
+                  lineHeight: "1"
+                }}>
+                  {pendingUsersCount}
+                </span>
+              )}
             </a>
           </li>
           <li>
@@ -330,8 +349,25 @@ export default function AdminDashboardClient({
                 setActiveTab("students");
               }}
               className={`admin-sidebar-link ${activeTab === "students" ? "active" : ""}`}
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
             >
-              <span>🎓</span> Students Approval
+              <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+                <span>🎓</span> Students Approval
+              </div>
+              {pendingStudentsCount > 0 && (
+                <span style={{
+                  backgroundColor: "#ef4444",
+                  color: "#ffffff",
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  padding: "0.15rem 0.55rem",
+                  borderRadius: "9999px",
+                  boxShadow: "0 2px 6px rgba(239, 68, 68, 0.4)",
+                  lineHeight: "1"
+                }}>
+                  {pendingStudentsCount}
+                </span>
+              )}
             </a>
           </li>
           <li>
@@ -861,9 +897,10 @@ export default function AdminDashboardClient({
                           key={student.id}
                           style={{
                             padding: "1.25rem",
-                            border: "1px solid var(--border)",
+                            border: "1px solid #e5e7eb",
                             borderRadius: "var(--radius-md)",
-                            backgroundColor: "var(--surface-hover)",
+                            backgroundColor: "#ffffff",
+                            colorScheme: "light",
                             display: "flex",
                             alignItems: "center",
                             gap: "1rem"
