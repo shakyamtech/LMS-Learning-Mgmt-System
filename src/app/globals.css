@@ -1083,11 +1083,16 @@ a:hover {
 
 /* ─── Auth Card & Form Elements for Cohesive College Theme ─── */
 .auth-card {
-  background: #ffffff !important;
+  color-scheme: light !important;
+  background-color: #ffffff !important;
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 25px -5px rgba(27, 94, 32, 0.1), 0 8px 10px -6px rgba(27, 94, 32, 0.05);
   border: 1px solid rgba(27, 94, 32, 0.12) !important;
   color: #333333 !important;
+}
+
+.auth-card * {
+  color-scheme: light !important;
 }
 
 .auth-input-label {
@@ -1099,6 +1104,7 @@ a:hover {
 }
 
 .auth-input-field {
+  color-scheme: light !important;
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);

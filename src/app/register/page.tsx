@@ -10,8 +10,8 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="flex-center animate-fade-in bg-cream-pattern" style={{ minHeight: "100vh", padding: "2rem 1rem", backgroundColor: "var(--college-bg-cream)" }}>
-      <div className="auth-card" style={{ width: "100%", maxWidth: "560px", padding: "3rem 2.5rem", border: "1px solid rgba(27, 94, 32, 0.12)" }}>
+    <div className="flex-center animate-fade-in bg-cream-pattern" style={{ minHeight: "100vh", padding: "2rem 1rem", backgroundColor: "var(--college-bg-cream)", colorScheme: "light" }}>
+      <div className="auth-card" style={{ width: "100%", maxWidth: "560px", padding: "3rem 2.5rem", border: "1px solid rgba(27, 94, 32, 0.12)", backgroundColor: "#ffffff", colorScheme: "light" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.85rem", margin: "0 auto" }}>
             <Link href="/">
