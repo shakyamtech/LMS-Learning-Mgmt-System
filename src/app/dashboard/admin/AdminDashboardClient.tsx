@@ -352,6 +352,9 @@ export default function AdminDashboardClient({
   });
 
   const pendingUsersCount = localUsers.filter(u => !u.approved).length;
+  const studentCount = localUsers.filter(u => u.role === "STUDENT").length;
+  const teacherCount = localUsers.filter(u => u.role === "TEACHER").length;
+  const adminCount = localUsers.filter(u => u.role === "ADMIN").length;
 
   const handleSaveCollectFee = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -933,11 +936,23 @@ export default function AdminDashboardClient({
                   <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--success)" }}>99.98%</p>
                   <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>All core services active and optimal</p>
                 </div>
-                <div className="card" style={{ backgroundColor: "white" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
-                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Platform Users</h3>
-                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalUsers}</p>
-                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active students, instructors, staff</p>
+                <div className="card" style={{ backgroundColor: "white", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
+                    <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Platform Users</h3>
+                    <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalUsers}</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.75rem", flexWrap: "wrap" }}>
+                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(212, 175, 55, 0.15)", color: "#92400e", padding: "0.2rem 0.55rem", borderRadius: "9999px", fontWeight: 700 }}>
+                      🎓 {studentCount} {studentCount === 1 ? "Student" : "Students"}
+                    </span>
+                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(79, 70, 229, 0.1)", color: "#4f46e5", padding: "0.2rem 0.55rem", borderRadius: "9999px", fontWeight: 700 }}>
+                      👨‍🏫 {teacherCount} {teacherCount === 1 ? "Teacher" : "Teachers"}
+                    </span>
+                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(27, 94, 32, 0.1)", color: "var(--college-primary)", padding: "0.2rem 0.55rem", borderRadius: "9999px", fontWeight: 700 }}>
+                      ⚡ {adminCount} {adminCount === 1 ? "Admin" : "Admins"}
+                    </span>
+                  </div>
                 </div>
                 <div className="card" style={{ backgroundColor: "white" }}>
                   <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
