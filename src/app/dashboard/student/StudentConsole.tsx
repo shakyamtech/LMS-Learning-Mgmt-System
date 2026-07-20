@@ -43,8 +43,11 @@ export default function StudentConsole({
 
   return (
     <div className="admin-layout">
-      {/* Sidebar Navigation */}
-      <aside className="admin-sidebar">
+      {/* Sidebar Navigation - Vibrant Cyan / Teal Theme */}
+      <aside className="admin-sidebar" style={{
+        backgroundColor: "#164e63",
+        backgroundImage: "linear-gradient(180deg, #164e63 0%, #0e7490 100%)"
+      }}>
         <Link href="/" className="admin-sidebar-brand">
           <img src="/logo.png" alt="Lagankhel IT Academy Logo" />
           <span className="admin-sidebar-brand-name">LITA Student</span>
@@ -58,7 +61,13 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("dashboard");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "dashboard" ? "rgba(8, 145, 178, 0.3)" : "transparent",
+                color: activeConsoleTab === "dashboard" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "dashboard" ? "4px solid #06b6d4" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "dashboard" ? 700 : 500
+              }}
+              className="admin-sidebar-link"
             >
               <span>📊</span> Dashboard
             </a>
@@ -70,7 +79,13 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("courses");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "courses" ? "rgba(8, 145, 178, 0.3)" : "transparent",
+                color: activeConsoleTab === "courses" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "courses" ? "4px solid #06b6d4" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "courses" ? 700 : 500
+              }}
+              className="admin-sidebar-link"
             >
               <span>📚</span> My Enrolled Courses
             </a>
@@ -82,7 +97,13 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("browse");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "browse" ? "active" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "browse" ? "rgba(8, 145, 178, 0.3)" : "transparent",
+                color: activeConsoleTab === "browse" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "browse" ? "4px solid #06b6d4" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "browse" ? 700 : 500
+              }}
+              className="admin-sidebar-link"
             >
               <span>🔍</span> Browse & Enroll Courses
             </a>
@@ -94,7 +115,13 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("assignments");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "assignments" ? "rgba(8, 145, 178, 0.3)" : "transparent",
+                color: activeConsoleTab === "assignments" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "assignments" ? "4px solid #06b6d4" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "assignments" ? 700 : 500
+              }}
+              className="admin-sidebar-link"
             >
               <span>📝</span> My Assignments & Grades
             </a>
@@ -103,7 +130,7 @@ export default function StudentConsole({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar">{initials}</div>
+            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#06b6d4", color: "white" }}>{initials}</div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{studentDisplayName}</span>
               <span className="admin-sidebar-profile-email">{session?.email || ""}</span>
@@ -111,7 +138,7 @@ export default function StudentConsole({
           </div>
           {logout && (
             <form action={logout}>
-              <button className="admin-sidebar-logout-btn" type="submit">
+              <button className="admin-sidebar-logout-btn" type="submit" style={{ backgroundColor: "rgba(6, 182, 212, 0.2)", color: "#a5f3fc" }}>
                 🚪 Logout
               </button>
             </form>
@@ -126,8 +153,8 @@ export default function StudentConsole({
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{
               fontSize: "0.7rem",
-              backgroundColor: "rgba(27, 94, 32, 0.08)",
-              color: "var(--college-primary)",
+              backgroundColor: "rgba(8, 145, 178, 0.1)",
+              color: "#0891b2",
               fontWeight: 700,
               padding: "0.15rem 0.5rem",
               borderRadius: "var(--radius-full)",
@@ -136,7 +163,7 @@ export default function StudentConsole({
               width: "fit-content",
               marginBottom: "0.25rem"
             }}>
-              ⚡ Student Learning Hub
+              🎓 Student Learning Hub
             </span>
             <h1 className="admin-navbar-title">
               {activeConsoleTab === "dashboard" ? "Student Dashboard" :
@@ -150,7 +177,7 @@ export default function StudentConsole({
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
           <div style={{ marginBottom: "2rem" }}>
-            <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>
+            <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
               Welcome back, {studentDisplayName}!
             </h2>
             <p className="text-muted" style={{ margin: 0 }}>Here is an overview of your active courses, learning progress, and pending assignments.</p>
@@ -161,7 +188,7 @@ export default function StudentConsole({
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
               <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Enrolled Courses</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{enrollments.length}</p>
+              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#0891b2" }}>{enrollments.length}</p>
               <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>
                 {activeCount} in-progress, {completedCount} completed
               </p>
@@ -169,13 +196,13 @@ export default function StudentConsole({
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📈</div>
               <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Average Progress</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--success)" }}>{averageProgress}%</p>
+              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#059669" }}>{averageProgress}%</p>
               <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Across all enrolled courses</p>
             </div>
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚡</div>
               <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Academic Status</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#b45309" }}>Good Standing</p>
+              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#0891b2" }}>Good Standing</p>
               <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active student account</p>
             </div>
           </div>
@@ -186,7 +213,7 @@ export default function StudentConsole({
               {/* Active Courses */}
               <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                 <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
-                  <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0 0 1.25rem 0", fontSize: "1.35rem", color: "var(--college-primary)" }}>
+                  <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0 0 1.25rem 0", fontSize: "1.35rem", color: "#0e7490" }}>
                     Your Active Courses
                   </h3>
 
@@ -209,7 +236,7 @@ export default function StudentConsole({
                       {enrollments.map((enrollment) => {
                         const course = enrollment.course;
                         const isCompleted = enrollment.progress === 100;
-                        const progressColor = isCompleted ? "var(--success)" : "var(--college-primary)";
+                        const progressColor = isCompleted ? "#059669" : "#0891b2";
 
                         return (
                           <div
@@ -223,19 +250,19 @@ export default function StudentConsole({
                               cursor: "pointer",
                               transition: "all 0.2s ease-in-out"
                             }}
-                            className="student-course-card"
+                            className="student-course-card-cyan"
                           >
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
                               <div>
                                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                   <span style={{
                                     fontSize: "0.7rem",
-                                    color: "var(--college-primary)",
+                                    color: "#0891b2",
                                     fontWeight: 700,
-                                    border: "1px solid rgba(27, 94, 32, 0.2)",
+                                    border: "1px solid rgba(8, 145, 178, 0.2)",
                                     padding: "0.1rem 0.4rem",
                                     borderRadius: "var(--radius-sm)",
-                                    backgroundColor: "rgba(27, 94, 32, 0.06)"
+                                    backgroundColor: "rgba(8, 145, 178, 0.08)"
                                   }}>
                                     {course.code}
                                   </span>
@@ -287,7 +314,7 @@ export default function StudentConsole({
                                 fontSize: "0.75rem",
                                 fontWeight: 700,
                                 color: "white",
-                                backgroundColor: "var(--college-primary)",
+                                backgroundColor: "#0891b2",
                                 borderRadius: "var(--radius-sm)"
                               }}>
                                 📢 Open Workspace &rarr;
@@ -311,7 +338,7 @@ export default function StudentConsole({
 
           {activeConsoleTab === "courses" && (
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
-              <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0 0 1.25rem 0", fontSize: "1.35rem", color: "var(--college-primary)" }}>
+              <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0 0 1.25rem 0", fontSize: "1.35rem", color: "#0e7490" }}>
                 My Enrolled Courses & Learning Workspaces
               </h3>
               {enrollments.length === 0 ? (
@@ -333,9 +360,9 @@ export default function StudentConsole({
                           backgroundColor: "#ffffff",
                           cursor: "pointer"
                         }}
-                        className="student-course-card"
+                        className="student-course-card-cyan"
                       >
-                        <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                        <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#0891b2" }}>
                           {course.code}
                         </span>
                         <h4 style={{ margin: "0.25rem 0", fontSize: "1.05rem", fontWeight: 700, color: "var(--college-text)" }}>
@@ -345,10 +372,10 @@ export default function StudentConsole({
                           {course.description}
                         </p>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0891b2" }}>
                             Progress: {enrollment.progress}%
                           </span>
-                          <span style={{ fontSize: "0.8rem", color: "var(--college-primary)", fontWeight: 700 }}>
+                          <span style={{ fontSize: "0.8rem", color: "#0891b2", fontWeight: 700 }}>
                             Open Workspace &rarr;
                           </span>
                         </div>
@@ -384,13 +411,13 @@ export default function StudentConsole({
       )}
 
       <style jsx global>{`
-        .student-course-card {
+        .student-course-card-cyan {
           transition: all 0.2s ease-in-out;
         }
-        .student-course-card:hover {
-          border-color: var(--college-primary) !important;
+        .student-course-card-cyan:hover {
+          border-color: #0891b2 !important;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(27, 94, 32, 0.12);
+          box-shadow: 0 4px 12px rgba(8, 145, 178, 0.15);
         }
       `}</style>
     </div>

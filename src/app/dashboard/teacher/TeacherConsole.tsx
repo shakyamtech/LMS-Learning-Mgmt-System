@@ -236,8 +236,11 @@ export default function TeacherConsole({
 
   return (
     <div className="admin-layout">
-      {/* Sidebar Navigation */}
-      <aside className="admin-sidebar">
+      {/* Sidebar Navigation - Deep Crimson Red Theme */}
+      <aside className="admin-sidebar" style={{
+        backgroundColor: "#7f1d1d",
+        backgroundImage: "linear-gradient(180deg, #7f1d1d 0%, #991b1b 100%)"
+      }}>
         <Link href="/" className="admin-sidebar-brand">
           <img src="/logo.png" alt="Lagankhel IT Academy Logo" />
           <span className="admin-sidebar-brand-name">LITA Teacher</span>
@@ -251,7 +254,13 @@ export default function TeacherConsole({
                 e.preventDefault();
                 setActiveConsoleTab("dashboard");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active" : ""}`}
+              className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active-red" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "dashboard" ? "rgba(239, 68, 68, 0.25)" : "transparent",
+                color: activeConsoleTab === "dashboard" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "dashboard" ? "4px solid #ef4444" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "dashboard" ? 700 : 500
+              }}
             >
               <span>📊</span> Dashboard
             </a>
@@ -264,7 +273,13 @@ export default function TeacherConsole({
                 setActiveConsoleTab("courses");
                 setActiveTab("roster");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active" : ""}`}
+              className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active-red" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "courses" ? "rgba(239, 68, 68, 0.25)" : "transparent",
+                color: activeConsoleTab === "courses" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "courses" ? "4px solid #ef4444" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "courses" ? 700 : 500
+              }}
             >
               <span>📚</span> My Courses & Roster
             </a>
@@ -277,7 +292,13 @@ export default function TeacherConsole({
                 setActiveConsoleTab("assignments");
                 setActiveTab("assignments");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active" : ""}`}
+              className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active-red" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "assignments" ? "rgba(239, 68, 68, 0.25)" : "transparent",
+                color: activeConsoleTab === "assignments" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "assignments" ? "4px solid #ef4444" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "assignments" ? 700 : 500
+              }}
             >
               <span>📝</span> Assignments & Grading
             </a>
@@ -290,7 +311,13 @@ export default function TeacherConsole({
                 setActiveConsoleTab("announcements");
                 setActiveTab("announcements");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "announcements" ? "active" : ""}`}
+              className={`admin-sidebar-link ${activeConsoleTab === "announcements" ? "active-red" : ""}`}
+              style={{
+                backgroundColor: activeConsoleTab === "announcements" ? "rgba(239, 68, 68, 0.25)" : "transparent",
+                color: activeConsoleTab === "announcements" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "announcements" ? "4px solid #ef4444" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "announcements" ? 700 : 500
+              }}
             >
               <span>📢</span> Class Announcements
             </a>
@@ -299,7 +326,7 @@ export default function TeacherConsole({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar">{initials}</div>
+            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#ef4444", color: "white" }}>{initials}</div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{teacherDisplayName}</span>
               <span className="admin-sidebar-profile-email">{session?.email || ""}</span>
@@ -307,7 +334,7 @@ export default function TeacherConsole({
           </div>
           {logout && (
             <form action={logout}>
-              <button className="admin-sidebar-logout-btn" type="submit">
+              <button className="admin-sidebar-logout-btn" type="submit" style={{ backgroundColor: "rgba(239, 68, 68, 0.2)", color: "#fca5a5" }}>
                 🚪 Logout
               </button>
             </form>
@@ -322,8 +349,8 @@ export default function TeacherConsole({
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{
               fontSize: "0.7rem",
-              backgroundColor: "rgba(27, 94, 32, 0.08)",
-              color: "var(--college-primary)",
+              backgroundColor: "rgba(220, 38, 38, 0.1)",
+              color: "#dc2626",
               fontWeight: 700,
               padding: "0.15rem 0.5rem",
               borderRadius: "var(--radius-full)",
@@ -332,7 +359,7 @@ export default function TeacherConsole({
               width: "fit-content",
               marginBottom: "0.25rem"
             }}>
-              ⚡ Instructor Control Panel
+              👨‍🏫 Instructor Control Panel
             </span>
             <h1 className="admin-navbar-title">
               {activeConsoleTab === "dashboard" ? "LMS Instructor Dashboard" :
@@ -346,7 +373,7 @@ export default function TeacherConsole({
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
           <div style={{ marginBottom: "2rem" }}>
-            <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>
+            <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#991b1b", margin: "0 0 0.5rem 0" }}>
               Welcome back, {teacherDisplayName}!
             </h2>
             <p className="text-muted" style={{ margin: 0 }}>Manage your student cohorts, view class statistics, edit your course curriculum, and grade submissions.</p>
@@ -357,13 +384,13 @@ export default function TeacherConsole({
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
               <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Total Students</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--college-primary)" }}>{totalStudents}</p>
+              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#dc2626" }}>{totalStudents}</p>
               <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active cohort across assigned classes</p>
             </div>
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📖</div>
               <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Active Classes</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--success)" }}>{courses.length} Courses</p>
+              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#991b1b" }}>{courses.length} Courses</p>
               <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Instructing on active curriculum</p>
             </div>
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
@@ -383,7 +410,7 @@ export default function TeacherConsole({
               borderRadius: "var(--radius-lg)"
             }}>
               <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>👨‍🏫</div>
-              <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0 0 0.5rem 0", color: "var(--college-primary)", fontSize: "1.5rem" }}>
+              <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0 0 0.5rem 0", color: "#991b1b", fontSize: "1.5rem" }}>
                 No Assigned Courses
               </h3>
               <p className="text-muted" style={{ maxWidth: "450px", margin: "0 auto 1.5rem auto", fontSize: "0.95rem" }}>
@@ -394,7 +421,7 @@ export default function TeacherConsole({
             <div style={{ display: "grid", gridTemplateColumns: "1fr 2.5fr", gap: "2rem" }}>
               {/* Left Sidebar: Course Selection */}
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>
+                <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.25rem", color: "#991b1b", margin: "0 0 0.5rem 0" }}>
                   Courses You Teach
                 </h3>
                 {courses.map((course) => {
@@ -411,11 +438,11 @@ export default function TeacherConsole({
                         width: "100%",
                         padding: "1.25rem",
                         borderRadius: "var(--radius-md)",
-                        border: isActive ? "2px solid var(--college-primary)" : "1px solid var(--border)",
+                        border: isActive ? "2px solid #dc2626" : "1px solid var(--border)",
                         backgroundColor: isActive ? "#ffffff" : "#f9fafb",
                         textAlign: "left",
                         cursor: "pointer",
-                        boxShadow: isActive ? "0 4px 12px rgba(27, 94, 32, 0.12)" : "none",
+                        boxShadow: isActive ? "0 4px 12px rgba(220, 38, 38, 0.12)" : "none",
                         transition: "all 0.2s ease-in-out",
                         outline: "none"
                       }}
@@ -423,9 +450,9 @@ export default function TeacherConsole({
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
                         <span style={{
                           fontSize: "0.7rem",
-                          color: isActive ? "var(--college-primary)" : "var(--text-muted)",
+                          color: isActive ? "#dc2626" : "var(--text-muted)",
                           fontWeight: 700,
-                          backgroundColor: isActive ? "rgba(27, 94, 32, 0.08)" : "rgba(0, 0, 0, 0.03)",
+                          backgroundColor: isActive ? "rgba(220, 38, 38, 0.08)" : "rgba(0, 0, 0, 0.03)",
                           padding: "0.15rem 0.4rem",
                           borderRadius: "var(--radius-sm)"
                         }}>
@@ -452,8 +479,8 @@ export default function TeacherConsole({
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
                         <span style={{
                           fontSize: "0.75rem",
-                          color: "var(--college-primary)",
-                          backgroundColor: "rgba(27, 94, 32, 0.08)",
+                          color: "#dc2626",
+                          backgroundColor: "rgba(220, 38, 38, 0.08)",
                           fontWeight: 700,
                           padding: "0.2rem 0.6rem",
                           borderRadius: "var(--radius-sm)"
@@ -469,7 +496,7 @@ export default function TeacherConsole({
                               fontWeight: 700,
                               borderRadius: "var(--radius-sm)",
                               border: activeTab === "roster" ? "none" : "1px solid #d1d5db",
-                              backgroundColor: activeTab === "roster" ? "var(--college-primary)" : "#ffffff",
+                              backgroundColor: activeTab === "roster" ? "#dc2626" : "#ffffff",
                               color: activeTab === "roster" ? "#ffffff" : "#374151",
                               cursor: "pointer"
                             }}
@@ -484,7 +511,7 @@ export default function TeacherConsole({
                               fontWeight: 700,
                               borderRadius: "var(--radius-sm)",
                               border: activeTab === "assignments" ? "none" : "1px solid #d1d5db",
-                              backgroundColor: activeTab === "assignments" ? "var(--college-primary)" : "#ffffff",
+                              backgroundColor: activeTab === "assignments" ? "#dc2626" : "#ffffff",
                               color: activeTab === "assignments" ? "#ffffff" : "#374151",
                               cursor: "pointer"
                             }}
@@ -499,7 +526,7 @@ export default function TeacherConsole({
                               fontWeight: 700,
                               borderRadius: "var(--radius-sm)",
                               border: activeTab === "announcements" ? "none" : "1px solid #d1d5db",
-                              backgroundColor: activeTab === "announcements" ? "var(--college-primary)" : "#ffffff",
+                              backgroundColor: activeTab === "announcements" ? "#dc2626" : "#ffffff",
                               color: activeTab === "announcements" ? "#ffffff" : "#374151",
                               cursor: "pointer"
                             }}
@@ -508,7 +535,7 @@ export default function TeacherConsole({
                           </button>
                         </div>
                       </div>
-                      <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0.75rem 0 0.25rem 0", fontSize: "1.5rem", color: "var(--college-primary)" }}>
+                      <h3 style={{ fontFamily: "Playfair Display, serif", margin: "0.75rem 0 0.25rem 0", fontSize: "1.5rem", color: "#991b1b" }}>
                         {selectedCourse.title}
                       </h3>
                       <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem", lineHeight: "1.4" }}>
@@ -558,7 +585,7 @@ export default function TeacherConsole({
                                   </div>
                                   <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                                     <div style={{ textAlign: "right" }}>
-                                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>{currentVal}% Progress</div>
+                                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#dc2626" }}>{currentVal}% Progress</div>
                                       <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Grade: {e.grade || "N/A"}</div>
                                     </div>
                                     <input
@@ -581,7 +608,7 @@ export default function TeacherConsole({
                                         onClick={() => handleSaveProgress(e.id, currentVal)}
                                         disabled={isSaving}
                                         style={{
-                                          backgroundColor: "var(--college-primary)",
+                                          backgroundColor: "#dc2626",
                                           color: "white",
                                           border: "none",
                                           padding: "0.35rem 0.65rem",
@@ -610,7 +637,7 @@ export default function TeacherConsole({
                           <button
                             onClick={() => setShowCreateForm(!showCreateForm)}
                             style={{
-                              backgroundColor: "var(--college-primary)",
+                              backgroundColor: "#dc2626",
                               color: "white",
                               border: "none",
                               padding: "0.4rem 0.9rem",
@@ -634,7 +661,7 @@ export default function TeacherConsole({
                             marginBottom: "1.5rem"
                           }}>
                             <input type="hidden" name="courseId" value={selectedCourse.id} />
-                            <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--college-primary)", marginBottom: "0.75rem" }}>
+                            <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#991b1b", marginBottom: "0.75rem" }}>
                               ➕ Create New Assignment
                             </div>
                             <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginBottom: "0.75rem" }}>
@@ -663,7 +690,7 @@ export default function TeacherConsole({
                               type="submit"
                               disabled={isCreatePending}
                               style={{
-                                backgroundColor: "var(--college-primary)",
+                                backgroundColor: "#dc2626",
                                 color: "white",
                                 border: "none",
                                 padding: "0.45rem 1.25rem",
@@ -702,7 +729,7 @@ export default function TeacherConsole({
 
                                 {/* Submissions for this assignment */}
                                 <div style={{ marginTop: "1rem", borderTop: "1px dashed #e5e7eb", paddingTop: "0.75rem" }}>
-                                  <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-primary)", marginBottom: "0.5rem" }}>
+                                  <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#991b1b", marginBottom: "0.5rem" }}>
                                     📥 Submissions ({assignment.submissions.length})
                                   </div>
                                   {assignment.submissions.length === 0 ? (
@@ -756,7 +783,7 @@ export default function TeacherConsole({
                                               onClick={() => handleGradeSubmit(sub.id)}
                                               disabled={gradingSubmissionId === sub.id}
                                               style={{
-                                                backgroundColor: "var(--college-primary)",
+                                                backgroundColor: "#dc2626",
                                                 color: "white",
                                                 border: "none",
                                                 padding: "0.3rem 0.75rem",
@@ -789,7 +816,7 @@ export default function TeacherConsole({
                           <button
                             onClick={() => setShowAnnounceForm(!showAnnounceForm)}
                             style={{
-                              backgroundColor: "var(--college-primary)",
+                              backgroundColor: "#dc2626",
                               color: "white",
                               border: "none",
                               padding: "0.4rem 0.9rem",
@@ -830,7 +857,7 @@ export default function TeacherConsole({
                               type="submit"
                               disabled={isAnnouncePending}
                               style={{
-                                backgroundColor: "var(--college-primary)",
+                                backgroundColor: "#dc2626",
                                 color: "white",
                                 border: "none",
                                 padding: "0.45rem 1.25rem",
@@ -869,7 +896,7 @@ export default function TeacherConsole({
 
                                 {/* Comments Section */}
                                 <div style={{ borderTop: "1px dashed #e5e7eb", paddingTop: "0.75rem", marginTop: "0.75rem" }}>
-                                  <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--college-primary)", marginBottom: "0.5rem" }}>
+                                  <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#991b1b", marginBottom: "0.5rem" }}>
                                     💬 Discussion ({announcement.comments.length})
                                   </div>
                                   <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "0.75rem" }}>
@@ -894,7 +921,7 @@ export default function TeacherConsole({
                                     <button
                                       type="submit"
                                       style={{
-                                        backgroundColor: "var(--college-primary)",
+                                        backgroundColor: "#dc2626",
                                         color: "white",
                                         border: "none",
                                         padding: "0.35rem 0.75rem",
