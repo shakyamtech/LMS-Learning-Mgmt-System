@@ -44,6 +44,14 @@ export interface PlatformUser {
   role: string;
   approved: boolean;
   createdAt?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  dob?: string | null;
+  faculty?: string | null;
+  rollNo?: string | null;
+  admissionDate?: string | null;
+  totalFee?: number | null;
+  paidFee?: number | null;
 }
 
 interface Session {
@@ -83,6 +91,7 @@ export default function AdminDashboardClient({
   // User Management State
   const [userRoleFilter, setUserRoleFilter] = useState<"ALL" | "STUDENT" | "TEACHER" | "ADMIN">("ALL");
   const [editingUser, setEditingUser] = useState<PlatformUser | null>(null);
+  const [viewingUser, setViewingUser] = useState<PlatformUser | null>(null);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const [userActionError, setUserActionError] = useState<string | null>(null);
   const [isUserPending, startUserTransition] = useTransition();
@@ -234,13 +243,55 @@ export default function AdminDashboardClient({
     const email = formData.get("email") as string;
     const role = formData.get("role") as string;
     const approved = formData.get("approved") === "on";
+    const phone = formData.get("phone") as string;
+    const address = formData.get("address") as string;
+    const dob = formData.get("dob") as string;
+    const faculty = formData.get("faculty") as string;
+    const rollNo = formData.get("rollNo") as string;
+    const admissionDate = formData.get("admissionDate") as string;
+    const totalFeeStr = formData.get("totalFee") as string;
+    const paidFeeStr = formData.get("paidFee") as string;
+
+    const totalFee = totalFeeStr !== "" ? parseFloat(totalFeeStr) : undefined;
+    const paidFee = paidFeeStr !== "" ? parseFloat(paidFeeStr) : undefined;
 
     startUserTransition(async () => {
-      const res = await updateUser(editingUser.id, { name, email, role, approved });
+      const res = await updateUser(editingUser.id, {
+        name,
+        email,
+        role,
+        approved,
+        phone,
+        address,
+        dob,
+        faculty,
+        rollNo,
+        admissionDate,
+        totalFee,
+        paidFee
+      });
       if (res?.error) {
         setUserActionError(res.error);
       } else {
-        setLocalUsers(prev => prev.map(u => u.id === editingUser.id ? { ...u, name, email, role: role.toUpperCase(), approved } : u));
+        const updatedObj: PlatformUser = {
+          ...editingUser,
+          name,
+          email,
+          role: role.toUpperCase(),
+          approved,
+          phone,
+          address,
+          dob,
+          faculty,
+          rollNo,
+          admissionDate,
+          totalFee: totalFee !== undefined ? totalFee : editingUser.totalFee,
+          paidFee: paidFee !== undefined ? paidFee : editingUser.paidFee
+        };
+        setLocalUsers(prev => prev.map(u => u.id === editingUser.id ? updatedObj : u));
+        if (viewingUser?.id === editingUser.id) {
+          setViewingUser(updatedObj);
+        }
         setEditingUser(null);
       }
     });
@@ -795,6 +846,22 @@ export default function AdminDashboardClient({
                                     </button>
                                   )}
                                   <button
+                                    onClick={() => setViewingUser(user)}
+                                    style={{
+                                      padding: "0.4rem 0.85rem",
+                                      borderRadius: "var(--radius-md)",
+                                      border: "1px solid #d1d5db",
+                                      backgroundColor: "#ffffff",
+                                      color: "#374151",
+                                      fontSize: "0.8rem",
+                                      fontWeight: 600,
+                                      cursor: "pointer",
+                                      transition: "all 0.2s"
+                                    }}
+                                  >
+                                    👁️ Details
+                                  </button>
+                                  <button
                                     onClick={() => setEditingUser(user)}
                                     style={{
                                       padding: "0.4rem 0.85rem",
@@ -1149,12 +1216,14 @@ export default function AdminDashboardClient({
             borderRadius: "var(--radius-lg)",
             padding: "2rem",
             width: "100%",
-            maxWidth: "500px",
+            maxWidth: "580px",
+            maxHeight: "90vh",
+            overflowY: "auto",
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
             border: "1px solid var(--border)"
           }}>
             <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.25rem 0" }}>
-              ✏️ Edit User Account
+              ✏️ Edit User & Academic Profile
             </h3>
 
             {userActionError && (
@@ -1171,80 +1240,262 @@ export default function AdminDashboardClient({
             )}
 
             <form onSubmit={handleSaveUser}>
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  defaultValue={editingUser.name || ""}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "0.65rem 0.85rem",
-                    borderRadius: "var(--radius-md)",
-                    border: "1px solid #d1d5db",
-                    outline: "none",
-                    fontSize: "0.9rem"
-                  }}
-                />
+              {/* Core Info */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    defaultValue={editingUser.name || ""}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.6rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    defaultValue={editingUser.email || ""}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.6rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
               </div>
 
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  defaultValue={editingUser.email || ""}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "0.65rem 0.85rem",
-                    borderRadius: "var(--radius-md)",
-                    border: "1px solid #d1d5db",
-                    outline: "none",
-                    fontSize: "0.9rem"
-                  }}
-                />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Role Assignment
+                  </label>
+                  <select
+                    name="role"
+                    defaultValue={editingUser.role}
+                    style={{
+                      width: "100%",
+                      padding: "0.6rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="STUDENT">🎓 Student</option>
+                    <option value="TEACHER">👨‍🏫 Teacher</option>
+                    <option value="ADMIN">⚡ Admin</option>
+                  </select>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "flex-end", paddingBottom: "0.65rem" }}>
+                  <label htmlFor="approved" style={{ fontSize: "0.9rem", fontWeight: 600, color: "#374151", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <input
+                      type="checkbox"
+                      id="approved"
+                      name="approved"
+                      defaultChecked={editingUser.approved}
+                      style={{ accentColor: "var(--college-primary)", cursor: "pointer", width: "18px", height: "18px" }}
+                    />
+                    Account Approved
+                  </label>
+                </div>
               </div>
 
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
-                  Role Assignment
-                </label>
-                <select
-                  name="role"
-                  defaultValue={editingUser.role}
-                  style={{
-                    width: "100%",
-                    padding: "0.65rem 0.85rem",
-                    borderRadius: "var(--radius-md)",
-                    border: "1px solid #d1d5db",
-                    outline: "none",
-                    fontSize: "0.9rem",
-                    backgroundColor: "white"
-                  }}
-                >
-                  <option value="STUDENT">🎓 Student</option>
-                  <option value="TEACHER">👨‍🏫 Teacher</option>
-                  <option value="ADMIN">⚡ Admin</option>
-                </select>
+              {/* Personal Info Grid */}
+              <div style={{ marginTop: "1.25rem", borderTop: "1px solid #f3f4f6", paddingTop: "1rem" }}>
+                <h4 style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--college-primary)", margin: "0 0 0.75rem 0" }}>
+                  📞 Personal Details
+                </h4>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="e.g. 9841234567"
+                      defaultValue={editingUser.phone || ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.85rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="dob"
+                      defaultValue={editingUser.dob || ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.85rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "1rem" }}>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                    Residential Address
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    placeholder="e.g. Lagankhel-05, Lalitpur"
+                    defaultValue={editingUser.address || ""}
+                    style={{
+                      width: "100%",
+                      padding: "0.55rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      fontSize: "0.85rem"
+                    }}
+                  />
+                </div>
               </div>
 
-              <div style={{ marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <input
-                  type="checkbox"
-                  id="approved"
-                  name="approved"
-                  defaultChecked={editingUser.approved}
-                  style={{ accentColor: "var(--college-primary)", cursor: "pointer" }}
-                />
-                <label htmlFor="approved" style={{ fontSize: "0.9rem", fontWeight: 600, color: "#374151", cursor: "pointer" }}>
-                  Account Approved
-                </label>
+              {/* Academic Info Grid */}
+              <div style={{ marginTop: "1.25rem", borderTop: "1px solid #f3f4f6", paddingTop: "1rem" }}>
+                <h4 style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--college-primary)", margin: "0 0 0.75rem 0" }}>
+                  🎓 Academic Record
+                </h4>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.75rem", marginBottom: "1rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Faculty / Program
+                    </label>
+                    <input
+                      type="text"
+                      name="faculty"
+                      placeholder="e.g. BCA, CSIT, BIM"
+                      defaultValue={editingUser.faculty || ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.75rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Roll Number
+                    </label>
+                    <input
+                      type="text"
+                      name="rollNo"
+                      placeholder="e.g. LITA-2024-04"
+                      defaultValue={editingUser.rollNo || ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.75rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Admission Date
+                    </label>
+                    <input
+                      type="date"
+                      name="admissionDate"
+                      defaultValue={editingUser.admissionDate || ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.75rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Fee Management Grid */}
+              <div style={{ marginTop: "1.25rem", borderTop: "1px solid #f3f4f6", paddingTop: "1rem", marginBottom: "1.5rem" }}>
+                <h4 style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--college-primary)", margin: "0 0 0.75rem 0" }}>
+                  💳 Fee & Ledger Settings
+                </h4>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Total Course Fee (Rs.)
+                    </label>
+                    <input
+                      type="number"
+                      name="totalFee"
+                      placeholder="e.g. 150000"
+                      defaultValue={editingUser.totalFee !== null && editingUser.totalFee !== undefined ? editingUser.totalFee : ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.85rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#4b5563", marginBottom: "0.35rem" }}>
+                      Paid Amount (Rs.)
+                    </label>
+                    <input
+                      type="number"
+                      name="paidFee"
+                      placeholder="e.g. 50000"
+                      defaultValue={editingUser.paidFee !== null && editingUser.paidFee !== undefined ? editingUser.paidFee : ""}
+                      style={{
+                        width: "100%",
+                        padding: "0.55rem 0.85rem",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #d1d5db",
+                        fontSize: "0.85rem"
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
@@ -1276,10 +1527,230 @@ export default function AdminDashboardClient({
                     cursor: "pointer"
                   }}
                 >
-                  {isUserPending ? "Saving..." : "Save Changes"}
+                  {isUserPending ? "Saving..." : "Save Profile & Fees"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Viewing Student Profile & Fee Details Modal */}
+      {viewingUser && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          colorScheme: "light"
+        }}>
+          <div style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "var(--radius-lg)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "620px",
+            maxHeight: "90vh",
+            overflowY: "auto",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+            border: "1px solid var(--border)"
+          }}>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginBottom: "1.25rem", borderBottom: "1px solid #e5e7eb", paddingBottom: "1rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <div style={{
+                  width: "56px",
+                  height: "56px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(27, 94, 32, 0.1)",
+                  color: "var(--college-primary)",
+                  fontWeight: 700,
+                  fontSize: "1.3rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  {(viewingUser.name || viewingUser.email || "US").substring(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h3 style={{ margin: "0 0 0.2rem 0", fontSize: "1.35rem", color: "var(--college-primary)", fontFamily: "Playfair Display, serif" }}>
+                    {viewingUser.name || "Unnamed User"}
+                  </h3>
+                  <div style={{ fontSize: "0.85rem", color: "#6b7280" }}>{viewingUser.email}</div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setViewingUser(null)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  color: "#9ca3af",
+                  cursor: "pointer"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Badges */}
+            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+              <span style={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                backgroundColor: viewingUser.role === "ADMIN" ? "rgba(27, 94, 32, 0.1)" : viewingUser.role === "TEACHER" ? "rgba(79, 70, 229, 0.1)" : "rgba(212, 175, 55, 0.15)",
+                color: viewingUser.role === "ADMIN" ? "var(--college-primary)" : viewingUser.role === "TEACHER" ? "#4f46e5" : "#92400e",
+                padding: "0.25rem 0.65rem",
+                borderRadius: "var(--radius-full)"
+              }}>
+                Role: {viewingUser.role}
+              </span>
+
+              <span style={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                backgroundColor: viewingUser.approved ? "rgba(34, 197, 94, 0.1)" : "rgba(245, 158, 11, 0.1)",
+                color: viewingUser.approved ? "var(--success)" : "var(--warning)",
+                padding: "0.25rem 0.65rem",
+                borderRadius: "var(--radius-full)"
+              }}>
+                {viewingUser.approved ? "✅ Approved Account" : "⏳ Pending Approval"}
+              </span>
+            </div>
+
+            {/* Personal Details */}
+            <div style={{ marginBottom: "1.5rem" }}>
+              <h4 style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--college-primary)", margin: "0 0 0.75rem 0", borderBottom: "1px solid #f3f4f6", paddingBottom: "0.35rem" }}>
+                📞 Personal Details
+              </h4>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", fontSize: "0.85rem" }}>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block", fontSize: "0.75rem" }}>Phone Number</span>
+                  <strong style={{ color: "#1f2937" }}>{viewingUser.phone || "Not specified"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block", fontSize: "0.75rem" }}>Residential Address</span>
+                  <strong style={{ color: "#1f2937" }}>{viewingUser.address || "Not specified"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block", fontSize: "0.75rem" }}>Date of Birth</span>
+                  <strong style={{ color: "#1f2937" }}>{viewingUser.dob || "Not specified"}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Academic Details */}
+            <div style={{ marginBottom: "1.5rem" }}>
+              <h4 style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--college-primary)", margin: "0 0 0.75rem 0", borderBottom: "1px solid #f3f4f6", paddingBottom: "0.35rem" }}>
+                🎓 Academic Profile
+              </h4>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", fontSize: "0.85rem" }}>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block", fontSize: "0.75rem" }}>Faculty / Program</span>
+                  <strong style={{ color: "#1f2937" }}>{viewingUser.faculty || "Not assigned"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block", fontSize: "0.75rem" }}>Roll Number</span>
+                  <strong style={{ color: "#1f2937" }}>{viewingUser.rollNo || "Unassigned"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block", fontSize: "0.75rem" }}>Admission Date</span>
+                  <strong style={{ color: "#1f2937" }}>{viewingUser.admissionDate || "N/A"}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Fee Ledger */}
+            <div style={{
+              backgroundColor: "#f9fafb",
+              border: "1px solid #e5e7eb",
+              borderRadius: "var(--radius-md)",
+              padding: "1.25rem",
+              marginBottom: "1.5rem"
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
+                <h4 style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--college-primary)", margin: 0 }}>
+                  💳 Financial Fee Ledger
+                </h4>
+                {(() => {
+                  const total = viewingUser.totalFee || 0;
+                  const paid = viewingUser.paidFee || 0;
+                  const due = total - paid;
+                  if (total === 0) return <span style={{ fontSize: "0.7rem", backgroundColor: "#e5e7eb", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 600 }}>Fee Not Set</span>;
+                  if (due <= 0) return <span style={{ fontSize: "0.7rem", backgroundColor: "rgba(34, 197, 94, 0.15)", color: "#15803d", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>✅ Fully Paid</span>;
+                  if (paid > 0) return <span style={{ fontSize: "0.7rem", backgroundColor: "rgba(245, 158, 11, 0.15)", color: "#b45309", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>⏳ Partial Paid</span>;
+                  return <span style={{ fontSize: "0.7rem", backgroundColor: "rgba(239, 68, 68, 0.15)", color: "#b91c1c", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>🔴 Unpaid</span>;
+                })()}
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", textAlign: "center" }}>
+                <div style={{ backgroundColor: "#ffffff", padding: "0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid #e5e7eb" }}>
+                  <div style={{ fontSize: "0.7rem", color: "#6b7280", fontWeight: 600 }}>TOTAL COURSE FEE</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1f2937", marginTop: "0.2rem" }}>
+                    Rs. {(viewingUser.totalFee || 0).toLocaleString()}
+                  </div>
+                </div>
+
+                <div style={{ backgroundColor: "#ffffff", padding: "0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid #e5e7eb" }}>
+                  <div style={{ fontSize: "0.7rem", color: "var(--success)", fontWeight: 600 }}>PAID AMOUNT</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--success)", marginTop: "0.2rem" }}>
+                    Rs. {(viewingUser.paidFee || 0).toLocaleString()}
+                  </div>
+                </div>
+
+                <div style={{ backgroundColor: "#ffffff", padding: "0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid #e5e7eb" }}>
+                  <div style={{ fontSize: "0.7rem", color: "var(--error)", fontWeight: 600 }}>OUTSTANDING DUE</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--error)", marginTop: "0.2rem" }}>
+                    Rs. {Math.max(0, (viewingUser.totalFee || 0) - (viewingUser.paidFee || 0)).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = viewingUser;
+                  setViewingUser(null);
+                  setEditingUser(target);
+                }}
+                style={{
+                  padding: "0.6rem 1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid var(--college-primary)",
+                  backgroundColor: "rgba(27, 94, 32, 0.05)",
+                  color: "var(--college-primary)",
+                  fontWeight: 600,
+                  fontSize: "0.85rem",
+                  cursor: "pointer"
+                }}
+              >
+                ✏️ Edit Profile & Fees
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewingUser(null)}
+                style={{
+                  padding: "0.6rem 1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid #d1d5db",
+                  backgroundColor: "#ffffff",
+                  color: "#374151",
+                  fontWeight: 600,
+                  fontSize: "0.85rem",
+                  cursor: "pointer"
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

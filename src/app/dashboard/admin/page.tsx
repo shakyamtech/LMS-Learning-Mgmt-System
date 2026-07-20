@@ -78,6 +78,14 @@ export default async function AdminDashboard() {
     role: (doc.data().role as string | undefined) || "STUDENT",
     approved: doc.data().approved !== false,
     createdAt: (doc.data().createdAt as string | undefined) || null,
+    phone: (doc.data().phone as string | undefined) || null,
+    address: (doc.data().address as string | undefined) || null,
+    dob: (doc.data().dob as string | undefined) || null,
+    faculty: (doc.data().faculty as string | undefined) || null,
+    rollNo: (doc.data().rollNo as string | undefined) || null,
+    admissionDate: (doc.data().admissionDate as string | undefined) || null,
+    totalFee: typeof doc.data().totalFee === "number" ? doc.data().totalFee : null,
+    paidFee: typeof doc.data().paidFee === "number" ? doc.data().paidFee : null,
   }));
 
   const students = allUsers.filter(u => u.role === "STUDENT");

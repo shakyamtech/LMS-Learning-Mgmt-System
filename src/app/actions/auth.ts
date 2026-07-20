@@ -203,7 +203,20 @@ export async function rejectStudent(studentId: string) {
   }
 }
 
-export async function updateUser(userId: string, data: { name?: string; email?: string; role?: string; approved?: boolean }) {
+export async function updateUser(userId: string, data: {
+  name?: string;
+  email?: string;
+  role?: string;
+  approved?: boolean;
+  phone?: string;
+  address?: string;
+  dob?: string;
+  faculty?: string;
+  rollNo?: string;
+  admissionDate?: string;
+  totalFee?: number;
+  paidFee?: number;
+}) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("session")?.value;
   if (!sessionToken) return { error: "Unauthorized" };
@@ -221,6 +234,14 @@ export async function updateUser(userId: string, data: { name?: string; email?: 
     if (data.email !== undefined) updateData.email = data.email;
     if (data.role !== undefined) updateData.role = data.role.toUpperCase();
     if (data.approved !== undefined) updateData.approved = data.approved;
+    if (data.phone !== undefined) updateData.phone = data.phone;
+    if (data.address !== undefined) updateData.address = data.address;
+    if (data.dob !== undefined) updateData.dob = data.dob;
+    if (data.faculty !== undefined) updateData.faculty = data.faculty;
+    if (data.rollNo !== undefined) updateData.rollNo = data.rollNo;
+    if (data.admissionDate !== undefined) updateData.admissionDate = data.admissionDate;
+    if (data.totalFee !== undefined) updateData.totalFee = data.totalFee;
+    if (data.paidFee !== undefined) updateData.paidFee = data.paidFee;
 
     await db.collection("users").doc(userId).update(updateData);
     return { success: true };
