@@ -90,7 +90,23 @@ export default async function AdminDashboard() {
 
   const students = allUsers.filter(u => u.role === "STUDENT");
 
-  // 5. Fetch Homepage CMS Config
+  // 5. Fetch Financial Transactions for Accounting
+  const txSnap = await db.collection("transactions").orderBy("date", "desc").get();
+  const initialTransactions = txSnap.docs.map((doc) => ({
+    id: doc.id,
+    type: doc.data().type as "INCOME" | "EXPENSE" | "STUDENT_FEE",
+    title: doc.data().title as string,
+    amount: doc.data().amount as number,
+    category: doc.data().category as string,
+    paymentMethod: doc.data().paymentMethod as string,
+    date: doc.data().date as string,
+    studentId: doc.data().studentId as string | undefined,
+    studentName: doc.data().studentName as string | undefined,
+    notes: doc.data().notes as string | undefined,
+    createdAt: doc.data().createdAt as string | undefined,
+  }));
+
+  // 6. Fetch Homepage CMS Config
   const homepageConfigSnap = await db.collection("config").doc("homepage").get();
   const homepageConfigData = homepageConfigSnap.exists ? homepageConfigSnap.data() : null;
   const cmsConfig = homepageConfigData && homepageConfigData.slides ? homepageConfigData.slides : null;
@@ -101,6 +117,7 @@ export default async function AdminDashboard() {
       courses={courses}
       students={students}
       allUsers={allUsers}
+      initialTransactions={initialTransactions}
       cmsConfig={cmsConfig}
       totalUsers={totalUsers}
       totalCourses={totalCourses}

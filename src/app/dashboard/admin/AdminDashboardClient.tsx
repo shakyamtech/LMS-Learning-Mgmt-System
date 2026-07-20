@@ -5,6 +5,7 @@ import Link from "next/link";
 import CourseForm from "./CourseForm";
 import { approveStudent, rejectStudent, updateUser, deleteUser } from "@/app/actions/auth";
 import { saveHomepageConfig } from "@/app/actions/cms";
+import { addTransaction, deleteTransaction } from "@/app/actions/accounting";
 
 interface Teacher {
   id: string;
@@ -54,6 +55,20 @@ export interface PlatformUser {
   paidFee?: number | null;
 }
 
+export interface TransactionRecord {
+  id: string;
+  type: "INCOME" | "EXPENSE" | "STUDENT_FEE";
+  title: string;
+  amount: number;
+  category: string;
+  paymentMethod: string;
+  date: string;
+  studentId?: string;
+  studentName?: string;
+  notes?: string;
+  createdAt?: string;
+}
+
 interface Session {
   email: string;
 }
@@ -63,6 +78,7 @@ interface AdminDashboardClientProps {
   courses: Course[];
   students: Student[];
   allUsers?: PlatformUser[];
+  initialTransactions?: TransactionRecord[];
   cmsConfig?: Array<{ title: string; subtitle: string; image: string }> | null;
   totalUsers: number;
   totalCourses: number;
@@ -75,18 +91,20 @@ export default function AdminDashboardClient({
   courses,
   students,
   allUsers = [],
+  initialTransactions = [],
   cmsConfig,
   totalUsers,
   totalCourses,
   session,
   logout
 }: AdminDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "cms">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "accounting" | "cms">("dashboard");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
   const [localUsers, setLocalUsers] = useState<PlatformUser[]>(allUsers);
+  const [transactions, setTransactions] = useState<TransactionRecord[]>(initialTransactions);
 
   // User Management State
   const [userRoleFilter, setUserRoleFilter] = useState<"ALL" | "STUDENT" | "TEACHER" | "ADMIN">("ALL");
@@ -96,10 +114,23 @@ export default function AdminDashboardClient({
   const [userActionError, setUserActionError] = useState<string | null>(null);
   const [isUserPending, startUserTransition] = useTransition();
 
+  // Accounting State
+  const [txFilter, setTxFilter] = useState<"ALL" | "STUDENT_FEE" | "INCOME" | "EXPENSE">("ALL");
+  const [showFeeModal, setShowFeeModal] = useState(false);
+  const [selectedFeeStudentId, setSelectedFeeStudentId] = useState("");
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [txActionError, setTxActionError] = useState<string | null>(null);
+  const [isTxPending, startTxTransition] = useTransition();
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalUsers(allUsers);
   }, [allUsers]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTransactions(initialTransactions);
+  }, [initialTransactions]);
   
   const defaultSlides = [
     {
@@ -319,6 +350,178 @@ export default function AdminDashboardClient({
 
   const pendingUsersCount = localUsers.filter(u => !u.approved).length;
 
+  const handleSaveCollectFee = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setTxActionError(null);
+    const formData = new FormData(e.currentTarget);
+    const studentId = formData.get("studentId") as string;
+    const amountStr = formData.get("amount") as string;
+    const paymentMethod = formData.get("paymentMethod") as string;
+    const date = formData.get("date") as string;
+    const notes = formData.get("notes") as string;
+
+    const studentObj = localUsers.find(u => u.id === studentId);
+    if (!studentId || !studentObj) {
+      setTxActionError("Please select a valid student.");
+      return;
+    }
+
+    const amount = parseFloat(amountStr);
+    if (isNaN(amount) || amount <= 0) {
+      setTxActionError("Please enter a valid positive payment amount.");
+      return;
+    }
+
+    const title = `Student Fee: ${studentObj.name || studentObj.email}`;
+
+    startTxTransition(async () => {
+      const res = await addTransaction({
+        type: "STUDENT_FEE",
+        title,
+        amount,
+        category: "Student Fee Collection",
+        paymentMethod,
+        date: date || new Date().toISOString().split("T")[0],
+        studentId,
+        studentName: studentObj.name || studentObj.email || undefined,
+        notes
+      });
+
+      if (res?.error) {
+        setTxActionError(res.error);
+      } else {
+        const newRecord: TransactionRecord = {
+          id: res.id || Date.now().toString(),
+          type: "STUDENT_FEE",
+          title,
+          amount,
+          category: "Student Fee Collection",
+          paymentMethod,
+          date: date || new Date().toISOString().split("T")[0],
+          studentId,
+          studentName: studentObj.name || studentObj.email || undefined,
+          notes
+        };
+
+        setTransactions(prev => [newRecord, ...prev]);
+
+        // Update student paidFee in local users state
+        setLocalUsers(prev => prev.map(u => {
+          if (u.id === studentId) {
+            const currentPaid = u.paidFee || 0;
+            const updatedUser = { ...u, paidFee: currentPaid + amount };
+            if (viewingUser?.id === studentId) {
+              setViewingUser(updatedUser);
+            }
+            return updatedUser;
+          }
+          return u;
+        }));
+
+        setShowFeeModal(false);
+        setSelectedFeeStudentId("");
+      }
+    });
+  };
+
+  const handleSaveExpense = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setTxActionError(null);
+    const formData = new FormData(e.currentTarget);
+    const title = formData.get("title") as string;
+    const amountStr = formData.get("amount") as string;
+    const category = formData.get("category") as string;
+    const paymentMethod = formData.get("paymentMethod") as string;
+    const date = formData.get("date") as string;
+    const notes = formData.get("notes") as string;
+
+    const amount = parseFloat(amountStr);
+    if (!title || isNaN(amount) || amount <= 0) {
+      setTxActionError("Please enter a valid title and positive expense amount.");
+      return;
+    }
+
+    startTxTransition(async () => {
+      const res = await addTransaction({
+        type: "EXPENSE",
+        title,
+        amount,
+        category: category || "General Expense",
+        paymentMethod,
+        date: date || new Date().toISOString().split("T")[0],
+        notes
+      });
+
+      if (res?.error) {
+        setTxActionError(res.error);
+      } else {
+        const newRecord: TransactionRecord = {
+          id: res.id || Date.now().toString(),
+          type: "EXPENSE",
+          title,
+          amount,
+          category: category || "General Expense",
+          paymentMethod,
+          date: date || new Date().toISOString().split("T")[0],
+          notes
+        };
+
+        setTransactions(prev => [newRecord, ...prev]);
+        setShowExpenseModal(false);
+      }
+    });
+  };
+
+  const handleDeleteTx = async (tx: TransactionRecord) => {
+    if (!confirm(`Are you sure you want to delete transaction "${tx.title}" (Rs. ${tx.amount})?`)) return;
+    setTxActionError(null);
+
+    startTxTransition(async () => {
+      const res = await deleteTransaction(tx.id);
+      if (res?.error) {
+        setTxActionError(res.error);
+      } else {
+        setTransactions(prev => prev.filter(t => t.id !== tx.id));
+        if (tx.type === "STUDENT_FEE" && tx.studentId) {
+          setLocalUsers(prev => prev.map(u => {
+            if (u.id === tx.studentId) {
+              const currentPaid = u.paidFee || 0;
+              const updatedUser = { ...u, paidFee: Math.max(0, currentPaid - tx.amount) };
+              if (viewingUser?.id === tx.studentId) {
+                setViewingUser(updatedUser);
+              }
+              return updatedUser;
+            }
+            return u;
+          }));
+        }
+      }
+    });
+  };
+
+  // Financial Calculations
+  const totalIncome = transactions
+    .filter(t => t.type === "INCOME" || t.type === "STUDENT_FEE")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const totalExpense = transactions
+    .filter(t => t.type === "EXPENSE")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const totalStudentFeesCollected = transactions
+    .filter(t => t.type === "STUDENT_FEE")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const netBalance = totalIncome - totalExpense;
+
+  const filteredTransactions = transactions.filter(t => {
+    const matchesCategory = txFilter === "ALL" || t.type === txFilter;
+    const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          t.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (t.studentName && t.studentName.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
+
   const mockSettings = [
     { id: 1, label: "⚙️ System Configuration" },
     { id: 2, label: "🔑 Security & API Keys" },
@@ -374,6 +577,18 @@ export default function AdminDashboardClient({
                   {pendingUsersCount}
                 </span>
               )}
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab("accounting");
+              }}
+              className={`admin-sidebar-link ${activeTab === "accounting" ? "active" : ""}`}
+            >
+              <span>💰</span> Accounting & Finance
             </a>
           </li>
           <li>
@@ -894,6 +1109,226 @@ export default function AdminDashboardClient({
                                     🗑️ Delete
                                   </button>
                                 </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : activeTab === "accounting" ? (
+            /* ──── ACCOUNTING & FINANCE TAB VIEW ──── */
+            <>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+                <div>
+                  <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Accounting & Financial Ledger</h2>
+                  <p className="text-muted" style={{ margin: 0 }}>Track academy income, collect student fees, record operational expenses, and monitor net cash balance.</p>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <button
+                    onClick={() => {
+                      setTxActionError(null);
+                      setShowFeeModal(true);
+                    }}
+                    style={{
+                      backgroundColor: "var(--college-primary)",
+                      color: "#ffffff",
+                      border: "none",
+                      padding: "0.65rem 1.25rem",
+                      borderRadius: "var(--radius-md)",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      boxShadow: "0 2px 8px rgba(27, 94, 32, 0.2)"
+                    }}
+                  >
+                    <span>➕</span> Collect Student Fee
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setTxActionError(null);
+                      setShowExpenseModal(true);
+                    }}
+                    style={{
+                      backgroundColor: "#ffffff",
+                      color: "#ef4444",
+                      border: "1px solid rgba(239, 68, 68, 0.4)",
+                      padding: "0.65rem 1.25rem",
+                      borderRadius: "var(--radius-md)",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem"
+                    }}
+                  >
+                    <span>➕</span> Record Expense
+                  </button>
+                </div>
+              </div>
+
+              {/* Financial Metric Overview Cards */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.25rem", marginBottom: "2rem" }}>
+                {/* Total Income */}
+                <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>TOTAL INCOME</div>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "var(--college-primary)", marginTop: "0.4rem" }}>
+                    Rs. {totalIncome.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>All fee payments & general revenues</div>
+                </div>
+
+                {/* Student Fees Collected */}
+                <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--success)", textTransform: "uppercase", letterSpacing: "0.5px" }}>STUDENT FEES COLLECTED</div>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "var(--success)", marginTop: "0.4rem" }}>
+                    Rs. {totalStudentFeesCollected.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>Direct student fee receipts</div>
+                </div>
+
+                {/* Total Expense */}
+                <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#ef4444", textTransform: "uppercase", letterSpacing: "0.5px" }}>TOTAL EXPENSES</div>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "#ef4444", marginTop: "0.4rem" }}>
+                    Rs. {totalExpense.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>Salaries, rent, utilities & supplies</div>
+                </div>
+
+                {/* Net Balance */}
+                <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.5px" }}>NET CASH BALANCE</div>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: netBalance >= 0 ? "var(--college-primary)" : "#ef4444", marginTop: "0.4rem" }}>
+                    Rs. {netBalance.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>Net liquid balance</div>
+                </div>
+              </div>
+
+              {/* Filter Tabs */}
+              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+                {(["ALL", "STUDENT_FEE", "INCOME", "EXPENSE"] as const).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => setTxFilter(key)}
+                    style={{
+                      padding: "0.5rem 1.25rem",
+                      borderRadius: "var(--radius-md)",
+                      border: txFilter === key ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                      backgroundColor: txFilter === key ? "var(--college-primary)" : "white",
+                      color: txFilter === key ? "white" : "var(--college-text)",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      cursor: "pointer",
+                      transition: "all var(--transition-fast)"
+                    }}
+                  >
+                    {key === "ALL" ? `All Transactions (${transactions.length})` : key === "STUDENT_FEE" ? "Student Fees" : key === "INCOME" ? "General Income" : "Expenses"}
+                  </button>
+                ))}
+              </div>
+
+              {/* Transactions Ledger Table */}
+              <div className="card" style={{ backgroundColor: "white", padding: "2rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                  <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: 0 }}>
+                    Financial Audit Ledger
+                    {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredTransactions.length} found)</span>}
+                  </h3>
+                </div>
+
+                {filteredTransactions.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "4rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>📜</div>
+                    <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
+                      {searchQuery ? "No matching transactions found" : "No Financial Transactions Logged"}
+                    </h4>
+                    <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
+                      {searchQuery ? "Check spelling or search terms." : "Use 'Collect Student Fee' or 'Record Expense' to record entries."}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.9rem" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "2px solid var(--border)", color: "var(--college-primary)" }}>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Date</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Description</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Type / Category</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Method</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700, textAlign: "right" }}>Amount</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700, textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredTransactions.map((tx) => {
+                          const isIncome = tx.type === "INCOME" || tx.type === "STUDENT_FEE";
+                          const typeBadge = tx.type === "STUDENT_FEE"
+                            ? { bg: "rgba(34, 197, 94, 0.1)", color: "#15803d", label: "🎓 Student Fee" }
+                            : tx.type === "INCOME"
+                            ? { bg: "rgba(14, 165, 233, 0.1)", color: "#0284c7", label: "📈 Income" }
+                            : { bg: "rgba(239, 68, 68, 0.1)", color: "#b91c1c", label: "📉 Expense" };
+
+                          return (
+                            <tr key={tx.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                              <td style={{ padding: "1rem", whiteSpace: "nowrap", color: "#4b5563", fontSize: "0.85rem" }}>
+                                {tx.date}
+                              </td>
+                              <td style={{ padding: "1rem" }}>
+                                <div style={{ fontWeight: 600, color: "var(--college-text)" }}>{tx.title}</div>
+                                {tx.notes && <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{tx.notes}</div>}
+                              </td>
+                              <td style={{ padding: "1rem" }}>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", alignItems: "flex-start" }}>
+                                  <span style={{
+                                    fontSize: "0.7rem",
+                                    fontWeight: 700,
+                                    backgroundColor: typeBadge.bg,
+                                    color: typeBadge.color,
+                                    padding: "0.15rem 0.55rem",
+                                    borderRadius: "var(--radius-full)"
+                                  }}>
+                                    {typeBadge.label}
+                                  </span>
+                                  <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{tx.category}</span>
+                                </div>
+                              </td>
+                              <td style={{ padding: "1rem" }}>
+                                <span style={{ fontSize: "0.8rem", backgroundColor: "#f3f4f6", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 600, color: "#374151" }}>
+                                  💳 {tx.paymentMethod}
+                                </span>
+                              </td>
+                              <td style={{ padding: "1rem", textAlign: "right", fontWeight: 700, fontSize: "0.95rem", color: isIncome ? "var(--success)" : "#ef4444" }}>
+                                {isIncome ? "+" : "-"} Rs. {(tx.amount || 0).toLocaleString()}
+                              </td>
+                              <td style={{ padding: "1rem", textAlign: "right" }}>
+                                <button
+                                  onClick={() => handleDeleteTx(tx)}
+                                  disabled={isTxPending}
+                                  style={{
+                                    padding: "0.35rem 0.75rem",
+                                    borderRadius: "var(--radius-md)",
+                                    border: "1px solid rgba(239, 68, 68, 0.3)",
+                                    backgroundColor: "rgba(239, 68, 68, 0.05)",
+                                    color: "var(--error)",
+                                    fontSize: "0.75rem",
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                    transition: "all 0.2s"
+                                  }}
+                                >
+                                  🗑️ Delete
+                                </button>
                               </td>
                             </tr>
                           );
@@ -1717,6 +2152,26 @@ export default function AdminDashboardClient({
               <button
                 type="button"
                 onClick={() => {
+                  setSelectedFeeStudentId(viewingUser.id);
+                  setTxActionError(null);
+                  setShowFeeModal(true);
+                }}
+                style={{
+                  padding: "0.6rem 1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  border: "none",
+                  backgroundColor: "var(--college-primary)",
+                  color: "#ffffff",
+                  fontWeight: 600,
+                  fontSize: "0.85rem",
+                  cursor: "pointer"
+                }}
+              >
+                💳 Collect Fee
+              </button>
+              <button
+                type="button"
+                onClick={() => {
                   const target = viewingUser;
                   setViewingUser(null);
                   setEditingUser(target);
@@ -1732,7 +2187,7 @@ export default function AdminDashboardClient({
                   cursor: "pointer"
                 }}
               >
-                ✏️ Edit Profile & Fees
+                ✏️ Edit Profile
               </button>
               <button
                 type="button"
@@ -1832,6 +2287,418 @@ export default function AdminDashboardClient({
                 {isUserPending ? "Deleting..." : "Yes, Delete User"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Collect Student Fee Modal */}
+      {showFeeModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          colorScheme: "light"
+        }}>
+          <div style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "var(--radius-lg)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "520px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+            border: "1px solid var(--border)"
+          }}>
+            <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.25rem 0" }}>
+              💳 Collect Student Fee Payment
+            </h3>
+
+            {txActionError && (
+              <div style={{
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                color: "var(--error)",
+                padding: "0.6rem 1rem",
+                borderRadius: "var(--radius-md)",
+                marginBottom: "1rem",
+                fontSize: "0.85rem"
+              }}>
+                ⚠️ {txActionError}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveCollectFee}>
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Select Student
+                </label>
+                <select
+                  name="studentId"
+                  defaultValue={selectedFeeStudentId}
+                  required
+                  onChange={(e) => setSelectedFeeStudentId(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem",
+                    backgroundColor: "white"
+                  }}
+                >
+                  <option value="">-- Choose Student --</option>
+                  {localUsers
+                    .filter((u) => u.role === "STUDENT")
+                    .map((s) => {
+                      const due = (s.totalFee || 0) - (s.paidFee || 0);
+                      return (
+                        <option key={s.id} value={s.id}>
+                          🎓 {s.name || s.email} {s.faculty ? `(${s.faculty})` : ""} - Due: Rs. {due.toLocaleString()}
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Payment Amount (Rs.)
+                  </label>
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="e.g. 20000"
+                    required
+                    min="1"
+                    step="any"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Payment Method
+                  </label>
+                  <select
+                    name="paymentMethod"
+                    defaultValue="Cash"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="Cash">💵 Cash</option>
+                    <option value="eSewa">📲 eSewa</option>
+                    <option value="Khalti">📱 Khalti</option>
+                    <option value="Bank Transfer">🏛️ Bank Transfer</option>
+                    <option value="Cheque">📜 Cheque</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Payment Date
+                </label>
+                <input
+                  type="date"
+                  name="date"
+                  defaultValue={new Date().toISOString().split("T")[0]}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "1.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Receipt / Transaction Notes (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="notes"
+                  placeholder="e.g. Receipt #1042 - 1st Semester Installment"
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowFeeModal(false)}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    backgroundColor: "#ffffff",
+                    color: "#374151",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isTxPending}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "none",
+                    backgroundColor: "var(--college-primary)",
+                    color: "#ffffff",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  {isTxPending ? "Recording Fee..." : "Save Fee Payment"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Record Expense Modal */}
+      {showExpenseModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          colorScheme: "light"
+        }}>
+          <div style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "var(--radius-lg)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "520px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+            border: "1px solid var(--border)"
+          }}>
+            <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "#ef4444", margin: "0 0 1.25rem 0" }}>
+              📉 Record Academy Expense
+            </h3>
+
+            {txActionError && (
+              <div style={{
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                color: "var(--error)",
+                padding: "0.6rem 1rem",
+                borderRadius: "var(--radius-md)",
+                marginBottom: "1rem",
+                fontSize: "0.85rem"
+              }}>
+                ⚠️ {txActionError}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveExpense}>
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Expense Title / Description
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="e.g. Teacher Salary Payment - Shravan"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Expense Amount (Rs.)
+                  </label>
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="e.g. 35000"
+                    required
+                    min="1"
+                    step="any"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Expense Category
+                  </label>
+                  <select
+                    name="category"
+                    defaultValue="Teacher Salary"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="Teacher Salary">👨‍🏫 Teacher Salary</option>
+                    <option value="Rent">🏢 Building Rent</option>
+                    <option value="Electricity & Water">⚡ Electricity & Water</option>
+                    <option value="Internet & IT">🌐 Internet & IT</option>
+                    <option value="Office Supplies">📝 Office Supplies</option>
+                    <option value="Maintenance">🛠️ Maintenance</option>
+                    <option value="Other">📦 Other Expense</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Payment Method
+                  </label>
+                  <select
+                    name="paymentMethod"
+                    defaultValue="Bank Transfer"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="Bank Transfer">🏛️ Bank Transfer</option>
+                    <option value="Cash">💵 Cash</option>
+                    <option value="eSewa">📲 eSewa</option>
+                    <option value="Khalti">📱 Khalti</option>
+                    <option value="Cheque">📜 Cheque</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Expense Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    defaultValue={new Date().toISOString().split("T")[0]}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "1.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Notes / Bill Voucher No. (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="notes"
+                  placeholder="e.g. Voucher #789 - Electricity Bill July"
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowExpenseModal(false)}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    backgroundColor: "#ffffff",
+                    color: "#374151",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isTxPending}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "none",
+                    backgroundColor: "#ef4444",
+                    color: "#ffffff",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  {isTxPending ? "Saving Expense..." : "Save Expense"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
