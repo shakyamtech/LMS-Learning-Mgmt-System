@@ -1985,8 +1985,8 @@ export default function AdminDashboardClient({
                   </select>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "flex-end", paddingBottom: "0.65rem" }}>
-                  <label htmlFor="approved" style={{ fontSize: "0.9rem", fontWeight: 600, color: "#374151", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingBottom: "0.25rem" }}>
+                  <label htmlFor="approved" style={{ fontSize: "0.9rem", fontWeight: 700, color: "#374151", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <input
                       type="checkbox"
                       id="approved"
@@ -1994,8 +1994,11 @@ export default function AdminDashboardClient({
                       defaultChecked={editingUser.approved}
                       style={{ accentColor: "var(--college-primary)", cursor: "pointer", width: "18px", height: "18px" }}
                     />
-                    Account Approved
+                    Account Approved & Active
                   </label>
+                  <span style={{ fontSize: "0.73rem", color: "#4b5563", marginTop: "0.3rem", lineHeight: "1.3" }}>
+                    💡 <i>Unchecking this freezes/suspends the user&apos;s account and blocks dashboard access.</i>
+                  </span>
                 </div>
               </div>
 
