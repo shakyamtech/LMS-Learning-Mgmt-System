@@ -41,6 +41,10 @@ export async function register(prevState: any, formData: FormData) {
     return { error: "Invalid role selected." };
   }
 
+  if (role === Role.ADMIN) {
+    return { error: "Admin accounts cannot be created via public registration." };
+  }
+
   let targetPath = "";
 
   try {

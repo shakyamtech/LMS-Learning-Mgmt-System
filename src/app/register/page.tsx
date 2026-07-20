@@ -6,7 +6,7 @@ import { useActionState, useState } from "react";
 
 export default function RegisterPage() {
   const [state, formAction, isPending] = useActionState(register, null);
-  const [selectedRole, setSelectedRole] = useState<"STUDENT" | "TEACHER" | "ADMIN">("STUDENT");
+  const [selectedRole, setSelectedRole] = useState<"STUDENT" | "TEACHER">("STUDENT");
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -141,7 +141,7 @@ export default function RegisterPage() {
           <div className="input-group" style={{ marginBottom: "2.5rem" }}>
             <label className="auth-input-label">Select Your Role</label>
             
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.75rem", marginTop: "0.5rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem", marginTop: "0.5rem" }}>
               {/* Student Card */}
               <div 
                 onClick={() => setSelectedRole("STUDENT")}
@@ -149,7 +149,7 @@ export default function RegisterPage() {
                   border: selectedRole === "STUDENT" ? "2px solid var(--college-primary)" : "1px solid #d1d5db",
                   backgroundColor: selectedRole === "STUDENT" ? "rgba(27, 94, 32, 0.05)" : "#ffffff",
                   borderRadius: "var(--radius-md)",
-                  padding: "1rem 0.5rem",
+                  padding: "1.25rem 0.75rem",
                   textAlign: "center",
                   cursor: "pointer",
                   transition: "all var(--transition-fast)",
@@ -166,9 +166,9 @@ export default function RegisterPage() {
                     style={{ accentColor: "var(--college-primary)", cursor: "pointer" }} 
                   />
                 </div>
-                <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>🎓</div>
-                <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "#1f2937" }}>Student</div>
-                <div style={{ fontSize: "0.7rem", color: "#4b5563", marginTop: "0.25rem", lineHeight: "1.2" }}>Learn & view courses</div>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.25rem" }}>🎓</div>
+                <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1f2937" }}>Student</div>
+                <div style={{ fontSize: "0.75rem", color: "#4b5563", marginTop: "0.25rem", lineHeight: "1.2" }}>Learn & view courses</div>
               </div>
 
               {/* Teacher Card */}
@@ -178,7 +178,7 @@ export default function RegisterPage() {
                   border: selectedRole === "TEACHER" ? "2px solid var(--college-primary)" : "1px solid #d1d5db",
                   backgroundColor: selectedRole === "TEACHER" ? "rgba(27, 94, 32, 0.05)" : "#ffffff",
                   borderRadius: "var(--radius-md)",
-                  padding: "1rem 0.5rem",
+                  padding: "1.25rem 0.75rem",
                   textAlign: "center",
                   cursor: "pointer",
                   transition: "all var(--transition-fast)",
@@ -195,38 +195,9 @@ export default function RegisterPage() {
                     style={{ accentColor: "var(--college-primary)", cursor: "pointer" }} 
                   />
                 </div>
-                <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>👨‍🏫</div>
-                <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "#1f2937" }}>Teacher</div>
-                <div style={{ fontSize: "0.7rem", color: "#4b5563", marginTop: "0.25rem", lineHeight: "1.2" }}>Manage & teach classes</div>
-              </div>
-
-              {/* Admin Card */}
-              <div 
-                onClick={() => setSelectedRole("ADMIN")}
-                style={{
-                  border: selectedRole === "ADMIN" ? "2px solid var(--college-primary)" : "1px solid #d1d5db",
-                  backgroundColor: selectedRole === "ADMIN" ? "rgba(27, 94, 32, 0.05)" : "#ffffff",
-                  borderRadius: "var(--radius-md)",
-                  padding: "1rem 0.5rem",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  transition: "all var(--transition-fast)",
-                  boxShadow: selectedRole === "ADMIN" ? "0 4px 12px rgba(27, 94, 32, 0.15)" : "none",
-                  transform: selectedRole === "ADMIN" ? "translateY(-2px)" : "none",
-                  userSelect: "none"
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "flex-end", padding: "0 0.25rem", marginTop: "-0.25rem" }}>
-                  <input 
-                    type="radio" 
-                    checked={selectedRole === "ADMIN"} 
-                    onChange={() => setSelectedRole("ADMIN")}
-                    style={{ accentColor: "var(--college-primary)", cursor: "pointer" }} 
-                  />
-                </div>
-                <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>⚡</div>
-                <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "#1f2937" }}>Admin</div>
-                <div style={{ fontSize: "0.7rem", color: "#4b5563", marginTop: "0.25rem", lineHeight: "1.2" }}>Control the system</div>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.25rem" }}>👨‍🏫</div>
+                <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1f2937" }}>Teacher</div>
+                <div style={{ fontSize: "0.75rem", color: "#4b5563", marginTop: "0.25rem", lineHeight: "1.2" }}>Manage & teach classes</div>
               </div>
             </div>
           </div>
