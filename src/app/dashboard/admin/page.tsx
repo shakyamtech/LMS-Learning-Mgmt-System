@@ -69,14 +69,18 @@ export default async function AdminDashboard() {
   const totalCoursesSnap = await db.collection("courses").count().get();
   const totalCourses = totalCoursesSnap.data().count;
 
-  // 4. Fetch all registered Students
-  const studentsSnap = await db.collection("users").where("role", "==", "STUDENT").get();
-  const students = studentsSnap.docs.map(doc => ({
+  // 4. Fetch all registered Users (Students, Teachers, Admins)
+  const allUsersSnap = await db.collection("users").get();
+  const allUsers = allUsersSnap.docs.map(doc => ({
     id: doc.id,
     name: (doc.data().name as string | undefined) || null,
     email: (doc.data().email as string | undefined) || null,
+    role: (doc.data().role as string | undefined) || "STUDENT",
     approved: doc.data().approved !== false,
+    createdAt: (doc.data().createdAt as string | undefined) || null,
   }));
+
+  const students = allUsers.filter(u => u.role === "STUDENT");
 
   // 5. Fetch Homepage CMS Config
   const homepageConfigSnap = await db.collection("config").doc("homepage").get();
@@ -88,6 +92,7 @@ export default async function AdminDashboard() {
       teachers={teachers}
       courses={courses}
       students={students}
+      allUsers={allUsers}
       cmsConfig={cmsConfig}
       totalUsers={totalUsers}
       totalCourses={totalCourses}

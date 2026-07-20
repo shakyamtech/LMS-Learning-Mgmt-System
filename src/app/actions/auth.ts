@@ -197,9 +197,57 @@ export async function rejectStudent(studentId: string) {
   try {
     await db.collection("users").doc(studentId).delete();
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Reject student error:", error);
     return { error: "Failed to reject student." };
+  }
+}
+
+export async function updateUser(userId: string, data: { name?: string; email?: string; role?: string; approved?: boolean }) {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || session.role !== "ADMIN") {
+    return { error: "Unauthorized" };
+  }
+
+  if (!userId) return { error: "User ID is required" };
+
+  try {
+    const updateData: Record<string, any> = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.email !== undefined) updateData.email = data.email;
+    if (data.role !== undefined) updateData.role = data.role.toUpperCase();
+    if (data.approved !== undefined) updateData.approved = data.approved;
+
+    await db.collection("users").doc(userId).update(updateData);
+    return { success: true };
+  } catch (error) {
+    console.error("Update user error:", error);
+    return { error: "Failed to update user." };
+  }
+}
+
+export async function deleteUser(userId: string) {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || session.role !== "ADMIN") {
+    return { error: "Unauthorized" };
+  }
+
+  if (!userId) return { error: "User ID is required" };
+
+  try {
+    await db.collection("users").doc(userId).delete();
+    return { success: true };
+  } catch (error) {
+    console.error("Delete user error:", error);
+    return { error: "Failed to delete user." };
   }
 }
 

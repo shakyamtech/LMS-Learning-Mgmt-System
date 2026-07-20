@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
 import CourseForm from "./CourseForm";
-import { approveStudent, rejectStudent } from "@/app/actions/auth";
+import { approveStudent, rejectStudent, updateUser, deleteUser } from "@/app/actions/auth";
 import { saveHomepageConfig } from "@/app/actions/cms";
 
 interface Teacher {
@@ -37,6 +37,15 @@ interface Student {
   approved: boolean;
 }
 
+export interface PlatformUser {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: string;
+  approved: boolean;
+  createdAt?: string | null;
+}
+
 interface Session {
   email: string;
 }
@@ -45,6 +54,7 @@ interface AdminDashboardClientProps {
   teachers: Teacher[];
   courses: Course[];
   students: Student[];
+  allUsers?: PlatformUser[];
   cmsConfig?: Array<{ title: string; subtitle: string; image: string }> | null;
   totalUsers: number;
   totalCourses: number;
@@ -56,17 +66,31 @@ export default function AdminDashboardClient({
   teachers,
   courses,
   students,
+  allUsers = [],
   cmsConfig,
   totalUsers,
   totalCourses,
   session,
   logout
 }: AdminDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "students" | "cms">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "students" | "cms">("dashboard");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
+  const [localUsers, setLocalUsers] = useState<PlatformUser[]>(allUsers);
+
+  // User Management State
+  const [userRoleFilter, setUserRoleFilter] = useState<"ALL" | "STUDENT" | "TEACHER" | "ADMIN">("ALL");
+  const [editingUser, setEditingUser] = useState<PlatformUser | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [userActionError, setUserActionError] = useState<string | null>(null);
+  const [isUserPending, startUserTransition] = useTransition();
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalUsers(allUsers);
+  }, [allUsers]);
   
   const defaultSlides = [
     {
@@ -216,6 +240,48 @@ export default function AdminDashboardClient({
 
 
 
+  const handleSaveUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editingUser) return;
+
+    setUserActionError(null);
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const role = formData.get("role") as string;
+    const approved = formData.get("approved") === "on";
+
+    startUserTransition(async () => {
+      const res = await updateUser(editingUser.id, { name, email, role, approved });
+      if (res?.error) {
+        setUserActionError(res.error);
+      } else {
+        setLocalUsers(prev => prev.map(u => u.id === editingUser.id ? { ...u, name, email, role: role.toUpperCase(), approved } : u));
+        setEditingUser(null);
+      }
+    });
+  };
+
+  const handleConfirmDeleteUser = async (userId: string) => {
+    setUserActionError(null);
+    startUserTransition(async () => {
+      const res = await deleteUser(userId);
+      if (res?.error) {
+        setUserActionError(res.error);
+      } else {
+        setLocalUsers(prev => prev.filter(u => u.id !== userId));
+        setDeletingUserId(null);
+      }
+    });
+  };
+
+  const filteredUsers = localUsers.filter(user => {
+    const matchesSearch = (user.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (user.email || "").toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = userRoleFilter === "ALL" || user.role === userRoleFilter;
+    return matchesSearch && matchesRole;
+  });
+
   const mockSettings = [
     { id: 1, label: "⚙️ System Configuration" },
     { id: 2, label: "🔑 Security & API Keys" },
@@ -249,11 +315,23 @@ export default function AdminDashboardClient({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
+                setActiveTab("users");
+              }}
+              className={`admin-sidebar-link ${activeTab === "users" ? "active" : ""}`}
+            >
+              <span>👥</span> Users Management
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveTab("students");
               }}
               className={`admin-sidebar-link ${activeTab === "students" ? "active" : ""}`}
             >
-              <span>👥</span> Students
+              <span>🎓</span> Students Approval
             </a>
           </li>
           <li>
@@ -586,6 +664,168 @@ export default function AdminDashboardClient({
 
                 {/* Course Creation Form */}
                 <CourseForm teachers={teachers} />
+              </div>
+            </>
+          ) : activeTab === "users" ? (
+            /* ──── USERS MANAGEMENT TAB VIEW ──── */
+            <>
+              <div style={{ marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "var(--college-primary)", margin: "0 0 0.5rem 0" }}>Platform User Management</h2>
+                <p className="text-muted">Manage all registered accounts (Students, Instructors, Administrators), modify roles, and handle account access.</p>
+              </div>
+
+              {/* User Role Filter Bar */}
+              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+                {(["ALL", "STUDENT", "TEACHER", "ADMIN"] as const).map((roleKey) => (
+                  <button
+                    key={roleKey}
+                    onClick={() => setUserRoleFilter(roleKey)}
+                    style={{
+                      padding: "0.5rem 1.25rem",
+                      borderRadius: "var(--radius-md)",
+                      border: userRoleFilter === roleKey ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                      backgroundColor: userRoleFilter === roleKey ? "var(--college-primary)" : "white",
+                      color: userRoleFilter === roleKey ? "white" : "var(--college-text)",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      cursor: "pointer",
+                      transition: "all var(--transition-fast)"
+                    }}
+                  >
+                    {roleKey === "ALL" ? `All Users (${localUsers.length})` : roleKey === "STUDENT" ? "Students" : roleKey === "TEACHER" ? "Teachers" : "Admins"}
+                  </button>
+                ))}
+              </div>
+
+              <div className="card" style={{ backgroundColor: "white", padding: "2rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                  <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: 0 }}>
+                    Registered Platform Users
+                    {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredUsers.length} found)</span>}
+                  </h3>
+                </div>
+
+                {filteredUsers.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "4rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>👤</div>
+                    <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
+                      {searchQuery ? "No matching users found" : "No Users Registered"}
+                    </h4>
+                    <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
+                      {searchQuery ? "Check spelling or search terms." : "User records will appear here as users register."}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.9rem" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "2px solid var(--border)", color: "var(--college-primary)" }}>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>User Info</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Role</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Status</th>
+                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700, textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredUsers.map((user) => {
+                          const initials = (user.name || user.email || "US").substring(0, 2).toUpperCase();
+                          const roleBadgeStyle = user.role === "ADMIN"
+                            ? { bg: "rgba(27, 94, 32, 0.1)", color: "var(--college-primary)", label: "⚡ Admin" }
+                            : user.role === "TEACHER"
+                            ? { bg: "rgba(79, 70, 229, 0.1)", color: "#4f46e5", label: "👨‍🏫 Teacher" }
+                            : { bg: "rgba(212, 175, 55, 0.15)", color: "#92400e", label: "🎓 Student" };
+
+                          return (
+                            <tr key={user.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                              <td style={{ padding: "1rem" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+                                  <div style={{
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                    backgroundColor: roleBadgeStyle.bg,
+                                    color: roleBadgeStyle.color,
+                                    fontWeight: 700,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "0.95rem"
+                                  }}>
+                                    {initials}
+                                  </div>
+                                  <div>
+                                    <div style={{ fontWeight: 600, color: "var(--college-text)" }}>{user.name || "Unnamed User"}</div>
+                                    <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{user.email}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: "1rem" }}>
+                                <span style={{
+                                  fontSize: "0.75rem",
+                                  fontWeight: 700,
+                                  backgroundColor: roleBadgeStyle.bg,
+                                  color: roleBadgeStyle.color,
+                                  padding: "0.25rem 0.65rem",
+                                  borderRadius: "var(--radius-full)"
+                                }}>
+                                  {roleBadgeStyle.label}
+                                </span>
+                              </td>
+                              <td style={{ padding: "1rem" }}>
+                                <span style={{
+                                  fontSize: "0.75rem",
+                                  fontWeight: 700,
+                                  backgroundColor: user.approved ? "rgba(34, 197, 94, 0.1)" : "rgba(245, 158, 11, 0.1)",
+                                  color: user.approved ? "var(--success)" : "var(--warning)",
+                                  padding: "0.25rem 0.65rem",
+                                  borderRadius: "var(--radius-full)"
+                                }}>
+                                  {user.approved ? "✅ Approved" : "⏳ Pending"}
+                                </span>
+                              </td>
+                              <td style={{ padding: "1rem", textAlign: "right" }}>
+                                <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                                  <button
+                                    onClick={() => setEditingUser(user)}
+                                    style={{
+                                      padding: "0.4rem 0.85rem",
+                                      borderRadius: "var(--radius-md)",
+                                      border: "1px solid #d1d5db",
+                                      backgroundColor: "#ffffff",
+                                      color: "#374151",
+                                      fontSize: "0.8rem",
+                                      fontWeight: 600,
+                                      cursor: "pointer",
+                                      transition: "all 0.2s"
+                                    }}
+                                  >
+                                    ✏️ Edit
+                                  </button>
+                                  <button
+                                    onClick={() => setDeletingUserId(user.id)}
+                                    style={{
+                                      padding: "0.4rem 0.85rem",
+                                      borderRadius: "var(--radius-md)",
+                                      border: "1px solid rgba(239, 68, 68, 0.3)",
+                                      backgroundColor: "rgba(239, 68, 68, 0.05)",
+                                      color: "var(--error)",
+                                      fontSize: "0.8rem",
+                                      fontWeight: 600,
+                                      cursor: "pointer",
+                                      transition: "all 0.2s"
+                                    }}
+                                  >
+                                    🗑️ Delete
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </>
           ) : activeTab === "students" ? (
@@ -1032,6 +1272,240 @@ export default function AdminDashboardClient({
 
         </main>
       </div>
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          colorScheme: "light"
+        }}>
+          <div style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "var(--radius-lg)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "500px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+            border: "1px solid var(--border)"
+          }}>
+            <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: "0 0 1.25rem 0" }}>
+              ✏️ Edit User Account
+            </h3>
+
+            {userActionError && (
+              <div style={{
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                color: "var(--error)",
+                padding: "0.6rem 1rem",
+                borderRadius: "var(--radius-md)",
+                marginBottom: "1rem",
+                fontSize: "0.85rem"
+              }}>
+                ⚠️ {userActionError}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveUser}>
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  defaultValue={editingUser.name || ""}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={editingUser.email || ""}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Role Assignment
+                </label>
+                <select
+                  name="role"
+                  defaultValue={editingUser.role}
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem",
+                    backgroundColor: "white"
+                  }}
+                >
+                  <option value="STUDENT">🎓 Student</option>
+                  <option value="TEACHER">👨‍🏫 Teacher</option>
+                  <option value="ADMIN">⚡ Admin</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <input
+                  type="checkbox"
+                  id="approved"
+                  name="approved"
+                  defaultChecked={editingUser.approved}
+                  style={{ accentColor: "var(--college-primary)", cursor: "pointer" }}
+                />
+                <label htmlFor="approved" style={{ fontSize: "0.9rem", fontWeight: 600, color: "#374151", cursor: "pointer" }}>
+                  Account Approved
+                </label>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+                <button
+                  type="button"
+                  onClick={() => setEditingUser(null)}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    backgroundColor: "#ffffff",
+                    color: "#374151",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUserPending}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "none",
+                    backgroundColor: "var(--college-primary)",
+                    color: "#ffffff",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  {isUserPending ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Confirmation Modal */}
+      {deletingUserId && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          colorScheme: "light"
+        }}>
+          <div style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "var(--radius-lg)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "420px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+            border: "1px solid var(--border)",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>⚠️</div>
+            <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.4rem", color: "var(--error)", margin: "0 0 0.5rem 0" }}>
+              Delete User Account?
+            </h3>
+            <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "1.5rem" }}>
+              Are you sure you want to permanently delete this user account? This action cannot be undone.
+            </p>
+
+            {userActionError && (
+              <div style={{
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                color: "var(--error)",
+                padding: "0.6rem 1rem",
+                borderRadius: "var(--radius-md)",
+                marginBottom: "1rem",
+                fontSize: "0.85rem"
+              }}>
+                ⚠️ {userActionError}
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "center", gap: "0.75rem" }}>
+              <button
+                type="button"
+                onClick={() => setDeletingUserId(null)}
+                style={{
+                  padding: "0.6rem 1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid #d1d5db",
+                  backgroundColor: "#ffffff",
+                  color: "#374151",
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleConfirmDeleteUser(deletingUserId)}
+                disabled={isUserPending}
+                style={{
+                  padding: "0.6rem 1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  border: "none",
+                  backgroundColor: "var(--error)",
+                  color: "#ffffff",
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}
+              >
+                {isUserPending ? "Deleting..." : "Yes, Delete User"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
