@@ -118,6 +118,7 @@ export default function AdminDashboardClient({
   const [txFilter, setTxFilter] = useState<"ALL" | "STUDENT_FEE" | "INCOME" | "EXPENSE">("ALL");
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [selectedFeeStudentId, setSelectedFeeStudentId] = useState("");
+  const [showIncomeModal, setShowIncomeModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [txActionError, setTxActionError] = useState<string | null>(null);
   const [isTxPending, startTxTransition] = useTransition();
@@ -428,6 +429,54 @@ export default function AdminDashboardClient({
 
         setShowFeeModal(false);
         setSelectedFeeStudentId("");
+      }
+    });
+  };
+
+  const handleSaveGeneralIncome = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setTxActionError(null);
+    const formData = new FormData(e.currentTarget);
+    const title = formData.get("title") as string;
+    const amountStr = formData.get("amount") as string;
+    const category = formData.get("category") as string;
+    const paymentMethod = formData.get("paymentMethod") as string;
+    const date = formData.get("date") as string;
+    const notes = formData.get("notes") as string;
+
+    const amount = parseFloat(amountStr);
+    if (!title || isNaN(amount) || amount <= 0) {
+      setTxActionError("Please enter a valid title and positive income amount.");
+      return;
+    }
+
+    startTxTransition(async () => {
+      const res = await addTransaction({
+        type: "INCOME",
+        title,
+        amount,
+        category: category || "General Income",
+        paymentMethod,
+        date: date || new Date().toISOString().split("T")[0],
+        notes
+      });
+
+      if (res?.error) {
+        setTxActionError(res.error);
+      } else {
+        const newRecord: TransactionRecord = {
+          id: res.id || Date.now().toString(),
+          type: "INCOME",
+          title,
+          amount,
+          category: category || "General Income",
+          paymentMethod,
+          date: date || new Date().toISOString().split("T")[0],
+          notes
+        };
+
+        setTransactions(prev => [newRecord, ...prev]);
+        setShowIncomeModal(false);
       }
     });
   };
@@ -1163,6 +1212,28 @@ export default function AdminDashboardClient({
                   <button
                     onClick={() => {
                       setTxActionError(null);
+                      setShowIncomeModal(true);
+                    }}
+                    style={{
+                      backgroundColor: "#ffffff",
+                      color: "#0284c7",
+                      border: "1px solid rgba(2, 132, 199, 0.4)",
+                      padding: "0.65rem 1.25rem",
+                      borderRadius: "var(--radius-md)",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem"
+                    }}
+                  >
+                    <span>📈</span> Record General Income
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setTxActionError(null);
                       setShowExpenseModal(true);
                     }}
                     style={{
@@ -1179,7 +1250,7 @@ export default function AdminDashboardClient({
                       gap: "0.5rem"
                     }}
                   >
-                    <span>➕</span> Record Expense
+                    <span>📉</span> Record Expense
                   </button>
                 </div>
               </div>
@@ -2583,6 +2654,219 @@ export default function AdminDashboardClient({
                   }}
                 >
                   {isTxPending ? "Recording Fee..." : "Save Fee Payment"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Record General Income Modal */}
+      {showIncomeModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          colorScheme: "light"
+        }}>
+          <div style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "var(--radius-lg)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "520px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+            border: "1px solid var(--border)"
+          }}>
+            <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "#0284c7", margin: "0 0 1.25rem 0" }}>
+              📈 Record General Revenue / Income
+            </h3>
+
+            {txActionError && (
+              <div style={{
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                color: "var(--error)",
+                padding: "0.6rem 1rem",
+                borderRadius: "var(--radius-md)",
+                marginBottom: "1rem",
+                fontSize: "0.85rem"
+              }}>
+                ⚠️ {txActionError}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveGeneralIncome}>
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Income Title / Description
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="e.g. Corporate IT Training Workshop Revenue"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Income Amount (Rs.)
+                  </label>
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="e.g. 45000"
+                    required
+                    min="1"
+                    step="any"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Revenue Category
+                  </label>
+                  <select
+                    name="category"
+                    defaultValue="Training Revenue"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="Training Revenue">💻 Corporate / Workshop Training</option>
+                    <option value="Sponsorship">🏅 Sponsorship / Grant</option>
+                    <option value="Facility Rental">🏛️ Lab / Hall Rental</option>
+                    <option value="Material Sales">📚 Books & Material Sales</option>
+                    <option value="Consulting">💡 IT Consulting Services</option>
+                    <option value="Other Revenue">📦 Other Income</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Payment Method
+                  </label>
+                  <select
+                    name="paymentMethod"
+                    defaultValue="Bank Transfer"
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    <option value="Bank Transfer">🏛️ Bank Transfer</option>
+                    <option value="eSewa">📲 eSewa</option>
+                    <option value="Khalti">📱 Khalti</option>
+                    <option value="Cash">💵 Cash</option>
+                    <option value="Cheque">📜 Cheque</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                    Receipt Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    defaultValue={new Date().toISOString().split("T")[0]}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.65rem 0.85rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid #d1d5db",
+                      outline: "none",
+                      fontSize: "0.9rem"
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "1.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#374151", marginBottom: "0.35rem" }}>
+                  Notes / Reference Voucher No. (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="notes"
+                  placeholder="e.g. Voucher #502 - Client Nabil Bank Seminar"
+                  style={{
+                    width: "100%",
+                    padding: "0.65rem 0.85rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    fontSize: "0.9rem"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowIncomeModal(false)}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #d1d5db",
+                    backgroundColor: "#ffffff",
+                    color: "#374151",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isTxPending}
+                  style={{
+                    padding: "0.6rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "none",
+                    backgroundColor: "#0284c7",
+                    color: "#ffffff",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  {isTxPending ? "Saving Income..." : "Save General Income"}
                 </button>
               </div>
             </form>
