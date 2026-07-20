@@ -141,76 +141,17 @@ export default async function TeacherDashboard() {
       )
     : 0;
 
+  // Fetch teacher name from Firestore
+  const teacherUserSnap = await db.collection("users").doc(session.userId).get();
+  const teacherName = teacherUserSnap.exists ? (teacherUserSnap.data()?.name || session.email.split("@")[0]) : session.email.split("@")[0];
+
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--background)", padding: "2rem" }}>
-      <header className="glass-panel" style={{
-        padding: "1.25rem 2rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "2rem",
-        border: "1px solid var(--border)"
-      }}>
-        <div>
-          <span style={{
-            fontSize: "0.75rem",
-            backgroundColor: "rgba(16, 185, 129, 0.1)",
-            color: "var(--secondary)",
-            fontWeight: 700,
-            padding: "0.25rem 0.75rem",
-            borderRadius: "var(--radius-full)",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em"
-          }}>
-            👨‍🏫 Teacher Portal
-          </span>
-          <h1 className="text-h3" style={{ margin: "0.5rem 0 0 0" }}>LMS Instructor Dashboard</h1>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{session.email.split("@")[0]} (Instructor)</div>
-            <div className="text-muted" style={{ fontSize: "0.8rem" }}>{session.email}</div>
-          </div>
-          <form action={logout}>
-            <button className="btn btn-secondary" type="submit" style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}>
-              Logout
-            </button>
-          </form>
-        </div>
-      </header>
-
-      <main className="container" style={{ padding: 0 }}>
-        <div style={{ marginBottom: "2rem" }}>
-          <h2 className="text-h2">Welcome back, Instructor!</h2>
-          <p className="text-muted">Manage your student cohorts, view class statistics, edit your course curriculum, and grade submissions.</p>
-        </div>
-
-        {/* Analytics Grid */}
-        <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
-          <div className="card">
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Total Students</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--primary)" }}>{totalStudents}</p>
-            <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active cohort across all classes</p>
-          </div>
-          <div className="card">
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📖</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Active Classes</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--secondary)" }}>{courses.length} Courses</p>
-            <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Instructing on active curriculum</p>
-          </div>
-          <div className="card">
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📈</div>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>Class average progress</h3>
-            <p className="text-h2" style={{ margin: "0.25rem 0", color: "var(--warning)" }}>{classAverageProgress}%</p>
-            <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Standard learning metric speed</p>
-          </div>
-        </div>
-
-        {/* Detailed Layout */}
-        <TeacherConsole courses={courses} />
-      </main>
-    </div>
+    <TeacherConsole
+      courses={courses}
+      totalStudents={totalStudents}
+      classAverageProgress={classAverageProgress}
+      session={{ email: session.email, name: teacherName }}
+      logout={logout}
+    />
   );
 }
