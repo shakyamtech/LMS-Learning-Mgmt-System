@@ -74,9 +74,9 @@ export default function HeroSlider({ initialSlides }: HeroSliderProps) {
           ))}
         </div>
 
-        <div className="mobile-col" style={{ display: "flex", gap: "1.5rem", alignItems: "center", position: "relative", zIndex: 3 }}>
-          <Link href="/register" className="btn-primary">Explore Admission</Link>
-          <Link href="#" className="btn-text">Academics →</Link>
+        <div className="mobile-col" style={{ display: "flex", gap: "1.5rem", alignItems: "center", position: "relative", zIndex: 10, pointerEvents: "auto" }}>
+          <Link href="/register" className="btn-primary" style={{ cursor: "pointer" }}>Explore Admission</Link>
+          <Link href="/academics" className="btn-text" style={{ cursor: "pointer" }}>Academics →</Link>
         </div>
         
         {/* Slider Dots */}

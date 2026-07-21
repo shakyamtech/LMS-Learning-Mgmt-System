@@ -216,7 +216,7 @@ export default async function Home() {
             Join us in celebrating the extraordinary achievements of the Class of 2024. Discover the stories of our alumni and their next steps into the professional world.
           </p>
           <div>
-            <Link href="#" className="graduation-btn">Read More →</Link>
+            <Link href="/about" className="graduation-btn">Read More →</Link>
           </div>
         </div>
       </section>
