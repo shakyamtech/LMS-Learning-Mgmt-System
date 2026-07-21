@@ -986,27 +986,28 @@ export default function AdminDashboardClient({
                       {filteredCourses.map((course) => (
                         <div key={course.id} style={{
                           padding: "1.25rem",
-                          border: "1px solid var(--border)",
+                          border: "1px solid #e5e7eb",
                           borderRadius: "var(--radius-md)",
-                          backgroundColor: "var(--surface-hover)",
+                          backgroundColor: "#ffffff",
                           display: "flex",
                           justifyContent: "space-between",
-                          alignItems: "center"
+                          alignItems: "center",
+                          transition: "all 0.2s ease-in-out"
                         }}>
                           <div>
                             <span style={{ fontSize: "0.75rem", color: "var(--college-primary)", fontWeight: 700, backgroundColor: "rgba(27, 94, 32, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
                               {course.code}
                             </span>
-                            <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem", color: "var(--college-text)" }}>{course.title}</h4>
-                            <p className="text-muted" style={{ margin: 0, fontSize: "0.8rem", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
+                            <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem", fontWeight: 700, color: "#1f2937" }}>{course.title}</h4>
+                            <p style={{ margin: 0, fontSize: "0.8rem", color: "#6b7280", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
                               {course.description}
                             </p>
                           </div>
                           <div style={{ textAlign: "right" }}>
-                            <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+                            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1f2937" }}>
                               👨‍🏫 {course.teacher?.name || course.teacher?.email?.split("@")[0]}
                             </span>
-                            <div className="text-muted" style={{ fontSize: "0.75rem", marginTop: "0.15rem" }}>
+                            <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.15rem" }}>
                               👥 {course.enrollments?.length || 0} Enrolled
                             </div>
                           </div>
