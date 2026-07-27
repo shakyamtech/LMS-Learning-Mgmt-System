@@ -2,30 +2,125 @@
 
 import { login } from "@/app/actions/auth";
 import Link from "next/link";
-import { useActionState, useState, Suspense } from "react";
+import { useActionState, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-function PendingBanner() {
+function PendingModal() {
   const searchParams = useSearchParams();
   const isPendingRegistration = searchParams.get("pending") === "true";
+  const [isOpen, setIsOpen] = useState(true);
 
-  if (!isPendingRegistration) return null;
+  useEffect(() => {
+    if (!isPendingRegistration) return;
+    setIsOpen(true);
+    const timer = setTimeout(() => {
+      setIsOpen(false);
+      // Clean up search query param from URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("pending");
+      window.history.replaceState({}, "", url.pathname);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [isPendingRegistration]);
+
+  if (!isPendingRegistration || !isOpen) return null;
 
   return (
     <div style={{
-      backgroundColor: "rgba(34, 197, 94, 0.1)",
-      border: "1px solid var(--success)",
-      color: "var(--success)",
-      padding: "0.75rem 1rem",
-      borderRadius: "var(--radius-md)",
-      marginBottom: "1.5rem",
-      fontSize: "0.875rem",
-      fontWeight: 500,
+      position: "fixed",
+      inset: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.45)",
+      backdropFilter: "blur(4px)",
       display: "flex",
       alignItems: "center",
-      gap: "0.5rem"
+      justifyContent: "center",
+      zIndex: 9999,
+      animation: "fadeIn 0.25s ease-out"
     }}>
-      <span>✅</span> Account created! Please wait for admin approval before logging in.
+      <div style={{
+        backgroundColor: "#ffffff",
+        borderRadius: "1rem",
+        padding: "2.25rem 2rem",
+        width: "90%",
+        maxWidth: "420px",
+        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        textAlign: "center",
+        position: "relative",
+        overflow: "hidden"
+      }}>
+        <div style={{
+          width: "64px",
+          height: "64px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(34, 197, 94, 0.12)",
+          color: "#16a34a",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2.25rem",
+          margin: "0 auto 1.25rem auto"
+        }}>
+          ✅
+        </div>
+        <h3 style={{
+          fontSize: "1.4rem",
+          fontWeight: 800,
+          color: "var(--college-primary)",
+          margin: "0 0 0.6rem 0",
+          fontFamily: "Playfair Display, serif"
+        }}>
+          Account Created!
+        </h3>
+        <p style={{
+          fontSize: "0.95rem",
+          color: "#4b5563",
+          margin: "0 0 1.5rem 0",
+          lineHeight: 1.55
+        }}>
+          Your registration was successful. Please wait for administrator approval before logging in.
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            setIsOpen(false);
+            const url = new URL(window.location.href);
+            url.searchParams.delete("pending");
+            window.history.replaceState({}, "", url.pathname);
+          }}
+          style={{
+            backgroundColor: "var(--college-primary)",
+            color: "white",
+            border: "none",
+            borderRadius: "var(--radius-md)",
+            padding: "0.65rem 2rem",
+            fontWeight: 600,
+            fontSize: "0.9rem",
+            cursor: "pointer"
+          }}
+        >
+          Got it
+        </button>
+
+        {/* 3-second auto-dismiss progress bar */}
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          height: "4px",
+          backgroundColor: "var(--college-primary)",
+          width: "100%",
+          animation: "shrinkProgress 3s linear forwards"
+        }} />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes shrinkProgress {
+              from { width: 100%; }
+              to { width: 0%; }
+            }
+          `
+        }} />
+      </div>
     </div>
   );
 }
@@ -67,7 +162,7 @@ export default function LoginPage() {
 
         <form action={formAction}>
           <Suspense fallback={null}>
-            <PendingBanner />
+            <PendingModal />
           </Suspense>
           {state?.error && (
             <div style={{
