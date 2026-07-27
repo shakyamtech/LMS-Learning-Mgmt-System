@@ -1226,7 +1226,7 @@ a:hover {
   gap: 0.85rem;
   padding: 0.8rem 1rem;
   border-radius: var(--radius-md);
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.82);
   font-weight: 600;
   font-size: 0.9rem;
   transition: all 0.2s ease-in-out;
@@ -1234,15 +1234,26 @@ a:hover {
 }
 
 .admin-sidebar-link:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .admin-sidebar-link.active {
-  background-color: var(--college-accent) !important;
-  color: var(--college-primary-dark) !important;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(27, 94, 32, 0.45) 100%) !important;
+  color: #ffffff !important;
+  border-left: 4px solid var(--college-accent) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.2);
+  transform: none;
+}
+
+.admin-sidebar-link.active-red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.45) 100%) !important;
+  color: #ffffff !important;
+  border-left: 4px solid #f87171 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
   transform: none;
 }
 

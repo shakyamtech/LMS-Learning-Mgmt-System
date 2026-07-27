@@ -633,7 +633,8 @@ export default function AdminDashboardClient({
               }}
               className={`admin-sidebar-link ${activeTab === "dashboard" ? "active" : ""}`}
             >
-              <span>📊</span> Dashboard
+              <span style={{ fontSize: "1.1rem" }}>📊</span>
+              <span>Dashboard</span>
             </a>
           </li>
           <li>
@@ -647,7 +648,8 @@ export default function AdminDashboardClient({
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-                <span>👥</span> Users Management
+                <span style={{ fontSize: "1.1rem" }}>👥</span>
+                <span>Users Management</span>
               </div>
               {pendingUsersCount > 0 && (
                 <span style={{
@@ -674,7 +676,8 @@ export default function AdminDashboardClient({
               }}
               className={`admin-sidebar-link ${activeTab === "accounting" ? "active" : ""}`}
             >
-              <span>💰</span> Accounting & Finance
+              <span style={{ fontSize: "1.1rem" }}>💰</span>
+              <span>Accounting &amp; Finance</span>
             </a>
           </li>
           <li>
@@ -686,7 +689,8 @@ export default function AdminDashboardClient({
               }}
               className={`admin-sidebar-link ${activeTab === "cms" ? "active" : ""}`}
             >
-              <span>⚙️</span> Manage Site (CMS)
+              <span style={{ fontSize: "1.1rem" }}>⚙️</span>
+              <span>Manage Site (CMS)</span>
             </a>
           </li>
         </ul>

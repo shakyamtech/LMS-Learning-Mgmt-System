@@ -255,14 +255,9 @@ export default function TeacherConsole({
                 setActiveConsoleTab("dashboard");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active-red" : ""}`}
-              style={{
-                backgroundColor: activeConsoleTab === "dashboard" ? "rgba(239, 68, 68, 0.25)" : "transparent",
-                color: activeConsoleTab === "dashboard" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "dashboard" ? "4px solid #ef4444" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "dashboard" ? 700 : 500
-              }}
             >
-              <span>📊</span> Dashboard
+              <span style={{ fontSize: "1.1rem" }}>📊</span>
+              <span>Dashboard</span>
             </a>
           </li>
           <li>
@@ -274,14 +269,9 @@ export default function TeacherConsole({
                 setActiveTab("roster");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active-red" : ""}`}
-              style={{
-                backgroundColor: activeConsoleTab === "courses" ? "rgba(239, 68, 68, 0.25)" : "transparent",
-                color: activeConsoleTab === "courses" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "courses" ? "4px solid #ef4444" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "courses" ? 700 : 500
-              }}
             >
-              <span>📚</span> My Courses & Roster
+              <span style={{ fontSize: "1.1rem" }}>📚</span>
+              <span>My Courses &amp; Roster</span>
             </a>
           </li>
           <li>
@@ -293,14 +283,9 @@ export default function TeacherConsole({
                 setActiveTab("assignments");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active-red" : ""}`}
-              style={{
-                backgroundColor: activeConsoleTab === "assignments" ? "rgba(239, 68, 68, 0.25)" : "transparent",
-                color: activeConsoleTab === "assignments" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "assignments" ? "4px solid #ef4444" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "assignments" ? 700 : 500
-              }}
             >
-              <span>📝</span> Assignments & Grading
+              <span style={{ fontSize: "1.1rem" }}>📝</span>
+              <span>Assignments &amp; Grading</span>
             </a>
           </li>
           <li>
@@ -312,14 +297,9 @@ export default function TeacherConsole({
                 setActiveTab("announcements");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "announcements" ? "active-red" : ""}`}
-              style={{
-                backgroundColor: activeConsoleTab === "announcements" ? "rgba(239, 68, 68, 0.25)" : "transparent",
-                color: activeConsoleTab === "announcements" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "announcements" ? "4px solid #ef4444" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "announcements" ? 700 : 500
-              }}
             >
-              <span>📢</span> Class Announcements
+              <span style={{ fontSize: "1.1rem" }}>📢</span>
+              <span>Class Announcements</span>
             </a>
           </li>
         </ul>
