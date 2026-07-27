@@ -151,49 +151,94 @@ export default function AdminAttendance({ logs }: AdminAttendanceProps) {
         </div>
       </div>
 
-      {/* Top 4 Summary Cards */}
-      <div className="grid-cols-4" style={{ gap: "1.25rem" }}>
-        <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem", borderLeft: "4px solid #14532d" }}>
-          <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>📋</div>
-          <span style={{ fontSize: "0.78rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
-            Total Recorded Logs
-          </span>
-          <p className="text-h2" style={{ margin: "0.25rem 0", color: "#14532d", fontSize: "1.65rem", fontWeight: 800 }}>
+      {/* Top 4 Summary Cards Grid */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: "1.25rem",
+        width: "100%"
+      }}>
+        {/* Card 1: Total Entries */}
+        <div style={{
+          backgroundColor: "#ffffff",
+          padding: "1.25rem 1.5rem",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid #e5e7eb",
+          borderLeft: "5px solid #14532d",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+            <span style={{ fontSize: "0.75rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Total Recorded Logs
+            </span>
+            <span style={{ fontSize: "1.35rem" }}>📋</span>
+          </div>
+          <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "#14532d", margin: "0.2rem 0" }}>
             {totalEntries}
-          </p>
+          </div>
           <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Across all courses &amp; check-ins</span>
         </div>
 
-        <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem", borderLeft: "4px solid #10b981" }}>
-          <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>🟢</div>
-          <span style={{ fontSize: "0.78rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
-            Total Present Days
-          </span>
-          <p className="text-h2" style={{ margin: "0.25rem 0", color: "#059669", fontSize: "1.65rem", fontWeight: 800 }}>
+        {/* Card 2: Present Days */}
+        <div style={{
+          backgroundColor: "#ffffff",
+          padding: "1.25rem 1.5rem",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid #e5e7eb",
+          borderLeft: "5px solid #10b981",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+            <span style={{ fontSize: "0.75rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Total Present Days
+            </span>
+            <span style={{ fontSize: "1.35rem" }}>🟢</span>
+          </div>
+          <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "#059669", margin: "0.2rem 0" }}>
             {totalPresent}
-          </p>
+          </div>
           <span style={{ fontSize: "0.75rem", color: "#059669", fontWeight: 700 }}>Active attendance check-ins</span>
         </div>
 
-        <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem", borderLeft: "4px solid #ef4444" }}>
-          <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>🔴</div>
-          <span style={{ fontSize: "0.78rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
-            Total Absent Days
-          </span>
-          <p className="text-h2" style={{ margin: "0.25rem 0", color: "#dc2626", fontSize: "1.65rem", fontWeight: 800 }}>
+        {/* Card 3: Absent Days */}
+        <div style={{
+          backgroundColor: "#ffffff",
+          padding: "1.25rem 1.5rem",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid #e5e7eb",
+          borderLeft: "5px solid #ef4444",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+            <span style={{ fontSize: "0.75rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Total Absent Days
+            </span>
+            <span style={{ fontSize: "1.35rem" }}>🔴</span>
+          </div>
+          <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "#dc2626", margin: "0.2rem 0" }}>
             {totalAbsent}
-          </p>
+          </div>
           <span style={{ fontSize: "0.75rem", color: "#dc2626", fontWeight: 700 }}>Unexcused absences</span>
         </div>
 
-        <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem", borderLeft: "4px solid #f59e0b" }}>
-          <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>🟡</div>
-          <span style={{ fontSize: "0.78rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
-            Late / Excused
-          </span>
-          <p className="text-h2" style={{ margin: "0.25rem 0", color: "#d97706", fontSize: "1.65rem", fontWeight: 800 }}>
+        {/* Card 4: Late / Excused */}
+        <div style={{
+          backgroundColor: "#ffffff",
+          padding: "1.25rem 1.5rem",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid #e5e7eb",
+          borderLeft: "5px solid #f59e0b",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+            <span style={{ fontSize: "0.75rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Late / Excused
+            </span>
+            <span style={{ fontSize: "1.35rem" }}>🟡</span>
+          </div>
+          <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "#d97706", margin: "0.2rem 0" }}>
             {totalLate}
-          </p>
+          </div>
           <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Approved late or excused</span>
         </div>
       </div>
