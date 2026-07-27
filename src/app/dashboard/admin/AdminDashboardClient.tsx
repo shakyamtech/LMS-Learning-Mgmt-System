@@ -1681,7 +1681,7 @@ export default function AdminDashboardClient({
                 )}
               </div>
             </>
-          ) : (
+          ) : activeTab === "cms" ? (
             /* ──── CMS TAB VIEW ──── */
             <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
               <div style={{ marginBottom: "2rem" }}>
@@ -1970,11 +1970,9 @@ export default function AdminDashboardClient({
                 
               </div>
             </div>
-          )}
-
-          {activeTab === "attendance" && (
+          ) : activeTab === "attendance" ? (
             <AdminAttendance logs={attendanceLogs || []} />
-          )}
+          ) : null}
 
         </main>
       </div>
