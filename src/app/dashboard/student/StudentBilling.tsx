@@ -43,7 +43,7 @@ export default function StudentBilling({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem", width: "100%" }}>
-      {/* Header Info */}
+      {/* Screen Header & Action Button */}
       <div className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.75rem", color: "#0e7490", margin: "0 0 0.25rem 0" }}>
@@ -75,11 +75,47 @@ export default function StudentBilling({
       </div>
 
       {/* Printable Area Wrapper */}
-      <div className="billing-statement-print-area" ref={statementRef} style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+      <div className="billing-statement-print-area" ref={statementRef} style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
+        
+        {/* Official Print Header Banner */}
+        <div className="print-only-header" style={{ display: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "3px solid #0e7490", paddingBottom: "1rem", marginBottom: "1.25rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <img src="/logo.png" alt="LITA Logo" style={{ width: "56px", height: "56px", borderRadius: "50%", border: "2px solid #d4af37" }} />
+              <div>
+                <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800, color: "#0e7490", fontFamily: "Playfair Display, serif" }}>
+                  LAGANKHEL IT ACADEMY
+                </h2>
+                <span style={{ fontSize: "0.78rem", color: "#4b5563", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                  Official Student Fee & Payment Clearance Statement
+                </span>
+              </div>
+            </div>
+            <div style={{ textAlign: "right", fontSize: "0.82rem", color: "#4b5563" }}>
+              <div><strong>Statement Date:</strong> {new Date().toLocaleDateString()}</div>
+              <div><strong>Status:</strong> {isFullyPaid ? "✅ FULLY CLEARED" : "⚠️ BALANCE PENDING"}</div>
+            </div>
+          </div>
+
+          <div style={{ backgroundColor: "#f8fafc", padding: "0.85rem 1.25rem", borderRadius: "8px", border: "1px solid #cbd5e1", marginBottom: "1.25rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", fontSize: "0.85rem" }}>
+            <div><strong>Student Name:</strong> {studentName}</div>
+            <div><strong>Registered Email:</strong> {studentEmail}</div>
+            <div><strong>Academic Program:</strong> {faculty || "General"}</div>
+            <div><strong>Roll / Student ID:</strong> {rollNo || `ID: ${studentEmail.split("@")[0]}`}</div>
+          </div>
+        </div>
+
         {/* Top 3 Summary Cards */}
-        <div className="grid-cols-3" style={{ gap: "1.5rem" }}>
+        <div className="billing-summary-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
           {/* Card 1: Total Fee */}
-          <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.5rem", borderLeft: "4px solid #0891b2" }}>
+          <div className="billing-card billing-card-total" style={{
+            backgroundColor: "#ffffff",
+            padding: "1.5rem",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid #e5e7eb",
+            borderLeft: "5px solid #0891b2",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+          }}>
             <div style={{ fontSize: "1.75rem", marginBottom: "0.35rem" }}>📜</div>
             <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
               Total Course Fee
@@ -93,7 +129,14 @@ export default function StudentBilling({
           </div>
 
           {/* Card 2: Amount Paid */}
-          <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.5rem", borderLeft: "4px solid #10b981" }}>
+          <div className="billing-card billing-card-paid" style={{
+            backgroundColor: "#ffffff",
+            padding: "1.5rem",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid #e5e7eb",
+            borderLeft: "5px solid #10b981",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+          }}>
             <div style={{ fontSize: "1.75rem", marginBottom: "0.35rem" }}>✅</div>
             <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
               Total Paid Amount
@@ -107,7 +150,14 @@ export default function StudentBilling({
           </div>
 
           {/* Card 3: Remaining Due */}
-          <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.5rem", borderLeft: isFullyPaid ? "4px solid #10b981" : "4px solid #f59e0b" }}>
+          <div className="billing-card billing-card-due" style={{
+            backgroundColor: "#ffffff",
+            padding: "1.5rem",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid #e5e7eb",
+            borderLeft: isFullyPaid ? "5px solid #10b981" : "5px solid #f59e0b",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+          }}>
             <div style={{ fontSize: "1.75rem", marginBottom: "0.35rem" }}>{isFullyPaid ? "🎉" : "⏳"}</div>
             <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
               Remaining Due / Balance
@@ -126,7 +176,7 @@ export default function StudentBilling({
         </div>
 
         {/* Fee Payment Progress Bar */}
-        <div style={{
+        <div className="billing-card" style={{
           backgroundColor: "#ffffff",
           padding: "1.5rem",
           borderRadius: "var(--radius-lg)",
@@ -166,14 +216,13 @@ export default function StudentBilling({
               height: "100%",
               backgroundColor: isFullyPaid ? "#10b981" : "#0e7490",
               backgroundImage: "linear-gradient(90deg, #0e7490 0%, #10b981 100%)",
-              borderRadius: "9999px",
-              transition: "width 0.5s ease"
+              borderRadius: "9999px"
             }} />
           </div>
         </div>
 
         {/* Detailed Payment History Ledger */}
-        <div style={{
+        <div className="billing-card" style={{
           backgroundColor: "#ffffff",
           padding: "1.5rem",
           borderRadius: "var(--radius-lg)",
@@ -193,9 +242,9 @@ export default function StudentBilling({
             <div style={{
               textAlign: "center",
               padding: "3rem 1rem",
-              border: "1px dashed #e5e7eb",
+              border: "1px dashed #cbd5e1",
               borderRadius: "var(--radius-md)",
-              backgroundColor: "#f9fafb"
+              backgroundColor: "#f8fafc"
             }}>
               <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>💳</div>
               <h4 style={{ margin: 0, fontWeight: 700, color: "var(--college-text)" }}>No Transaction Receipts Found</h4>
@@ -256,6 +305,26 @@ export default function StudentBilling({
             </div>
           )}
         </div>
+
+        {/* Official Print Footer Authorization */}
+        <div className="print-only-header" style={{ display: "none", marginTop: "2rem", paddingTop: "1.5rem", borderTop: "2px dashed #cbd5e1" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+            <div>
+              <span style={{ fontSize: "0.72rem", color: "#16a34a", fontWeight: 800, display: "block" }}>
+                ✅ OFFICIAL ACADEMY FEE STATEMENT
+              </span>
+              <span style={{ fontSize: "0.68rem", color: "#9ca3af" }}>
+                Lagankhel IT Academy Finance Department • Computer Generated Statement
+              </span>
+            </div>
+            <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "180px", paddingTop: "0.35rem" }}>
+              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#374151" }}>
+                Authorized Signature
+              </span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <style dangerouslySetInnerHTML={{
@@ -267,20 +336,52 @@ export default function StudentBilling({
             }
             body {
               background: #ffffff !important;
+              margin: 0 !important;
+              padding: 0 !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
-            .no-print, aside, header, button {
+            .admin-sidebar,
+            .admin-navbar,
+            .admin-sidebar-footer,
+            aside,
+            header,
+            button,
+            .no-print {
               display: none !important;
             }
-            .admin-layout, .admin-main, .admin-content, .card {
+            .admin-layout, .admin-main, .admin-content {
               background: none !important;
               border: none !important;
               box-shadow: none !important;
               padding: 0 !important;
+              margin: 0 !important;
             }
-            .billing-statement-print-area {
+            .print-only-header {
               display: block !important;
+            }
+            .billing-summary-grid {
+              display: grid !important;
+              grid-template-columns: repeat(3, 1fr) !important;
+              gap: 1rem !important;
+            }
+            .billing-card {
+              background-color: #ffffff !important;
+              border: 1px solid #cbd5e1 !important;
+              border-radius: 10px !important;
+              padding: 1rem !important;
+              box-shadow: none !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .billing-card-total {
+              border-left: 5px solid #0891b2 !important;
+            }
+            .billing-card-paid {
+              border-left: 5px solid #10b981 !important;
+            }
+            .billing-card-due {
+              border-left: 5px solid #f59e0b !important;
             }
           }
         `
