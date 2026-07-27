@@ -107,6 +107,25 @@ export default function CourseForm({ teachers }: CourseFormProps) {
           />
         </div>
 
+        <div className="input-group">
+          <label className="input-label" htmlFor="faculty" style={{ color: "var(--college-text)" }}>Faculty / Program</label>
+          <select
+            className="input-field"
+            id="faculty"
+            name="faculty"
+            required
+            disabled={isPending}
+            defaultValue="BIT"
+            style={{ cursor: "pointer", backgroundColor: "white", color: "#111827", borderColor: "#d1d5db" }}
+          >
+            <option value="BIT">🎓 BIT (Bachelor of Information Technology)</option>
+            <option value="BSc CSIT">💻 BSc CSIT (Computer Science & IT)</option>
+            <option value="BIM">💼 BIM (Bachelor of Information Management)</option>
+            <option value="BCA">📱 BCA (Bachelor of Computer Application)</option>
+            <option value="General">🌐 General / All Programs</option>
+          </select>
+        </div>
+
         <div className="input-group" style={{ marginBottom: "1.75rem" }}>
           <label className="input-label" htmlFor="teacherId" style={{ color: "var(--college-text)" }}>Assign Instructor</label>
           <select

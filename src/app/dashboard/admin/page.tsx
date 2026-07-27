@@ -53,6 +53,7 @@ export default async function AdminDashboard() {
       code: courseData.code,
       title: courseData.title,
       description: courseData.description,
+      faculty: courseData.faculty || "General",
       teacherId: courseData.teacherId,
       teacher,
       enrollments: new Array(enrollsSnap.size).fill({ id: "dummy" }) // just for length

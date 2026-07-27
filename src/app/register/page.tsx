@@ -135,6 +135,24 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          <div className="input-group" style={{ marginBottom: "1.5rem" }}>
+            <label className="auth-input-label" htmlFor="faculty">Academic Faculty / Program</label>
+            <select
+              className="auth-input-field"
+              id="faculty"
+              name="faculty"
+              required
+              disabled={isPending}
+              defaultValue="BIT"
+              style={{ fontSize: "0.95rem", cursor: "pointer", backgroundColor: "#ffffff" }}
+            >
+              <option value="BIT">🎓 BIT (Bachelor of Information Technology)</option>
+              <option value="BSc CSIT">💻 BSc CSIT (Computer Science & IT)</option>
+              <option value="BIM">💼 BIM (Bachelor of Information Management)</option>
+              <option value="BCA">📱 BCA (Bachelor of Computer Application)</option>
+            </select>
+          </div>
+
           {/* Hidden input to pass selected role to the form action */}
           <input type="hidden" name="role" value={selectedRole} />
 

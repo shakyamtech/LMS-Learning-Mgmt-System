@@ -24,6 +24,8 @@ export async function register(prevState: any, formData: FormData) {
   const password = formData.get("password") as string;
   const roleInput = formData.get("role") as string;
 
+  const faculty = (formData.get("faculty") as string) || null;
+
   if (!name || !email || !password || !roleInput) {
     return { error: "All fields are required." };
   }
@@ -63,6 +65,7 @@ export async function register(prevState: any, formData: FormData) {
       email,
       password: hashedPassword,
       role: role,
+      faculty: faculty,
       approved: !requiresApproval,
       createdAt: new Date().toISOString(),
     });
@@ -86,7 +89,7 @@ export async function register(prevState: any, formData: FormData) {
         maxAge: 60 * 60 * 24, // 24 hours
       });
 
-      targetPath = `/dashboard/${role.toLowerCase()}`;
+      targetPath = `/dashboard/${String(roleInput).toLowerCase()}`;
     }
   } catch (error: any) {
     console.error("Registration error:", error);

@@ -13,6 +13,7 @@ interface Course {
   code: string;
   title: string;
   description: string;
+  faculty?: string;
   teacher: Teacher;
 }
 
@@ -20,9 +21,18 @@ interface BrowseCoursesProps {
   courses: Course[];
 }
 
+const FACULTY_OPTIONS = [
+  { key: "ALL", label: "All Programs", icon: "🌐" },
+  { key: "BIT", label: "BIT", icon: "🎓" },
+  { key: "BSc CSIT", label: "BSc CSIT", icon: "💻" },
+  { key: "BIM", label: "BIM", icon: "💼" },
+  { key: "BCA", label: "BCA", icon: "📱" },
+] as const;
+
 export default function BrowseCourses({ courses }: BrowseCoursesProps) {
   const [isPending, startTransition] = useTransition();
   const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
+  const [selectedFaculty, setSelectedFaculty] = useState<string>("ALL");
   const [error, setError] = useState<string | null>(null);
 
   const handleEnroll = (courseId: string) => {
@@ -40,6 +50,12 @@ export default function BrowseCourses({ courses }: BrowseCoursesProps) {
     });
   };
 
+  const filteredCourses = courses.filter((c) => {
+    if (selectedFaculty === "ALL") return true;
+    const courseFac = c.faculty || "General";
+    return courseFac === selectedFaculty || courseFac === "General";
+  });
+
   return (
     <div style={{
       backgroundColor: "#ffffff",
@@ -49,13 +65,13 @@ export default function BrowseCourses({ courses }: BrowseCoursesProps) {
       boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
       height: "fit-content"
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
         <div>
           <h3 style={{ fontFamily: "Playfair Display, serif", margin: 0, fontSize: "1.35rem", color: "#0e7490" }}>
             📚 Browse Available Courses
           </h3>
           <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
-            Expand your knowledge base by self-enrolling in new semester offerings.
+            Expand your knowledge base by self-enrolling in your faculty offerings.
           </p>
         </div>
         <span style={{
@@ -67,8 +83,39 @@ export default function BrowseCourses({ courses }: BrowseCoursesProps) {
           borderRadius: "var(--radius-full)",
           textTransform: "uppercase"
         }}>
-          {courses.length} Open
+          {filteredCourses.length} Available
         </span>
+      </div>
+
+      {/* Faculty Filter Pills */}
+      <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1.25rem", flexWrap: "wrap" }}>
+        {FACULTY_OPTIONS.map((fac) => {
+          const isActive = selectedFaculty === fac.key;
+          return (
+            <button
+              key={fac.key}
+              type="button"
+              onClick={() => setSelectedFaculty(fac.key)}
+              style={{
+                padding: "0.35rem 0.75rem",
+                borderRadius: "var(--radius-md)",
+                border: isActive ? "1px solid #0891b2" : "1px solid #e5e7eb",
+                backgroundColor: isActive ? "#0891b2" : "#f9fafb",
+                color: isActive ? "#ffffff" : "#4b5563",
+                fontSize: "0.78rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem"
+              }}
+            >
+              <span>{fac.icon}</span>
+              <span>{fac.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {error && (
@@ -89,7 +136,7 @@ export default function BrowseCourses({ courses }: BrowseCoursesProps) {
         </div>
       )}
 
-      {courses.length === 0 ? (
+      {filteredCourses.length === 0 ? (
         <div style={{
           textAlign: "center",
           padding: "3rem 1rem",
@@ -98,15 +145,18 @@ export default function BrowseCourses({ courses }: BrowseCoursesProps) {
           backgroundColor: "#f9fafb"
         }}>
           <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🎉</div>
-          <h4 style={{ margin: 0, fontWeight: 700, color: "var(--college-text)" }}>All Caught Up!</h4>
+          <h4 style={{ margin: 0, fontWeight: 700, color: "var(--college-text)" }}>No Courses Available</h4>
           <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
-            You are enrolled in all available courses on the platform.
+            {selectedFaculty !== "ALL"
+              ? `No open courses found under ${selectedFaculty}. Try selecting All Programs.`
+              : "You are enrolled in all available courses on the platform."}
           </p>
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
-          {courses.map((course) => {
+          {filteredCourses.map((course) => {
             const isLoading = isPending && activeCourseId === course.id;
+            const facultyBadge = course.faculty || "General";
             return (
               <div
                 key={course.id}
@@ -125,16 +175,28 @@ export default function BrowseCourses({ courses }: BrowseCoursesProps) {
               >
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                    <span style={{
-                      fontSize: "0.75rem",
-                      color: "#0891b2",
-                      fontWeight: 700,
-                      backgroundColor: "rgba(8, 145, 178, 0.08)",
-                      padding: "0.15rem 0.5rem",
-                      borderRadius: "var(--radius-sm)"
-                    }}>
-                      {course.code}
-                    </span>
+                    <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+                      <span style={{
+                        fontSize: "0.75rem",
+                        color: "#0891b2",
+                        fontWeight: 700,
+                        backgroundColor: "rgba(8, 145, 178, 0.08)",
+                        padding: "0.15rem 0.5rem",
+                        borderRadius: "var(--radius-sm)"
+                      }}>
+                        {course.code}
+                      </span>
+                      <span style={{
+                        fontSize: "0.7rem",
+                        color: "#6b7280",
+                        fontWeight: 700,
+                        backgroundColor: "#f3f4f6",
+                        padding: "0.15rem 0.45rem",
+                        borderRadius: "var(--radius-sm)"
+                      }}>
+                        🎓 {facultyBadge}
+                      </span>
+                    </div>
                     <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 500 }}>
                       👨‍🏫 {course.teacher.name || course.teacher.email?.split("@")[0]}
                     </span>

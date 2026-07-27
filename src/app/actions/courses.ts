@@ -23,6 +23,7 @@ export async function createCourse(prevState: any, formData: FormData) {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const teacherId = formData.get("teacherId") as string;
+  const faculty = (formData.get("faculty") as string) || "General";
 
   if (!code || !title || !description || !teacherId) {
     return { error: "All fields are required." };
@@ -47,6 +48,7 @@ export async function createCourse(prevState: any, formData: FormData) {
       title,
       description,
       teacherId,
+      faculty,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });

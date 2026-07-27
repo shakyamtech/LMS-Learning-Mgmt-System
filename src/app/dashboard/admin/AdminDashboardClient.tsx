@@ -23,6 +23,7 @@ interface Course {
   code: string;
   title: string;
   description: string;
+  faculty?: string;
   teacherId: string;
   teacher?: {
     name: string | null;
@@ -1048,9 +1049,14 @@ export default function AdminDashboardClient({
                           transition: "all 0.2s ease-in-out"
                         }}>
                           <div>
-                            <span style={{ fontSize: "0.75rem", color: "var(--college-primary)", fontWeight: 700, backgroundColor: "rgba(27, 94, 32, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
-                              {course.code}
-                            </span>
+                            <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+                              <span style={{ fontSize: "0.75rem", color: "var(--college-primary)", fontWeight: 700, backgroundColor: "rgba(27, 94, 32, 0.08)", padding: "0.15rem 0.5rem", borderRadius: "var(--radius-sm)" }}>
+                                {course.code}
+                              </span>
+                              <span style={{ fontSize: "0.7rem", color: "#4b5563", fontWeight: 700, backgroundColor: "#f3f4f6", padding: "0.15rem 0.45rem", borderRadius: "var(--radius-sm)" }}>
+                                🎓 {course.faculty || "General"}
+                              </span>
+                            </div>
                             <h4 style={{ margin: "0.5rem 0 0.15rem 0", fontSize: "1rem", fontWeight: 700, color: "#1f2937" }}>{course.title}</h4>
                             <p style={{ margin: 0, fontSize: "0.8rem", color: "#6b7280", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
                               {course.description}
