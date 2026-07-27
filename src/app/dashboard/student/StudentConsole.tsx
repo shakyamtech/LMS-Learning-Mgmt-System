@@ -68,15 +68,10 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("dashboard");
               }}
-              style={{
-                backgroundColor: activeConsoleTab === "dashboard" ? "rgba(8, 145, 178, 0.3)" : "transparent",
-                color: activeConsoleTab === "dashboard" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "dashboard" ? "4px solid #06b6d4" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "dashboard" ? 700 : 500
-              }}
-              className="admin-sidebar-link"
+              className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active-cyan" : ""}`}
             >
-              <span>📊</span> Dashboard
+              <span style={{ fontSize: "1.1rem" }}>📊</span>
+              <span>Dashboard</span>
             </a>
           </li>
           <li>
@@ -86,15 +81,10 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("courses");
               }}
-              style={{
-                backgroundColor: activeConsoleTab === "courses" ? "rgba(8, 145, 178, 0.3)" : "transparent",
-                color: activeConsoleTab === "courses" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "courses" ? "4px solid #06b6d4" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "courses" ? 700 : 500
-              }}
-              className="admin-sidebar-link"
+              className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active-cyan" : ""}`}
             >
-              <span>📚</span> My Enrolled Courses
+              <span style={{ fontSize: "1.1rem" }}>📚</span>
+              <span>My Enrolled Courses</span>
             </a>
           </li>
           <li>
@@ -104,15 +94,10 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("browse");
               }}
-              style={{
-                backgroundColor: activeConsoleTab === "browse" ? "rgba(8, 145, 178, 0.3)" : "transparent",
-                color: activeConsoleTab === "browse" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "browse" ? "4px solid #06b6d4" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "browse" ? 700 : 500
-              }}
-              className="admin-sidebar-link"
+              className={`admin-sidebar-link ${activeConsoleTab === "browse" ? "active-cyan" : ""}`}
             >
-              <span>🔍</span> Browse & Enroll Courses
+              <span style={{ fontSize: "1.1rem" }}>🔍</span>
+              <span>Browse &amp; Enroll Courses</span>
             </a>
           </li>
           <li>
@@ -122,15 +107,10 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("assignments");
               }}
-              style={{
-                backgroundColor: activeConsoleTab === "assignments" ? "rgba(8, 145, 178, 0.3)" : "transparent",
-                color: activeConsoleTab === "assignments" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "assignments" ? "4px solid #06b6d4" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "assignments" ? 700 : 500
-              }}
-              className="admin-sidebar-link"
+              className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active-cyan" : ""}`}
             >
-              <span>📝</span> My Assignments & Grades
+              <span style={{ fontSize: "1.1rem" }}>📝</span>
+              <span>My Assignments &amp; Grades</span>
             </a>
           </li>
           <li>
@@ -140,15 +120,10 @@ export default function StudentConsole({
                 e.preventDefault();
                 setActiveConsoleTab("idcard");
               }}
-              style={{
-                backgroundColor: activeConsoleTab === "idcard" ? "rgba(8, 145, 178, 0.3)" : "transparent",
-                color: activeConsoleTab === "idcard" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-                borderLeft: activeConsoleTab === "idcard" ? "4px solid #06b6d4" : "4px solid transparent",
-                fontWeight: activeConsoleTab === "idcard" ? 700 : 500
-              }}
-              className="admin-sidebar-link"
+              className={`admin-sidebar-link ${activeConsoleTab === "idcard" ? "active-cyan" : ""}`}
             >
-              <span>🪪</span> My Student ID Card
+              <span style={{ fontSize: "1.1rem" }}>🪪</span>
+              <span>My Student ID Card</span>
             </a>
           </li>
         </ul>

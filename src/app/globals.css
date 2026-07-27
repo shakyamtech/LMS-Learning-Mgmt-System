@@ -1246,6 +1246,15 @@ a:hover {
   transform: none;
 }
 
+.admin-sidebar-link.active-cyan {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(14, 116, 144, 0.45) 100%) !important;
+  color: #ffffff !important;
+  border-left: 4px solid #22d3ee !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.2);
+  transform: none;
+}
+
 .admin-sidebar-footer {
   padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
