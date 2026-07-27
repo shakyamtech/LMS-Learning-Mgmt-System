@@ -3652,6 +3652,135 @@ export default function AdminDashboardClient({
         const isFullyPaid = printableTotalFee > 0 && printableDueFee <= 0;
         const percentPaid = printableTotalFee > 0 ? Math.min(100, Math.round((printablePaidFee / printableTotalFee) * 100)) : 100;
 
+        const handleDirectPrint = () => {
+          const printWin = window.open("", "_blank", "width=800,height=900");
+          if (!printWin) {
+            window.print();
+            return;
+          }
+
+          const html = `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <title>Official Fee Receipt - ${printableStudentName}</title>
+                <style>
+                  @page { size: A4 portrait; margin: 8mm; }
+                  html, body { margin: 0; padding: 0; background: #ffffff; color: #1f2937; font-family: Arial, sans-serif; }
+                  .voucher-card {
+                    width: 100%;
+                    max-width: 680px;
+                    margin: 0 auto;
+                    border: 2px solid #0e7490;
+                    border-radius: 8px;
+                    padding: 1rem 1.15rem;
+                    box-sizing: border-box;
+                    background: #ffffff;
+                  }
+                  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 0.75rem; color: #1f2937; }
+                  th { background-color: #0e7490; color: #ffffff; padding: 0.4rem 0.55rem; text-align: left; }
+                  td { padding: 0.45rem 0.55rem; border-bottom: 1px solid #cbd5e1; }
+                </style>
+              </head>
+              <body>
+                <div class="voucher-card">
+                  <!-- Header -->
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0e7490; padding-bottom: 0.65rem; margin-bottom: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                      <img src="/logo.png" alt="LITA Logo" style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid #d4af37;" />
+                      <div>
+                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0e7490; font-family: Georgia, serif; line-height: 1.1;">LAGANKHEL IT ACADEMY</h2>
+                        <span style="font-size: 0.68rem; color: #4b5563; font-weight: 600; display: block;">Lagankhel-12, Lalitpur, Nepal • Tel: +977 01-55XXXXX</span>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: #0e7490; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-top: 0.1rem;">OFFICIAL FEE RECEIPT &amp; CASH VOUCHER</span>
+                      </div>
+                    </div>
+                    <div style="text-align: right; border: 1px solid #cbd5e1; padding: 0.35rem 0.65rem; border-radius: 6px; background-color: #f8fafc;">
+                      <div style="font-size: 0.62rem; color: #6b7280; font-weight: 700;">VOUCHER NO.</div>
+                      <div style="font-size: 0.8rem; font-weight: 800; color: #0e7490;">LITA-FEE-${printableEmail.split("@")[0].toUpperCase()}</div>
+                      <div style="font-size: 0.65rem; color: #4b5563; margin-top: 0.1rem;"><strong style="color: #111827;">Date:</strong> ${printingTx.date || new Date().toLocaleDateString()}</div>
+                    </div>
+                  </div>
+
+                  <!-- Student Info -->
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem 1rem; background-color: #f1f5f9; padding: 0.55rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.8rem; margin-bottom: 0.75rem; color: #374151;">
+                    <div><strong style="color: #111827;">Student Name:</strong> ${printableStudentName}</div>
+                    <div><strong style="color: #111827;">Academic Program:</strong> ${printableFaculty}</div>
+                    <div><strong style="color: #111827;">Student Roll / ID:</strong> ${printableRollNo}</div>
+                    <div><strong style="color: #111827;">Email:</strong> ${printableEmail}</div>
+                  </div>
+
+                  <!-- Fee Table -->
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="text-align: center; width: 35px;">S.N.</th>
+                        <th>Particulars / Description</th>
+                        <th style="text-align: right; width: 95px;">Total (Rs.)</th>
+                        <th style="text-align: right; width: 95px;">Paid (Rs.)</th>
+                        <th style="text-align: right; width: 95px;">Due (Rs.)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="text-align: center; color: #374151;">1</td>
+                        <td style="font-weight: 700; color: #111827;">Academic Tuition &amp; Program Fee (${printableFaculty})</td>
+                        <td style="text-align: right; font-weight: 700; color: #111827;">${printableTotalFee > 0 ? printableTotalFee.toLocaleString() : "-"}</td>
+                        <td style="text-align: right; font-weight: 700; color: #059669;">${printablePaidFee.toLocaleString()}</td>
+                        <td style="text-align: right; font-weight: 700; color: ${printableDueFee > 0 ? "#dc2626" : "#059669"};">${printableDueFee.toLocaleString()}</td>
+                      </tr>
+                      <tr style="background-color: #fafafa;">
+                        <td style="text-align: center; font-size: 0.75rem; color: #6b7280;">2</td>
+                        <td style="font-size: 0.75rem; color: #374151;">
+                          Receipt: <strong style="color: #111827;">${printingTx.title}</strong> (${printingTx.date}) [${printingTx.paymentMethod}]
+                          ${printingTx.notes ? `<span style="display: block; color: #4b5563; font-size: 0.7rem;">Note: ${printingTx.notes}</span>` : ""}
+                        </td>
+                        <td style="text-align: right; font-size: 0.75rem; color: #6b7280;">-</td>
+                        <td style="text-align: right; font-size: 0.75rem; font-weight: 700; color: #059669;">+${(printingTx.amount || 0).toLocaleString()}</td>
+                        <td style="text-align: right; font-size: 0.75rem; color: #6b7280;">-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Clearance Summary -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; background-color: #f8fafc; padding: 0.55rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 1rem; color: #374151;">
+                    <div style="font-size: 0.75rem;">
+                      <strong style="color: #111827;">Payment Status:</strong>
+                      <span style="font-weight: 800; color: ${isFullyPaid ? "#059669" : "#d97706"}; margin-left: 0.35rem;">
+                        ${isFullyPaid ? "✅ FULLY CLEARED (100%)" : `⚠️ ${percentPaid}% CLEARED (${printableDueFee.toLocaleString()} DUE)`}
+                      </span>
+                    </div>
+                    <div style="text-align: right; font-size: 0.78rem;">
+                      <span style="color: #4b5563; margin-right: 0.85rem;">Total Deposited: <strong style="color: #059669;">Rs. ${printablePaidFee.toLocaleString()}</strong></span>
+                      <span style="color: #4b5563;">Balance Due: <strong style="color: ${printableDueFee > 0 ? "#dc2626" : "#059669"};">Rs. ${printableDueFee.toLocaleString()}</strong></span>
+                    </div>
+                  </div>
+
+                  <!-- Signatures -->
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1rem; border-top: 1px dashed #cbd5e1;">
+                    <div style="text-align: center; border-top: 1px solid #4b5563; width: 130px; padding-top: 0.2rem;">
+                      <span style="font-size: 0.68rem; font-weight: 700; color: #374151;">Student Signature</span>
+                    </div>
+                    <div style="text-align: center; font-size: 0.62rem; color: #6b7280;">
+                      Computer Generated Official Receipt • Lagankhel IT Academy
+                    </div>
+                    <div style="text-align: center; border-top: 1px solid #4b5563; width: 130px; padding-top: 0.2rem;">
+                      <span style="font-size: 0.68rem; font-weight: 700; color: #374151;">Authorized Accountant</span>
+                    </div>
+                  </div>
+                </div>
+              </body>
+            </html>
+          `;
+
+          printWin.document.write(html);
+          printWin.document.close();
+          printWin.focus();
+          setTimeout(() => {
+            printWin.print();
+            printWin.close();
+          }, 300);
+        };
+
         const renderReceiptBody = () => (
           <>
             {/* Bill Header */}
@@ -3752,28 +3881,8 @@ export default function AdminDashboardClient({
         return (
           <>
             {/* 1. SCREEN-ONLY PREVIEW MODAL */}
-            <div style={{
-              position: "fixed",
-              inset: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-              backdropFilter: "blur(4px)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 2000,
-              colorScheme: "light"
-            }} className="admin-receipt-modal-backdrop no-print">
-              <div style={{
-                backgroundColor: "#ffffff",
-                borderRadius: "var(--radius-lg)",
-                padding: "1.5rem",
-                width: "100%",
-                maxWidth: "720px",
-                maxHeight: "92vh",
-                overflowY: "auto",
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                border: "1px solid var(--border)"
-              }}>
+            <div className="admin-receipt-modal-backdrop no-print">
+              <div className="admin-receipt-modal-card">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
                   <h3 style={{ margin: 0, fontFamily: "Playfair Display, serif", fontSize: "1.3rem", color: "var(--college-primary)" }}>
                     🧾 Official Fee Receipt &amp; Cash Voucher
@@ -3781,7 +3890,7 @@ export default function AdminDashboardClient({
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <button
                       type="button"
-                      onClick={() => window.print()}
+                      onClick={handleDirectPrint}
                       style={{
                         padding: "0.5rem 1.25rem",
                         borderRadius: "var(--radius-md)",

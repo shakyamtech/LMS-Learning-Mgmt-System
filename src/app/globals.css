@@ -1626,6 +1626,31 @@ a:hover {
   color: var(--text-muted);
 }
 
+/* Screen mode modal styles for receipt preview */
+.admin-receipt-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  color-scheme: light;
+}
+
+.admin-receipt-modal-card {
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 720px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+}
+
 /* Screen mode: Hide dedicated print container */
 .admin-printable-voucher-container {
   display: none;
@@ -1658,6 +1683,7 @@ a:hover {
   .admin-main,
   .admin-content,
   .admin-receipt-modal-backdrop,
+  .admin-receipt-modal-card,
   .no-print,
   .no-print *,
   header,
@@ -1668,9 +1694,11 @@ a:hover {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
+    max-height: 0 !important;
     width: 0 !important;
     opacity: 0 !important;
     pointer-events: none !important;
+    overflow: hidden !important;
   }
 
   /* Neutralize outer admin layout container */
