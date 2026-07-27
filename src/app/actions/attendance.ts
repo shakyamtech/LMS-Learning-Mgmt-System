@@ -210,3 +210,57 @@ export async function markSelfAttendance() {
     return { error: "Failed to mark attendance." };
   }
 }
+
+export async function getAllAttendanceLogs() {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || session.role !== "ADMIN") {
+    return { error: "Unauthorized. Admin access required." };
+  }
+
+  try {
+    const snap = await db.collection("attendance").get();
+
+    const allLogs: Array<{
+      id: string;
+      courseId: string;
+      courseTitle: string;
+      date: string;
+      teacherId: string;
+      studentId: string;
+      studentName: string;
+      status: "PRESENT" | "ABSENT" | "LATE" | "EXCUSED";
+      remark?: string;
+      createdAt: string;
+    }> = [];
+
+    snap.docs.forEach((doc) => {
+      const data = doc.data();
+      const records = (data.records || []) as AttendanceRecordItem[];
+      records.forEach((r) => {
+        allLogs.push({
+          id: `${doc.id}_${r.studentId}`,
+          courseId: data.courseId || "DAILY_ATTENDANCE",
+          courseTitle: data.courseTitle || "Daily Campus Attendance",
+          date: data.date,
+          teacherId: data.teacherId,
+          studentId: r.studentId,
+          studentName: r.studentName,
+          status: r.status,
+          remark: r.remark,
+          createdAt: data.createdAt || data.date,
+        });
+      });
+    });
+
+    allLogs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return { allLogs };
+  } catch (error) {
+    console.error("Get all attendance logs error:", error);
+    return { error: "Failed to fetch attendance logs." };
+  }
+}

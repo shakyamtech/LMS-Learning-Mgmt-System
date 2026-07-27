@@ -4,6 +4,7 @@ import { db } from "@/lib/firebase";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import AdminDashboardClient from "./AdminDashboardClient";
+import { getAllAttendanceLogs } from "@/app/actions/attendance";
 
 export default async function AdminDashboard() {
   const cookieStore = await cookies();
@@ -122,6 +123,10 @@ export default async function AdminDashboard() {
   const homepageConfigData = homepageConfigSnap.exists ? homepageConfigSnap.data() : null;
   const cmsConfig = homepageConfigData && homepageConfigData.slides ? homepageConfigData.slides : null;
 
+  // 7. Fetch All Student Attendance Logs
+  const attendanceRes = await getAllAttendanceLogs();
+  const attendanceLogs = attendanceRes.allLogs || [];
+
   return (
     <AdminDashboardClient
       teachers={teachers}
@@ -130,6 +135,7 @@ export default async function AdminDashboard() {
       allUsers={allUsers}
       initialTransactions={initialTransactions}
       cmsConfig={cmsConfig}
+      attendanceLogs={attendanceLogs}
       totalUsers={totalUsers}
       totalCourses={totalCourses}
       session={{ email: session.email }}

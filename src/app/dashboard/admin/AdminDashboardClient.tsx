@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
 import CourseForm from "./CourseForm";
+import AdminAttendance from "./AdminAttendance";
 import { approveStudent, rejectStudent, updateUser, deleteUser } from "@/app/actions/auth";
 import { saveHomepageConfig } from "@/app/actions/cms";
 import { addTransaction, deleteTransaction } from "@/app/actions/accounting";
@@ -81,6 +82,7 @@ interface AdminDashboardClientProps {
   allUsers?: PlatformUser[];
   initialTransactions?: TransactionRecord[];
   cmsConfig?: Array<{ title: string; subtitle: string; image: string }> | null;
+  attendanceLogs?: any[];
   totalUsers: number;
   totalCourses: number;
   session: Session;
@@ -94,12 +96,13 @@ export default function AdminDashboardClient({
   allUsers = [],
   initialTransactions = [],
   cmsConfig,
+  attendanceLogs = [],
   totalUsers,
   totalCourses,
   session,
   logout
 }: AdminDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "accounting" | "cms">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "users" | "accounting" | "cms" | "attendance">("dashboard");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -685,6 +688,19 @@ export default function AdminDashboardClient({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
+                setActiveTab("attendance");
+              }}
+              className={`admin-sidebar-link ${activeTab === "attendance" ? "active" : ""}`}
+            >
+              <span style={{ fontSize: "1.1rem" }}>📅</span>
+              <span>Attendance Logs</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveTab("cms");
               }}
               className={`admin-sidebar-link ${activeTab === "cms" ? "active" : ""}`}
@@ -731,7 +747,11 @@ export default function AdminDashboardClient({
               ⚡ Admin Control Panel
             </span>
             <h1 className="admin-navbar-title">
-              {activeTab === "dashboard" ? "LMS Root Administrator" : "Registered Students"}
+              {activeTab === "dashboard" ? "LMS Root Administrator" :
+               activeTab === "users" ? "Users Management" :
+               activeTab === "accounting" ? "Accounting & Financial Management" :
+               activeTab === "attendance" ? "Student Attendance & Class Logs" :
+               "Site Configuration (CMS)"}
             </h1>
           </div>
 
@@ -1950,6 +1970,10 @@ export default function AdminDashboardClient({
                 
               </div>
             </div>
+          )}
+
+          {activeTab === "attendance" && (
+            <AdminAttendance logs={attendanceLogs || []} />
           )}
 
         </main>
