@@ -127,6 +127,9 @@ export default function AdminDashboardClient({
   const [showIncomeModal, setShowIncomeModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [printingTx, setPrintingTx] = useState<TransactionRecord | null>(null);
+  const [accountingSubTab, setAccountingSubTab] = useState<"audit_ledger" | "student_dues">("audit_ledger");
+  const [dueSearchTerm, setDueSearchTerm] = useState("");
+  const [dueStatusFilter, setDueStatusFilter] = useState<"ALL" | "DUE_ONLY" | "CLEARED_ONLY">("ALL");
   const [txActionError, setTxActionError] = useState<string | null>(null);
   const [isTxPending, startTxTransition] = useTransition();
 
@@ -360,6 +363,32 @@ export default function AdminDashboardClient({
   const studentCount = localUsers.filter(u => u.role === "STUDENT").length;
   const teacherCount = localUsers.filter(u => u.role === "TEACHER").length;
   const adminCount = localUsers.filter(u => u.role === "ADMIN").length;
+
+  const studentListWithDues = localUsers.filter(u => u.role === "STUDENT").map(student => {
+    const totalFee = student.totalFee || 0;
+    const paidFee = student.paidFee || 0;
+    const dueFee = Math.max(0, totalFee - paidFee);
+    let status: "FULLY_PAID" | "PARTIAL_DUE" | "UNPAID" | "NOT_SET" = "NOT_SET";
+    if (totalFee === 0) status = "NOT_SET";
+    else if (dueFee === 0) status = "FULLY_PAID";
+    else if (paidFee > 0) status = "PARTIAL_DUE";
+    else status = "UNPAID";
+
+    return { ...student, totalFee, paidFee, dueFee, status };
+  });
+
+  const totalOutstandingStudentDues = studentListWithDues.reduce((sum, s) => sum + s.dueFee, 0);
+
+  const filteredStudentDues = studentListWithDues.filter(s => {
+    const matchesSearch =
+      (s.name || "").toLowerCase().includes(dueSearchTerm.toLowerCase()) ||
+      (s.email || "").toLowerCase().includes(dueSearchTerm.toLowerCase()) ||
+      (s.rollNo || "").toLowerCase().includes(dueSearchTerm.toLowerCase());
+    
+    if (dueStatusFilter === "DUE_ONLY") return matchesSearch && s.dueFee > 0;
+    if (dueStatusFilter === "CLEARED_ONLY") return matchesSearch && s.totalFee > 0 && s.dueFee === 0;
+    return matchesSearch;
+  });
 
   const handleSaveCollectFee = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -1381,324 +1410,558 @@ export default function AdminDashboardClient({
               </div>
 
               {/* Financial Metric Overview Cards */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.25rem", marginBottom: "2rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.25rem", marginBottom: "2rem" }}>
                 {/* Total Income */}
                 <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>TOTAL INCOME</div>
-                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "var(--college-primary)", marginTop: "0.4rem" }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>TOTAL INCOME</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--college-primary)", marginTop: "0.4rem" }}>
                     Rs. {totalIncome.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>All fee payments & general revenues</div>
+                  <div style={{ fontSize: "0.72rem", color: "#6b7280", marginTop: "0.25rem" }}>All fee &amp; general revenues</div>
                 </div>
 
                 {/* Student Fees Collected */}
                 <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--success)", textTransform: "uppercase", letterSpacing: "0.5px" }}>STUDENT FEES COLLECTED</div>
-                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "var(--success)", marginTop: "0.4rem" }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--success)", textTransform: "uppercase", letterSpacing: "0.5px" }}>FEES COLLECTED</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--success)", marginTop: "0.4rem" }}>
                     Rs. {totalStudentFeesCollected.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>Direct student fee receipts</div>
+                  <div style={{ fontSize: "0.72rem", color: "#6b7280", marginTop: "0.25rem" }}>Direct student receipts</div>
+                </div>
+
+                {/* Outstanding Student Dues */}
+                <div
+                  className="card"
+                  onClick={() => setAccountingSubTab("student_dues")}
+                  style={{ backgroundColor: "#ffffff", padding: "1.25rem", borderLeft: "4px solid #ef4444", cursor: "pointer" }}
+                  title="Click to view student fee dues ledger"
+                >
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.5px" }}>OUTSTANDING DUES</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#dc2626", marginTop: "0.4rem" }}>
+                    Rs. {totalOutstandingStudentDues.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: "0.72rem", color: "#dc2626", fontWeight: 700, marginTop: "0.25rem" }}>Pending across students ➔</div>
                 </div>
 
                 {/* Total Expense */}
                 <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#ef4444", textTransform: "uppercase", letterSpacing: "0.5px" }}>TOTAL EXPENSES</div>
-                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "#ef4444", marginTop: "0.4rem" }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>TOTAL EXPENSES</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#ef4444", marginTop: "0.4rem" }}>
                     Rs. {totalExpense.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>Salaries, rent, utilities & supplies</div>
+                  <div style={{ fontSize: "0.72rem", color: "#6b7280", marginTop: "0.25rem" }}>Salaries, rent &amp; supplies</div>
                 </div>
 
                 {/* Net Balance */}
                 <div className="card" style={{ backgroundColor: "#ffffff", padding: "1.25rem" }}>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.5px" }}>NET CASH BALANCE</div>
-                  <div style={{ fontSize: "1.6rem", fontWeight: 700, color: netBalance >= 0 ? "var(--college-primary)" : "#ef4444", marginTop: "0.4rem" }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.5px" }}>NET CASH BALANCE</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: 800, color: netBalance >= 0 ? "var(--college-primary)" : "#ef4444", marginTop: "0.4rem" }}>
                     Rs. {netBalance.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>Net liquid balance</div>
+                  <div style={{ fontSize: "0.72rem", color: "#6b7280", marginTop: "0.25rem" }}>Net liquid balance</div>
                 </div>
               </div>
 
-              {/* Category & Date Filter Controls */}
-              <div style={{
-                backgroundColor: "#ffffff",
-                padding: "1.25rem",
-                borderRadius: "var(--radius-md)",
-                border: "1px solid #e5e7eb",
-                marginBottom: "1.5rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem"
-              }}>
-                {/* Row 1: Category Tabs */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
-                  <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
-                    🏷️ Category Filter:
-                  </div>
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                    {(["ALL", "STUDENT_FEE", "INCOME", "EXPENSE"] as const).map((key) => (
-                      <button
-                        key={key}
-                        onClick={() => setTxFilter(key)}
-                        style={{
-                          padding: "0.45rem 1rem",
-                          borderRadius: "var(--radius-md)",
-                          border: txFilter === key ? "1px solid var(--college-primary)" : "1px solid var(--border)",
-                          backgroundColor: txFilter === key ? "var(--college-primary)" : "white",
-                          color: txFilter === key ? "white" : "var(--college-text)",
-                          fontWeight: 600,
-                          fontSize: "0.8rem",
-                          cursor: "pointer",
-                          transition: "all var(--transition-fast)"
-                        }}
-                      >
-                        {key === "ALL" ? `All Categories (${transactions.length})` : key === "STUDENT_FEE" ? "Student Fees" : key === "INCOME" ? "General Income" : "Expenses"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              {/* Accounting Sub-Tab Switcher Bar */}
+              <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  onClick={() => setAccountingSubTab("audit_ledger")}
+                  style={{
+                    padding: "0.65rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: accountingSubTab === "audit_ledger" ? "2px solid var(--college-primary)" : "1px solid #cbd5e1",
+                    backgroundColor: accountingSubTab === "audit_ledger" ? "var(--college-primary)" : "#ffffff",
+                    color: accountingSubTab === "audit_ledger" ? "#ffffff" : "#4b5563",
+                    fontWeight: 700,
+                    fontSize: "0.88rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem"
+                  }}
+                >
+                  <span>📊</span> Financial Audit Ledger ({transactions.length})
+                </button>
 
-                <div style={{ borderTop: "1px dashed #e5e7eb" }} />
-
-                {/* Row 2: Date & Calendar Toolbar */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
-                      📅 Date / Calendar Filter:
+                <button
+                  type="button"
+                  onClick={() => setAccountingSubTab("student_dues")}
+                  style={{
+                    padding: "0.65rem 1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: accountingSubTab === "student_dues" ? "2px solid #dc2626" : "1px solid #cbd5e1",
+                    backgroundColor: accountingSubTab === "student_dues" ? "#dc2626" : "#ffffff",
+                    color: accountingSubTab === "student_dues" ? "#ffffff" : "#4b5563",
+                    fontWeight: 700,
+                    fontSize: "0.88rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem"
+                  }}
+                >
+                  <span>🎓</span> Student Fee Dues Ledger ({studentListWithDues.length})
+                  {totalOutstandingStudentDues > 0 && (
+                    <span style={{
+                      fontSize: "0.72rem",
+                      backgroundColor: accountingSubTab === "student_dues" ? "white" : "#fee2e2",
+                      color: accountingSubTab === "student_dues" ? "#dc2626" : "#991b1b",
+                      padding: "0.15rem 0.55rem",
+                      borderRadius: "9999px",
+                      fontWeight: 800
+                    }}>
+                      Rs. {totalOutstandingStudentDues.toLocaleString()} Due
                     </span>
+                  )}
+                </button>
+              </div>
+
+              {/* SUB-TAB 1: FINANCIAL AUDIT LEDGER */}
+              {accountingSubTab === "audit_ledger" && (
+                <>
+                  {/* Category & Date Filter Controls */}
+                  <div style={{
+                    backgroundColor: "#ffffff",
+                    padding: "1.25rem",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid #e5e7eb",
+                    marginBottom: "1.5rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem"
+                  }}>
+                    {/* Row 1: Category Tabs */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                        🏷️ Category Filter:
+                      </div>
+                      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                        {(["ALL", "STUDENT_FEE", "INCOME", "EXPENSE"] as const).map((key) => (
+                          <button
+                            key={key}
+                            onClick={() => setTxFilter(key)}
+                            style={{
+                              padding: "0.45rem 1rem",
+                              borderRadius: "var(--radius-md)",
+                              border: txFilter === key ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                              backgroundColor: txFilter === key ? "var(--college-primary)" : "white",
+                              color: txFilter === key ? "white" : "var(--college-text)",
+                              fontWeight: 600,
+                              fontSize: "0.8rem",
+                              cursor: "pointer",
+                              transition: "all var(--transition-fast)"
+                            }}
+                          >
+                            {key === "ALL" ? `All Categories (${transactions.length})` : key === "STUDENT_FEE" ? "Student Fees" : key === "INCOME" ? "General Income" : "Expenses"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ borderTop: "1px dashed #e5e7eb" }} />
+
+                    {/* Row 2: Date & Calendar Toolbar */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
+                          📅 Date / Calendar Filter:
+                        </span>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                        <button
+                          onClick={() => {
+                            setDateRangeFilter("ALL");
+                            setSelectedCustomDate("");
+                          }}
+                          style={{
+                            padding: "0.45rem 0.9rem",
+                            borderRadius: "var(--radius-md)",
+                            border: dateRangeFilter === "ALL" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                            backgroundColor: dateRangeFilter === "ALL" ? "var(--college-primary)" : "white",
+                            color: dateRangeFilter === "ALL" ? "white" : "var(--college-text)",
+                            fontWeight: 600,
+                            fontSize: "0.78rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          All Time
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDateRangeFilter("TODAY");
+                            setSelectedCustomDate("");
+                          }}
+                          style={{
+                            padding: "0.45rem 0.9rem",
+                            borderRadius: "var(--radius-md)",
+                            border: dateRangeFilter === "TODAY" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                            backgroundColor: dateRangeFilter === "TODAY" ? "var(--college-primary)" : "white",
+                            color: dateRangeFilter === "TODAY" ? "white" : "var(--college-text)",
+                            fontWeight: 600,
+                            fontSize: "0.78rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          🗓️ Today
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDateRangeFilter("THIS_MONTH");
+                            setSelectedCustomDate("");
+                          }}
+                          style={{
+                            padding: "0.45rem 0.9rem",
+                            borderRadius: "var(--radius-md)",
+                            border: dateRangeFilter === "THIS_MONTH" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
+                            backgroundColor: dateRangeFilter === "THIS_MONTH" ? "var(--college-primary)" : "white",
+                            color: dateRangeFilter === "THIS_MONTH" ? "white" : "var(--college-text)",
+                            fontWeight: 600,
+                            fontSize: "0.78rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          📅 This Month
+                        </button>
+
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginLeft: "0.25rem" }}>
+                          <span style={{ fontSize: "0.78rem", color: "#6b7280", fontWeight: 600 }}>Pick Date:</span>
+                          <input
+                            type="date"
+                            value={selectedCustomDate}
+                            onChange={(e) => {
+                              setSelectedCustomDate(e.target.value);
+                              setDateRangeFilter("CUSTOM");
+                            }}
+                            style={{
+                              padding: "0.35rem 0.65rem",
+                              borderRadius: "var(--radius-md)",
+                              border: "1px solid #cbd5e1",
+                              fontSize: "0.78rem",
+                              outline: "none",
+                              backgroundColor: selectedCustomDate ? "rgba(27, 94, 32, 0.05)" : "white"
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <button
-                      onClick={() => {
-                        setDateRangeFilter("ALL");
-                        setSelectedCustomDate("");
-                      }}
-                      style={{
-                        padding: "0.45rem 0.9rem",
-                        borderRadius: "var(--radius-md)",
-                        border: dateRangeFilter === "ALL" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
-                        backgroundColor: dateRangeFilter === "ALL" ? "rgba(27, 94, 32, 0.1)" : "white",
-                        color: dateRangeFilter === "ALL" ? "var(--college-primary)" : "#4b5563",
-                        fontWeight: 700,
-                        fontSize: "0.8rem",
-                        cursor: "pointer"
-                      }}
-                    >
-                      All Time
-                    </button>
+                  {/* Financial Audit Ledger Table */}
+                  <div className="card" style={{ backgroundColor: "white", padding: "2rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                      <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: 0 }}>
+                        Financial Audit Ledger
+                      </h3>
+                    </div>
 
-                    <button
-                      onClick={() => {
-                        setDateRangeFilter("TODAY");
-                        setSelectedCustomDate(todayStr);
-                      }}
-                      style={{
-                        padding: "0.45rem 0.9rem",
-                        borderRadius: "var(--radius-md)",
-                        border: dateRangeFilter === "TODAY" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
-                        backgroundColor: dateRangeFilter === "TODAY" ? "rgba(27, 94, 32, 0.1)" : "white",
-                        color: dateRangeFilter === "TODAY" ? "var(--college-primary)" : "#4b5563",
-                        fontWeight: 700,
-                        fontSize: "0.8rem",
-                        cursor: "pointer"
-                      }}
-                    >
-                      📅 Today
-                    </button>
+                    {filteredTransactions.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "4rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
+                        <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>💰</div>
+                        <h4 style={{ margin: 0, color: "var(--text-muted)" }}>No Transactions Found</h4>
+                      </div>
+                    ) : (
+                      <div style={{ overflowX: "auto" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.9rem" }}>
+                          <thead>
+                            <tr style={{ borderBottom: "2px solid var(--border)", color: "var(--college-primary)" }}>
+                              <th style={{ padding: "1rem" }}>Date</th>
+                              <th style={{ padding: "1rem" }}>Description</th>
+                              <th style={{ padding: "1rem" }}>Type / Category</th>
+                              <th style={{ padding: "1rem" }}>Method</th>
+                              <th style={{ padding: "1rem", textAlign: "right" }}>Amount</th>
+                              <th style={{ padding: "1rem", textAlign: "right" }}>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredTransactions.map((tx) => {
+                              const isIncome = tx.type === "INCOME" || tx.type === "STUDENT_FEE";
+                              const typeBadge =
+                                tx.type === "STUDENT_FEE" ? { label: "🎓 Student Fee", bg: "rgba(34, 197, 94, 0.15)", color: "#15803d" } :
+                                tx.type === "INCOME" ? { label: "📈 General Income", bg: "rgba(14, 116, 144, 0.15)", color: "#0e7490" } :
+                                { label: "📉 Expense", bg: "rgba(239, 68, 68, 0.15)", color: "#b91c1c" };
 
-                    <button
-                      onClick={() => {
-                        setDateRangeFilter("THIS_MONTH");
-                        setSelectedCustomDate("");
-                      }}
-                      style={{
-                        padding: "0.45rem 0.9rem",
-                        borderRadius: "var(--radius-md)",
-                        border: dateRangeFilter === "THIS_MONTH" ? "1px solid var(--college-primary)" : "1px solid var(--border)",
-                        backgroundColor: dateRangeFilter === "THIS_MONTH" ? "rgba(27, 94, 32, 0.1)" : "white",
-                        color: dateRangeFilter === "THIS_MONTH" ? "var(--college-primary)" : "#4b5563",
-                        fontWeight: 700,
-                        fontSize: "0.8rem",
-                        cursor: "pointer"
-                      }}
-                    >
-                      🗓️ This Month
-                    </button>
+                              return (
+                                <tr key={tx.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                                  <td style={{ padding: "1rem", color: "#6b7280", whiteSpace: "nowrap" }}>{tx.date}</td>
+                                  <td style={{ padding: "1rem" }}>
+                                    <strong style={{ color: "#1f2937", display: "block" }}>{tx.title}</strong>
+                                    {tx.notes && <span style={{ fontSize: "0.78rem", color: "#6b7280" }}>{tx.notes}</span>}
+                                  </td>
+                                  <td style={{ padding: "1rem" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem", alignItems: "flex-start" }}>
+                                      <span style={{
+                                        fontSize: "0.7rem",
+                                        fontWeight: 700,
+                                        backgroundColor: typeBadge.bg,
+                                        color: typeBadge.color,
+                                        padding: "0.15rem 0.55rem",
+                                        borderRadius: "var(--radius-full)"
+                                      }}>
+                                        {typeBadge.label}
+                                      </span>
+                                      <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{tx.category}</span>
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: "1rem" }}>
+                                    <span style={{ fontSize: "0.8rem", backgroundColor: "#f3f4f6", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 600, color: "#374151" }}>
+                                      💳 {tx.paymentMethod}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: "1rem", textAlign: "right", fontWeight: 700, fontSize: "0.95rem", color: isIncome ? "var(--success)" : "#ef4444" }}>
+                                    {isIncome ? "+" : "-"} Rs. {(tx.amount || 0).toLocaleString()}
+                                  </td>
+                                  <td style={{ padding: "1rem", textAlign: "right", whiteSpace: "nowrap" }}>
+                                    <button
+                                      onClick={() => setPrintingTx(tx)}
+                                      style={{
+                                        padding: "0.35rem 0.75rem",
+                                        borderRadius: "var(--radius-md)",
+                                        border: "1px solid rgba(14, 116, 144, 0.4)",
+                                        backgroundColor: "rgba(14, 116, 144, 0.08)",
+                                        color: "#0e7490",
+                                        fontSize: "0.75rem",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        marginRight: "0.5rem",
+                                        transition: "all 0.2s"
+                                      }}
+                                      title="Print Official Cash Receipt & Fee Voucher"
+                                    >
+                                      🖨️ Receipt
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteTx(tx)}
+                                      disabled={isTxPending}
+                                      style={{
+                                        padding: "0.35rem 0.75rem",
+                                        borderRadius: "var(--radius-md)",
+                                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                                        backgroundColor: "rgba(239, 68, 68, 0.05)",
+                                        color: "var(--error)",
+                                        fontSize: "0.75rem",
+                                        fontWeight: 600,
+                                        cursor: "pointer",
+                                        transition: "all 0.2s"
+                                      }}
+                                    >
+                                      🗑️ Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                      <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Pick Date:</span>
+              {/* SUB-TAB 2: STUDENT FEE DUES LEDGER */}
+              {accountingSubTab === "student_dues" && (
+                <div style={{
+                  backgroundColor: "#ffffff",
+                  padding: "1.5rem",
+                  borderRadius: "var(--radius-lg)",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginBottom: "1.25rem" }}>
+                    <div>
+                      <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.35rem", color: "var(--college-primary)", margin: "0 0 0.2rem 0" }}>
+                        🎓 Student Fee Dues Master Ledger
+                      </h3>
+                      <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>
+                        Monitor individual student fee commitments, total paid amounts, outstanding balances, and collect payments instantly.
+                      </p>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
+                      {/* Search */}
                       <input
-                        type="date"
-                        value={dateRangeFilter === "TODAY" ? todayStr : selectedCustomDate}
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            setSelectedCustomDate(e.target.value);
-                            setDateRangeFilter("CUSTOM");
-                          } else {
-                            setDateRangeFilter("ALL");
-                          }
-                        }}
+                        type="text"
+                        placeholder="Search student name, roll, email..."
+                        value={dueSearchTerm}
+                        onChange={(e) => setDueSearchTerm(e.target.value)}
                         style={{
-                          padding: "0.35rem 0.65rem",
+                          padding: "0.55rem 0.85rem",
                           borderRadius: "var(--radius-md)",
-                          border: "1px solid #d1d5db",
-                          fontSize: "0.8rem",
-                          backgroundColor: "#ffffff",
-                          outline: "none"
+                          border: "1px solid #cbd5e1",
+                          fontSize: "0.85rem",
+                          width: "220px"
                         }}
                       />
+
+                      {/* Status Filter */}
+                      <div style={{ display: "flex", gap: "0.25rem", backgroundColor: "#f1f5f9", padding: "0.2rem", borderRadius: "var(--radius-md)", border: "1px solid #cbd5e1" }}>
+                        <button
+                          type="button"
+                          onClick={() => setDueStatusFilter("ALL")}
+                          style={{
+                            backgroundColor: dueStatusFilter === "ALL" ? "#14532d" : "transparent",
+                            color: dueStatusFilter === "ALL" ? "white" : "#4b5563",
+                            border: "none",
+                            padding: "0.35rem 0.75rem",
+                            borderRadius: "var(--radius-sm)",
+                            fontWeight: 700,
+                            fontSize: "0.78rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          All ({studentListWithDues.length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDueStatusFilter("DUE_ONLY")}
+                          style={{
+                            backgroundColor: dueStatusFilter === "DUE_ONLY" ? "#dc2626" : "transparent",
+                            color: dueStatusFilter === "DUE_ONLY" ? "white" : "#4b5563",
+                            border: "none",
+                            padding: "0.35rem 0.75rem",
+                            borderRadius: "var(--radius-sm)",
+                            fontWeight: 700,
+                            fontSize: "0.78rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          Pending Dues ({studentListWithDues.filter(s => s.dueFee > 0).length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDueStatusFilter("CLEARED_ONLY")}
+                          style={{
+                            backgroundColor: dueStatusFilter === "CLEARED_ONLY" ? "#059669" : "transparent",
+                            color: dueStatusFilter === "CLEARED_ONLY" ? "white" : "#4b5563",
+                            border: "none",
+                            padding: "0.35rem 0.75rem",
+                            borderRadius: "var(--radius-sm)",
+                            fontWeight: 700,
+                            fontSize: "0.78rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          Fully Cleared ({studentListWithDues.filter(s => s.totalFee > 0 && s.dueFee === 0).length})
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Filtered Date Period Banner */}
-                {dateRangeFilter !== "ALL" && (
-                  <div style={{
-                    backgroundColor: "rgba(27, 94, 32, 0.06)",
-                    border: "1px solid rgba(27, 94, 32, 0.2)",
-                    borderRadius: "var(--radius-md)",
-                    padding: "0.75rem 1rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: "0.5rem"
-                  }}>
-                    <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--college-primary)" }}>
-                      📆 Filtered Period ({dateRangeFilter === "TODAY" ? `Today: ${todayStr}` : dateRangeFilter === "THIS_MONTH" ? `This Month: ${currentMonthStr}` : `Date: ${selectedCustomDate}`}):
-                      <span style={{ marginLeft: "0.5rem", fontWeight: 600, color: "#374151" }}>{filteredTransactions.length} Transactions</span>
+                  {filteredStudentDues.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "3.5rem 1rem", border: "1px dashed #cbd5e1", borderRadius: "var(--radius-md)", backgroundColor: "#f8fafc" }}>
+                      <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>💳</div>
+                      <h4 style={{ margin: 0, fontWeight: 700, color: "#374151" }}>No Student Records Match Filter</h4>
+                      <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
+                        Try clearing search term or status filters.
+                      </p>
                     </div>
-
-                    <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.85rem", fontWeight: 700 }}>
-                      <span style={{ color: "var(--success)" }}>Income: +Rs. {filteredPeriodIncome.toLocaleString()}</span>
-                      <span style={{ color: "#ef4444" }}>Expenses: -Rs. {filteredPeriodExpense.toLocaleString()}</span>
-                      <span style={{ color: filteredPeriodNet >= 0 ? "var(--college-primary)" : "#ef4444" }}>
-                        Net Flow: Rs. {filteredPeriodNet.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Transactions Ledger Table */}
-              <div className="card" style={{ backgroundColor: "white", padding: "2rem" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                  <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.5rem", color: "var(--college-primary)", margin: 0 }}>
-                    Financial Audit Ledger
-                    {searchQuery && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginLeft: "0.5rem" }}>({filteredTransactions.length} found)</span>}
-                  </h3>
-                </div>
-
-                {filteredTransactions.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "4rem 1rem", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)" }}>
-                    <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>📜</div>
-                    <h4 style={{ margin: 0, color: "var(--text-muted)" }}>
-                      {searchQuery ? "No matching transactions found" : "No Financial Transactions Logged"}
-                    </h4>
-                    <p className="text-muted" style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem" }}>
-                      {searchQuery ? "Check spelling or search terms." : "Use 'Collect Student Fee' or 'Record Expense' to record entries."}
-                    </p>
-                  </div>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.9rem" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "2px solid var(--border)", color: "var(--college-primary)" }}>
-                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Date</th>
-                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Description</th>
-                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Type / Category</th>
-                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700 }}>Method</th>
-                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700, textAlign: "right" }}>Amount</th>
-                          <th style={{ padding: "0.85rem 1rem", fontWeight: 700, textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredTransactions.map((tx) => {
-                          const isIncome = tx.type === "INCOME" || tx.type === "STUDENT_FEE";
-                          const typeBadge = tx.type === "STUDENT_FEE"
-                            ? { bg: "rgba(34, 197, 94, 0.1)", color: "#15803d", label: "🎓 Student Fee" }
-                            : tx.type === "INCOME"
-                            ? { bg: "rgba(14, 165, 233, 0.1)", color: "#0284c7", label: "📈 Income" }
-                            : { bg: "rgba(239, 68, 68, 0.1)", color: "#b91c1c", label: "📉 Expense" };
-
-                          return (
-                            <tr key={tx.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                              <td style={{ padding: "1rem", whiteSpace: "nowrap", color: "#4b5563", fontSize: "0.85rem" }}>
-                                {tx.date}
+                  ) : (
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.88rem" }}>
+                        <thead>
+                          <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e5e7eb" }}>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151" }}>Student Info</th>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151" }}>Faculty / Roll</th>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151", textAlign: "right" }}>Total Fee (Rs.)</th>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151", textAlign: "right" }}>Paid Amount (Rs.)</th>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151", textAlign: "right" }}>Outstanding Due (Rs.)</th>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151", textAlign: "center" }}>Fee Status</th>
+                            <th style={{ padding: "0.75rem 1rem", fontWeight: 700, color: "#374151", textAlign: "right" }}>Quick Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredStudentDues.map((student) => (
+                            <tr key={student.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                              <td style={{ padding: "0.85rem 1rem" }}>
+                                <strong style={{ color: "#1f2937", display: "block" }}>{student.name || "Unnamed Student"}</strong>
+                                <span style={{ fontSize: "0.78rem", color: "#6b7280" }}>{student.email}</span>
                               </td>
-                              <td style={{ padding: "1rem" }}>
-                                <div style={{ fontWeight: 600, color: "var(--college-text)" }}>{tx.title}</div>
-                                {tx.notes && <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{tx.notes}</div>}
+                              <td style={{ padding: "0.85rem 1rem" }}>
+                                <span style={{ backgroundColor: "#f1f5f9", padding: "0.15rem 0.55rem", borderRadius: "4px", fontSize: "0.78rem", fontWeight: 600, color: "#374151" }}>
+                                  {student.faculty || "General"}
+                                </span>
+                                {student.rollNo && <span style={{ display: "block", fontSize: "0.75rem", color: "#6b7280", marginTop: "0.1rem" }}>{student.rollNo}</span>}
                               </td>
-                              <td style={{ padding: "1rem" }}>
-                                <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", alignItems: "flex-start" }}>
-                                  <span style={{
-                                    fontSize: "0.7rem",
-                                    fontWeight: 700,
-                                    backgroundColor: typeBadge.bg,
-                                    color: typeBadge.color,
-                                    padding: "0.15rem 0.55rem",
-                                    borderRadius: "var(--radius-full)"
-                                  }}>
-                                    {typeBadge.label}
-                                  </span>
-                                  <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{tx.category}</span>
-                                </div>
+                              <td style={{ padding: "0.85rem 1rem", textAlign: "right", fontWeight: 700, color: "#1f2937" }}>
+                                {student.totalFee > 0 ? `Rs. ${student.totalFee.toLocaleString()}` : "-"}
                               </td>
-                              <td style={{ padding: "1rem" }}>
-                                <span style={{ fontSize: "0.8rem", backgroundColor: "#f3f4f6", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 600, color: "#374151" }}>
-                                  💳 {tx.paymentMethod}
+                              <td style={{ padding: "0.85rem 1rem", textAlign: "right", fontWeight: 700, color: "var(--success)" }}>
+                                Rs. {student.paidFee.toLocaleString()}
+                              </td>
+                              <td style={{ padding: "0.85rem 1rem", textAlign: "right", fontWeight: 800, color: student.dueFee > 0 ? "#dc2626" : "var(--success)" }}>
+                                Rs. {student.dueFee.toLocaleString()}
+                              </td>
+                              <td style={{ padding: "0.85rem 1rem", textAlign: "center" }}>
+                                <span style={{
+                                  backgroundColor:
+                                    student.status === "FULLY_PAID" ? "rgba(34, 197, 94, 0.15)" :
+                                    student.status === "PARTIAL_DUE" ? "rgba(245, 158, 11, 0.15)" :
+                                    student.status === "UNPAID" ? "rgba(239, 68, 68, 0.15)" :
+                                    "#e5e7eb",
+                                  color:
+                                    student.status === "FULLY_PAID" ? "#15803d" :
+                                    student.status === "PARTIAL_DUE" ? "#b45309" :
+                                    student.status === "UNPAID" ? "#b91c1c" :
+                                    "#4b5563",
+                                  fontSize: "0.75rem",
+                                  fontWeight: 800,
+                                  padding: "0.25rem 0.75rem",
+                                  borderRadius: "9999px"
+                                }}>
+                                  {student.status === "FULLY_PAID" && "✅ FULLY PAID"}
+                                  {student.status === "PARTIAL_DUE" && "⏳ PARTIAL DUE"}
+                                  {student.status === "UNPAID" && "🔴 UNPAID"}
+                                  {student.status === "NOT_SET" && "⚪ FEE NOT SET"}
                                 </span>
                               </td>
-                              <td style={{ padding: "1rem", textAlign: "right", fontWeight: 700, fontSize: "0.95rem", color: isIncome ? "var(--success)" : "#ef4444" }}>
-                                {isIncome ? "+" : "-"} Rs. {(tx.amount || 0).toLocaleString()}
-                              </td>
-                              <td style={{ padding: "1rem", textAlign: "right", whiteSpace: "nowrap" }}>
+                              <td style={{ padding: "0.85rem 1rem", textAlign: "right", whiteSpace: "nowrap" }}>
                                 <button
-                                  onClick={() => setPrintingTx(tx)}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedFeeStudentId(student.id);
+                                    setShowFeeModal(true);
+                                  }}
                                   style={{
                                     padding: "0.35rem 0.75rem",
                                     borderRadius: "var(--radius-md)",
-                                    border: "1px solid rgba(14, 116, 144, 0.4)",
-                                    backgroundColor: "rgba(14, 116, 144, 0.08)",
-                                    color: "#0e7490",
+                                    border: "none",
+                                    backgroundColor: "var(--college-primary)",
+                                    color: "#ffffff",
                                     fontSize: "0.75rem",
                                     fontWeight: 700,
                                     cursor: "pointer",
-                                    marginRight: "0.5rem",
-                                    transition: "all 0.2s"
+                                    marginRight: "0.5rem"
                                   }}
-                                  title="Print Official Cash Receipt & Fee Voucher"
                                 >
-                                  🖨️ Receipt
+                                  ➕ Collect Fee
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteTx(tx)}
-                                  disabled={isTxPending}
+                                  type="button"
+                                  onClick={() => setEditingUser(student)}
                                   style={{
                                     padding: "0.35rem 0.75rem",
                                     borderRadius: "var(--radius-md)",
-                                    border: "1px solid rgba(239, 68, 68, 0.3)",
-                                    backgroundColor: "rgba(239, 68, 68, 0.05)",
-                                    color: "var(--error)",
+                                    border: "1px solid #cbd5e1",
+                                    backgroundColor: "#ffffff",
+                                    color: "#374151",
                                     fontSize: "0.75rem",
                                     fontWeight: 600,
-                                    cursor: "pointer",
-                                    transition: "all 0.2s"
+                                    cursor: "pointer"
                                   }}
                                 >
-                                  🗑️ Delete
+                                  ✏️ Edit Ledger
                                 </button>
                               </td>
                             </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           ) : activeTab === "cms" ? (
             /* ──── CMS TAB VIEW ──── */
