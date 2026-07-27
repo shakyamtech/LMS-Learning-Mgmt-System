@@ -1626,28 +1626,37 @@ a:hover {
   color: var(--text-muted);
 }
 
+/* Screen mode: Hide dedicated print container */
+.admin-printable-voucher-container {
+  display: none;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    PRINT STYLES - SINGLE-PAGE A4 VOUCHER PRINTING (STUDENT PORTAL MATCH)
    ═══════════════════════════════════════════════════════════════════ */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm;
+    margin: 5mm;
   }
 
+  /* Lock Document to 1 Page 100vh height */
   html, body {
-    background: #ffffff !important;
-    color: #1f2937 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
     margin: 0 !important;
     padding: 0 !important;
-    height: auto !important;
-    overflow: visible !important;
+    background: #ffffff !important;
+    color: #1f2937 !important;
   }
 
-  /* Hide background layout wrappers, navigation, sidebar, navbar, and buttons */
+  /* Completely hide all screen elements, sidebars, navbars, main dashboard & screen modal popup */
   .admin-sidebar,
   .admin-navbar,
   .admin-content,
+  .admin-receipt-modal-backdrop,
   .no-print,
   .no-print *,
   button,
@@ -1658,45 +1667,31 @@ a:hover {
     display: none !important;
   }
 
-  /* Completely neutralize modal backdrop container (remove dark overlay & flexbox) */
-  .admin-receipt-modal-backdrop {
-    position: static !important;
-    inset: auto !important;
-    display: block !important;
-    background: transparent !important;
-    backdrop-filter: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    box-shadow: none !important;
-    border: none !important;
-  }
-
-  /* Completely neutralize inner modal popup card container (remove white box & shadow wrapper) */
-  .admin-receipt-modal-backdrop > div {
-    position: static !important;
-    display: block !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  /* Render ONLY the official bill receipt voucher flush at the top of A4 Page 1 */
-  .official-bill-receipt-voucher {
+  /* Show ONLY the dedicated printable voucher container */
+  .admin-printable-voucher-container,
+  .admin-printable-voucher-container * {
     display: block !important;
     visibility: visible !important;
-    position: static !important;
+  }
+
+  .admin-printable-voucher-container {
+    position: fixed !important;
+    top: 5mm !important;
+    left: 0 !important;
+    right: 0 !important;
     margin: 0 auto !important;
     width: 100% !important;
     max-width: 190mm !important;
-    padding: 10mm 12mm !important;
+    z-index: 999999 !important;
+  }
+
+  .admin-printable-voucher-container .official-bill-receipt-voucher {
+    display: block !important;
+    visibility: visible !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 190mm !important;
+    padding: 8mm 10mm !important;
     box-sizing: border-box !important;
     border: 2px solid #0e7490 !important;
     border-radius: 8px !important;
@@ -1704,9 +1699,5 @@ a:hover {
     color: #1f2937 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-  }
-
-  .official-bill-receipt-voucher * {
-    visibility: visible !important;
   }
 }
