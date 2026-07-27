@@ -1627,32 +1627,24 @@ a:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   PRINT STYLES - SINGLE-PAGE A4 VOUCHER PRINTING (TOP HALF DOCKED)
+   PRINT STYLES - SINGLE-PAGE A4 VOUCHER PRINTING (STUDENT PORTAL MATCH)
    ═══════════════════════════════════════════════════════════════════ */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 0;
+    margin: 10mm;
   }
 
-  /* Force Body/HTML to Single-Page 100vh height to prevent extra pages */
   html, body {
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 100vh !important;
-    overflow: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
     background: #ffffff !important;
     color: #1f2937 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
-  /* Hide everything in DOM by default */
-  body * {
-    visibility: hidden !important;
-  }
-
-  /* Completely hide background layouts, navigation, and modal headers */
+  /* Hide background layout wrappers, navigation, sidebar, navbar, and buttons */
   .admin-sidebar,
   .admin-navbar,
   .admin-content,
@@ -1664,43 +1656,57 @@ a:hover {
   aside,
   footer {
     display: none !important;
-    visibility: hidden !important;
   }
 
-  /* Neutralize modal container background & borders */
+  /* Completely neutralize modal backdrop container (remove dark overlay & flexbox) */
   .admin-receipt-modal-backdrop {
     position: static !important;
+    inset: auto !important;
+    display: block !important;
     background: transparent !important;
     backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Completely neutralize inner modal popup card container (remove white box & shadow wrapper) */
+  .admin-receipt-modal-backdrop > div {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 
-  /* Make ONLY the official voucher visible & dock to top of Page 1 */
-  .official-bill-receipt-voucher,
-  .official-bill-receipt-voucher * {
-    visibility: visible !important;
-  }
-
+  /* Render ONLY the official bill receipt voucher flush at the top of A4 Page 1 */
   .official-bill-receipt-voucher {
     display: block !important;
-    position: fixed !important;
-    top: 8mm !important;
-    left: 8mm !important;
-    right: 8mm !important;
+    visibility: visible !important;
+    position: static !important;
     margin: 0 auto !important;
-    width: calc(100% - 16mm) !important;
+    width: 100% !important;
     max-width: 190mm !important;
-    padding: 8mm 10mm !important;
+    padding: 10mm 12mm !important;
     box-sizing: border-box !important;
     border: 2px solid #0e7490 !important;
     border-radius: 8px !important;
     background-color: #ffffff !important;
     color: #1f2937 !important;
-    z-index: 999999 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+  }
+
+  .official-bill-receipt-voucher * {
+    visibility: visible !important;
   }
 }
