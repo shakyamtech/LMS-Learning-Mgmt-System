@@ -3652,19 +3652,8 @@ export default function AdminDashboardClient({
         const isFullyPaid = printableTotalFee > 0 && printableDueFee <= 0;
         const percentPaid = printableTotalFee > 0 ? Math.min(100, Math.round((printablePaidFee / printableTotalFee) * 100)) : 100;
 
-        const voucherJSX = (
-          <div className="official-bill-receipt-voucher" style={{
-            width: "100%",
-            maxWidth: "680px",
-            margin: "0 auto",
-            border: "2px solid #0e7490",
-            borderRadius: "8px",
-            padding: "1rem 1.15rem",
-            backgroundColor: "#ffffff",
-            fontFamily: "Arial, sans-serif",
-            boxSizing: "border-box",
-            color: "#1f2937"
-          }}>
+        const renderReceiptBody = () => (
+          <>
             {/* Bill Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #0e7490", paddingBottom: "0.65rem", marginBottom: "0.75rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
@@ -3757,7 +3746,7 @@ export default function AdminDashboardClient({
                 <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#374151" }}>Authorized Accountant</span>
               </div>
             </div>
-          </div>
+          </>
         );
 
         return (
@@ -3825,13 +3814,39 @@ export default function AdminDashboardClient({
                   </div>
                 </div>
 
-                {voucherJSX}
+                <div style={{
+                  width: "100%",
+                  maxWidth: "680px",
+                  margin: "0 auto",
+                  border: "2px solid #0e7490",
+                  borderRadius: "8px",
+                  padding: "1rem 1.15rem",
+                  backgroundColor: "#ffffff",
+                  fontFamily: "Arial, sans-serif",
+                  boxSizing: "border-box",
+                  color: "#1f2937"
+                }}>
+                  {renderReceiptBody()}
+                </div>
               </div>
             </div>
 
-            {/* 2. DEDICATED PRINTABLE CONTAINER (100% IDENTICAL TO STUDENT PORTAL SYSTEM) */}
+            {/* 2. DEDICATED PRINTABLE CONTAINER (STRICT SINGLE PAGE 100% MATCH TO STUDENT PORTAL) */}
             <div className="admin-printable-voucher-container">
-              {voucherJSX}
+              <div className="official-bill-receipt-voucher" style={{
+                width: "100%",
+                maxWidth: "680px",
+                margin: "0 auto",
+                border: "2px solid #0e7490",
+                borderRadius: "8px",
+                padding: "1rem 1.15rem",
+                backgroundColor: "#ffffff",
+                fontFamily: "Arial, sans-serif",
+                boxSizing: "border-box",
+                color: "#1f2937"
+              }}>
+                {renderReceiptBody()}
+              </div>
             </div>
           </>
         );
