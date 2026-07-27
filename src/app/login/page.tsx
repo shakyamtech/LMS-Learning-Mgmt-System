@@ -12,7 +12,6 @@ function PendingModal() {
 
   useEffect(() => {
     if (!isPendingRegistration) return;
-    setIsOpen(true);
     const timer = setTimeout(() => {
       setIsOpen(false);
       // Clean up search query param from URL
