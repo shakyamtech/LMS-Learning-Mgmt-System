@@ -131,9 +131,10 @@ export default async function StudentDashboard() {
     ? Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / enrollments.length)
     : 0;
 
-  // Fetch student name from Firestore
+  // Fetch student profile details from Firestore
   const studentUserSnap = await db.collection("users").doc(session.userId).get();
-  const studentName = studentUserSnap.exists ? (studentUserSnap.data()?.name || session.email.split("@")[0]) : session.email.split("@")[0];
+  const studentData = studentUserSnap.exists ? studentUserSnap.data() : {};
+  const studentName = studentData?.name || session.email.split("@")[0];
 
   return (
     <StudentConsole
@@ -142,7 +143,16 @@ export default async function StudentDashboard() {
       activeCount={activeCount}
       completedCount={completedCount}
       averageProgress={averageProgress}
-      session={{ email: session.email, name: studentName }}
+      session={{
+        userId: session.userId,
+        email: session.email,
+        name: studentName,
+        faculty: studentData?.faculty || null,
+        rollNo: studentData?.rollNo || null,
+        phone: studentData?.phone || null,
+        address: studentData?.address || null,
+        createdAt: studentData?.createdAt || null,
+      }}
       logout={logout}
     />
   );

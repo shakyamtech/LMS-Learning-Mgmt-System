@@ -5,10 +5,17 @@ import Link from "next/link";
 import BrowseCourses from "./BrowseCourses";
 import StudentAssignments from "./StudentAssignments";
 import CourseWorkspace from "./CourseWorkspace";
+import StudentIDCard from "./StudentIDCard";
 
 interface Session {
+  userId?: string;
   email: string;
   name?: string;
+  faculty?: string | null;
+  rollNo?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  createdAt?: string | null;
 }
 
 interface StudentConsoleProps {
@@ -31,7 +38,7 @@ export default function StudentConsole({
   logout
 }: StudentConsoleProps) {
   const [selectedWorkspaceCourse, setSelectedWorkspaceCourse] = useState<any | null>(null);
-  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments">("dashboard");
+  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard">("dashboard");
 
   // Synchronize dynamic updates back if selectedWorkspaceCourse changes in db
   const activeCourse = selectedWorkspaceCourse
@@ -126,6 +133,24 @@ export default function StudentConsole({
               <span>📝</span> My Assignments & Grades
             </a>
           </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveConsoleTab("idcard");
+              }}
+              style={{
+                backgroundColor: activeConsoleTab === "idcard" ? "rgba(8, 145, 178, 0.3)" : "transparent",
+                color: activeConsoleTab === "idcard" ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
+                borderLeft: activeConsoleTab === "idcard" ? "4px solid #06b6d4" : "4px solid transparent",
+                fontWeight: activeConsoleTab === "idcard" ? 700 : 500
+              }}
+              className="admin-sidebar-link"
+            >
+              <span>🪪</span> My Student ID Card
+            </a>
+          </li>
         </ul>
 
         <div className="admin-sidebar-footer">
@@ -169,7 +194,8 @@ export default function StudentConsole({
               {activeConsoleTab === "dashboard" ? "Student Dashboard" :
                activeConsoleTab === "courses" ? "My Enrolled Courses" :
                activeConsoleTab === "browse" ? "Browse & Enroll in Courses" :
-               "My Assignments & Grades"}
+               activeConsoleTab === "assignments" ? "My Assignments & Grades" :
+               "Digital Student ID Card"}
             </h1>
           </div>
         </header>
@@ -396,6 +422,23 @@ export default function StudentConsole({
           {activeConsoleTab === "assignments" && (
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <StudentAssignments enrollments={enrollments} />
+            </div>
+          )}
+
+          {activeConsoleTab === "idcard" && (
+            <div className="card" style={{ backgroundColor: "white", padding: "2.5rem 1.5rem" }}>
+              <StudentIDCard
+                student={{
+                  id: session?.userId || "STUDENT-ID",
+                  name: studentDisplayName,
+                  email: session?.email || "",
+                  faculty: session?.faculty,
+                  rollNo: session?.rollNo,
+                  phone: session?.phone,
+                  address: session?.address,
+                  createdAt: session?.createdAt
+                }}
+              />
             </div>
           )}
         </main>
