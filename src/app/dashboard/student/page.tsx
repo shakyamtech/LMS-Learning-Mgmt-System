@@ -136,6 +136,22 @@ export default async function StudentDashboard() {
   const studentData = studentUserSnap.exists ? studentUserSnap.data() : {};
   const studentName = studentData?.name || session.email.split("@")[0];
 
+  // Fetch student payment transaction records
+  const studentTxSnap = await db.collection("transactions")
+    .where("studentId", "==", session.userId)
+    .get();
+
+  const transactions = studentTxSnap.docs.map((doc) => ({
+    id: doc.id,
+    title: doc.data().title as string,
+    amount: doc.data().amount as number,
+    category: doc.data().category as string,
+    paymentMethod: doc.data().paymentMethod as string,
+    date: doc.data().date as string,
+    notes: doc.data().notes as string | undefined,
+  }));
+  transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   return (
     <StudentConsole
       enrollments={enrollments}
@@ -152,6 +168,9 @@ export default async function StudentDashboard() {
         phone: studentData?.phone || null,
         address: studentData?.address || null,
         createdAt: studentData?.createdAt || null,
+        totalFee: typeof studentData?.totalFee === "number" ? studentData.totalFee : 0,
+        paidFee: typeof studentData?.paidFee === "number" ? studentData.paidFee : 0,
+        transactions: transactions,
       }}
       logout={logout}
     />

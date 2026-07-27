@@ -6,6 +6,7 @@ import BrowseCourses from "./BrowseCourses";
 import StudentAssignments from "./StudentAssignments";
 import CourseWorkspace from "./CourseWorkspace";
 import StudentIDCard from "./StudentIDCard";
+import StudentBilling from "./StudentBilling";
 
 interface Session {
   userId?: string;
@@ -16,6 +17,9 @@ interface Session {
   phone?: string | null;
   address?: string | null;
   createdAt?: string | null;
+  totalFee?: number;
+  paidFee?: number;
+  transactions?: any[];
 }
 
 interface StudentConsoleProps {
@@ -38,7 +42,7 @@ export default function StudentConsole({
   logout
 }: StudentConsoleProps) {
   const [selectedWorkspaceCourse, setSelectedWorkspaceCourse] = useState<any | null>(null);
-  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard">("dashboard");
+  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard" | "billing">("dashboard");
 
   // Synchronize dynamic updates back if selectedWorkspaceCourse changes in db
   const activeCourse = selectedWorkspaceCourse
@@ -118,6 +122,19 @@ export default function StudentConsole({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
+                setActiveConsoleTab("billing");
+              }}
+              className={`admin-sidebar-link ${activeConsoleTab === "billing" ? "active-cyan" : ""}`}
+            >
+              <span style={{ fontSize: "1.1rem" }}>💳</span>
+              <span>Fee &amp; Billing Statement</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveConsoleTab("idcard");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "idcard" ? "active-cyan" : ""}`}
@@ -170,6 +187,7 @@ export default function StudentConsole({
                activeConsoleTab === "courses" ? "My Enrolled Courses" :
                activeConsoleTab === "browse" ? "Browse & Enroll in Courses" :
                activeConsoleTab === "assignments" ? "My Assignments & Grades" :
+               activeConsoleTab === "billing" ? "Fee & Billing Statement" :
                "Digital Student ID Card"}
             </h1>
           </div>
@@ -177,7 +195,7 @@ export default function StudentConsole({
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
-          {activeConsoleTab !== "idcard" && (
+          {activeConsoleTab !== "idcard" && activeConsoleTab !== "billing" && (
             <>
               <div style={{ marginBottom: "2rem" }}>
                 <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
@@ -401,6 +419,20 @@ export default function StudentConsole({
           {activeConsoleTab === "assignments" && (
             <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
               <StudentAssignments enrollments={enrollments} />
+            </div>
+          )}
+
+          {activeConsoleTab === "billing" && (
+            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
+              <StudentBilling
+                totalFee={session?.totalFee || 0}
+                paidFee={session?.paidFee || 0}
+                studentName={studentDisplayName}
+                studentEmail={session?.email || ""}
+                faculty={session?.faculty}
+                rollNo={session?.rollNo}
+                transactions={session?.transactions || []}
+              />
             </div>
           )}
 
