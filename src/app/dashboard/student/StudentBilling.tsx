@@ -50,7 +50,7 @@ export default function StudentBilling({
             💳 Fee & Billing Statement
           </h3>
           <p className="text-muted" style={{ margin: 0, fontSize: "0.9rem" }}>
-            View your fee structure, total payments made, remaining balance, and official payment receipts.
+            View your fee structure, total payments made, remaining balance, and print official fee vouchers.
           </p>
         </div>
         <button
@@ -70,45 +70,16 @@ export default function StudentBilling({
             boxShadow: "0 4px 12px rgba(14, 116, 144, 0.2)"
           }}
         >
-          <span>🖨️</span> Print Statement
+          <span>🧾</span> Print Official Bill Voucher
         </button>
       </div>
 
-      {/* Printable Area Wrapper */}
-      <div className="billing-statement-print-area" ref={statementRef} style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
-        
-        {/* Official Print Header Banner */}
-        <div className="print-only-header" style={{ display: "none" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "3px solid #0e7490", paddingBottom: "1rem", marginBottom: "1.25rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              <img src="/logo.png" alt="LITA Logo" style={{ width: "56px", height: "56px", borderRadius: "50%", border: "2px solid #d4af37" }} />
-              <div>
-                <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800, color: "#0e7490", fontFamily: "Playfair Display, serif" }}>
-                  LAGANKHEL IT ACADEMY
-                </h2>
-                <span style={{ fontSize: "0.78rem", color: "#4b5563", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                  Official Student Fee & Payment Clearance Statement
-                </span>
-              </div>
-            </div>
-            <div style={{ textAlign: "right", fontSize: "0.82rem", color: "#4b5563" }}>
-              <div><strong>Statement Date:</strong> {new Date().toLocaleDateString()}</div>
-              <div><strong>Status:</strong> {isFullyPaid ? "✅ FULLY CLEARED" : "⚠️ BALANCE PENDING"}</div>
-            </div>
-          </div>
-
-          <div style={{ backgroundColor: "#f8fafc", padding: "0.85rem 1.25rem", borderRadius: "8px", border: "1px solid #cbd5e1", marginBottom: "1.25rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", fontSize: "0.85rem" }}>
-            <div><strong>Student Name:</strong> {studentName}</div>
-            <div><strong>Registered Email:</strong> {studentEmail}</div>
-            <div><strong>Academic Program:</strong> {faculty || "General"}</div>
-            <div><strong>Roll / Student ID:</strong> {rollNo || `ID: ${studentEmail.split("@")[0]}`}</div>
-          </div>
-        </div>
-
+      {/* On-Screen Billing Dashboard View */}
+      <div className="on-screen-dashboard-view" ref={statementRef} style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
         {/* Top 3 Summary Cards */}
         <div className="billing-summary-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
           {/* Card 1: Total Fee */}
-          <div className="billing-card billing-card-total" style={{
+          <div className="billing-card" style={{
             backgroundColor: "#ffffff",
             padding: "1.5rem",
             borderRadius: "var(--radius-lg)",
@@ -129,7 +100,7 @@ export default function StudentBilling({
           </div>
 
           {/* Card 2: Amount Paid */}
-          <div className="billing-card billing-card-paid" style={{
+          <div className="billing-card" style={{
             backgroundColor: "#ffffff",
             padding: "1.5rem",
             borderRadius: "var(--radius-lg)",
@@ -150,7 +121,7 @@ export default function StudentBilling({
           </div>
 
           {/* Card 3: Remaining Due */}
-          <div className="billing-card billing-card-due" style={{
+          <div className="billing-card" style={{
             backgroundColor: "#ffffff",
             padding: "1.5rem",
             borderRadius: "var(--radius-lg)",
@@ -305,34 +276,126 @@ export default function StudentBilling({
             </div>
           )}
         </div>
+      </div>
 
-        {/* Official Print Footer Authorization */}
-        <div className="print-only-header" style={{ display: "none", marginTop: "2rem", paddingTop: "1.5rem", borderTop: "2px dashed #cbd5e1" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div>
-              <span style={{ fontSize: "0.72rem", color: "#16a34a", fontWeight: 800, display: "block" }}>
-                ✅ OFFICIAL ACADEMY FEE STATEMENT
-              </span>
-              <span style={{ fontSize: "0.68rem", color: "#9ca3af" }}>
-                Lagankhel IT Academy Finance Department • Computer Generated Statement
-              </span>
+      {/* DEDICATED OFFICIAL COLLEGE FEE BILL / CASH VOUCHER FOR PRINT (Compact A5 / Half Page Format) */}
+      <div className="official-bill-receipt-voucher" style={{ display: "none" }}>
+        <div style={{
+          width: "100%",
+          maxWidth: "760px",
+          margin: "0 auto",
+          border: "2px solid #0e7490",
+          borderRadius: "10px",
+          padding: "1.25rem",
+          backgroundColor: "#ffffff",
+          fontFamily: "Arial, sans-serif",
+          boxSizing: "border-box"
+        }}>
+          {/* Bill Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #0e7490", paddingBottom: "0.85rem", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+              <img src="/logo.png" alt="LITA Logo" style={{ width: "52px", height: "52px", borderRadius: "50%", border: "2px solid #d4af37" }} />
+              <div>
+                <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: 800, color: "#0e7490", fontFamily: "Playfair Display, serif" }}>
+                  LAGANKHEL IT ACADEMY
+                </h2>
+                <span style={{ fontSize: "0.72rem", color: "#4b5563", fontWeight: 600, display: "block" }}>
+                  Lagankhel-12, Lalitpur, Nepal • Tel: +977 01-55XXXXX
+                </span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#0e7490", textTransform: "uppercase", letterSpacing: "0.06em", display: "inline-block", marginTop: "0.15rem" }}>
+                  OFFICIAL FEE RECEIPT & CASH VOUCHER
+                </span>
+              </div>
             </div>
-            <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "180px", paddingTop: "0.35rem" }}>
-              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#374151" }}>
-                Authorized Signature
-              </span>
+            <div style={{ textAlign: "right", border: "1px solid #cbd5e1", padding: "0.5rem 0.85rem", borderRadius: "6px", backgroundColor: "#f8fafc" }}>
+              <div style={{ fontSize: "0.68rem", color: "#6b7280", fontWeight: 700 }}>VOUCHER NO.</div>
+              <div style={{ fontSize: "0.88rem", fontWeight: 800, color: "#0e7490" }}>LITA-FEE-{studentEmail.split("@")[0].toUpperCase()}</div>
+              <div style={{ fontSize: "0.72rem", color: "#4b5563", marginTop: "0.2rem" }}><strong>Date:</strong> {new Date().toLocaleDateString()}</div>
             </div>
           </div>
-        </div>
 
+          {/* Student Info Box */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.4rem 1rem", backgroundColor: "#f1f5f9", padding: "0.65rem 0.85rem", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "0.82rem", marginBottom: "1rem" }}>
+            <div><strong>Student Name:</strong> {studentName}</div>
+            <div><strong>Academic Program:</strong> {faculty || "General"}</div>
+            <div><strong>Student Roll / ID:</strong> {rollNo || `ID: ${studentEmail.split("@")[0]}`}</div>
+            <div><strong>Email:</strong> {studentEmail}</div>
+          </div>
+
+          {/* Particulars & Fee Table */}
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem", marginBottom: "1rem" }}>
+            <thead>
+              <tr style={{ backgroundColor: "#0e7490", color: "#ffffff" }}>
+                <th style={{ padding: "0.45rem 0.65rem", textAlign: "center", width: "40px" }}>S.N.</th>
+                <th style={{ padding: "0.45rem 0.65rem", textAlign: "left" }}>Particulars / Description</th>
+                <th style={{ padding: "0.45rem 0.65rem", textAlign: "right", width: "100px" }}>Total (Rs.)</th>
+                <th style={{ padding: "0.45rem 0.65rem", textAlign: "right", width: "100px" }}>Paid (Rs.)</th>
+                <th style={{ padding: "0.45rem 0.65rem", textAlign: "right", width: "100px" }}>Due (Rs.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style={{ borderBottom: "1px solid #cbd5e1" }}>
+                <td style={{ padding: "0.55rem 0.65rem", textAlign: "center" }}>1</td>
+                <td style={{ padding: "0.55rem 0.65rem", fontWeight: 700, color: "#1f2937" }}>
+                  Academic Tuition & Program Fee ({faculty || "General"})
+                </td>
+                <td style={{ padding: "0.55rem 0.65rem", textAlign: "right", fontWeight: 700 }}>{totalFee.toLocaleString()}</td>
+                <td style={{ padding: "0.55rem 0.65rem", textAlign: "right", fontWeight: 700, color: "#059669" }}>{paidFee.toLocaleString()}</td>
+                <td style={{ padding: "0.55rem 0.65rem", textAlign: "right", fontWeight: 700, color: dueFee > 0 ? "#dc2626" : "#059669" }}>{dueFee.toLocaleString()}</td>
+              </tr>
+
+              {transactions.length > 0 && transactions.map((tx, idx) => (
+                <tr key={tx.id} style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#fafafa" }}>
+                  <td style={{ padding: "0.4rem 0.65rem", textAlign: "center", fontSize: "0.78rem", color: "#6b7280" }}>{idx + 2}</td>
+                  <td style={{ padding: "0.4rem 0.65rem", fontSize: "0.78rem" }}>
+                    Receipt: <strong>{tx.title}</strong> ({tx.date}) [{tx.paymentMethod}]
+                  </td>
+                  <td style={{ padding: "0.4rem 0.65rem", textAlign: "right", fontSize: "0.78rem", color: "#9ca3af" }}>-</td>
+                  <td style={{ padding: "0.4rem 0.65rem", textAlign: "right", fontSize: "0.78rem", fontWeight: 700, color: "#059669" }}>+{tx.amount.toLocaleString()}</td>
+                  <td style={{ padding: "0.4rem 0.65rem", textAlign: "right", fontSize: "0.78rem", color: "#9ca3af" }}>-</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Totals & Clearance Summary Box */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#f8fafc", padding: "0.65rem 0.85rem", borderRadius: "6px", border: "1px solid #cbd5e1", marginBottom: "1.25rem" }}>
+            <div style={{ fontSize: "0.78rem" }}>
+              <strong>Payment Status:</strong>{" "}
+              <span style={{ fontWeight: 800, color: isFullyPaid ? "#059669" : "#d97706" }}>
+                {isFullyPaid ? "✅ FULLY CLEARED (100%)" : `⚠️ ${percentPaid}% CLEARED (${dueFee.toLocaleString()} DUE)`}
+              </span>
+            </div>
+            <div style={{ textAlign: "right", fontSize: "0.82rem" }}>
+              <span style={{ color: "#4b5563", marginRight: "1rem" }}>Total Deposited: <strong style={{ color: "#059669" }}>Rs. {paidFee.toLocaleString()}</strong></span>
+              <span style={{ color: "#4b5563" }}>Balance Due: <strong style={{ color: dueFee > 0 ? "#dc2626" : "#059669" }}>Rs. {dueFee.toLocaleString()}</strong></span>
+            </div>
+          </div>
+
+          {/* Signature & Seal Footer */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingTop: "1.25rem", borderTop: "1px dashed #cbd5e1" }}>
+            <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "140px", paddingTop: "0.2rem" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#374151" }}>Student Signature</span>
+            </div>
+            <div style={{ textAlign: "center", fontSize: "0.65rem", color: "#6b7280" }}>
+              <span>✅ Official Computer-Generated Cash Receipt</span>
+              <br />
+              <span>Lagankhel IT Academy • Finance & Accounting Office</span>
+            </div>
+            <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "160px", paddingTop: "0.2rem" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#374151" }}>Authorized Accountant</span>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <style dangerouslySetInnerHTML={{
         __html: `
           @media print {
             @page {
-              size: portrait;
-              margin: 1cm;
+              size: A5 portrait;
+              margin: 0;
             }
             body {
               background: #ffffff !important;
@@ -341,47 +404,23 @@ export default function StudentBilling({
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
-            .admin-sidebar,
-            .admin-navbar,
-            .admin-sidebar-footer,
-            aside,
-            header,
-            button,
-            .no-print {
-              display: none !important;
+            body * {
+              visibility: hidden !important;
             }
-            .admin-layout, .admin-main, .admin-content {
-              background: none !important;
-              border: none !important;
-              box-shadow: none !important;
-              padding: 0 !important;
-              margin: 0 !important;
+            .official-bill-receipt-voucher,
+            .official-bill-receipt-voucher * {
+              visibility: visible !important;
             }
-            .print-only-header {
+            .official-bill-receipt-voucher {
               display: block !important;
-            }
-            .billing-summary-grid {
-              display: grid !important;
-              grid-template-columns: repeat(3, 1fr) !important;
-              gap: 1rem !important;
-            }
-            .billing-card {
-              background-color: #ffffff !important;
-              border: 1px solid #cbd5e1 !important;
-              border-radius: 10px !important;
-              padding: 1rem !important;
-              box-shadow: none !important;
+              position: absolute !important;
+              left: 50% !important;
+              top: 50% !important;
+              transform: translate(-50%, -50%) !important;
+              width: 95% !important;
+              max-width: 760px !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
-            }
-            .billing-card-total {
-              border-left: 5px solid #0891b2 !important;
-            }
-            .billing-card-paid {
-              border-left: 5px solid #10b981 !important;
-            }
-            .billing-card-due {
-              border-left: 5px solid #f59e0b !important;
             }
           }
         `
