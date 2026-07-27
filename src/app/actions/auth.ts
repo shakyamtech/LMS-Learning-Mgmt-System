@@ -57,17 +57,17 @@ export async function register(prevState: any, formData: FormData) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const isStudent = role === Role.STUDENT;
+    const requiresApproval = role === Role.STUDENT || role === Role.TEACHER;
     const docRef = await usersRef.add({
       name,
       email,
       password: hashedPassword,
       role: role,
-      approved: !isStudent,
+      approved: !requiresApproval,
       createdAt: new Date().toISOString(),
     });
 
-    if (isStudent) {
+    if (requiresApproval) {
       targetPath = "/login?pending=true";
     } else {
       const sessionToken = await encryptSession({
@@ -132,7 +132,7 @@ export async function login(prevState: any, formData: FormData) {
       return { error: "Invalid email or password." };
     }
 
-    if (user.role === "STUDENT" && user.approved === false) {
+    if ((user.role === "STUDENT" || user.role === "TEACHER") && user.approved === false) {
       return { error: "Your account is pending administrator approval." };
     }
 
