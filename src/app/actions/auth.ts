@@ -51,18 +51,37 @@ export async function register(prevState: any, formData: FormData) {
 
   try {
     const usersRef = db.collection("users");
-    const snapshot = await usersRef.where("email", "==", email).get();
+    const allUsersSnap = await usersRef.get();
 
-    if (!snapshot.empty) {
-      return { error: "An account with this email already exists." };
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = name.trim().toLowerCase();
+
+    // 1. Case-insensitive Email uniqueness check
+    const emailExists = allUsersSnap.docs.some((doc) => {
+      const existingEmail = (doc.data().email || "").trim().toLowerCase();
+      return existingEmail === normalizedEmail;
+    });
+
+    if (emailExists) {
+      return { error: "An account with this email address already exists." };
+    }
+
+    // 2. Duplicate Full Name check (prevents double student registration)
+    const nameExists = allUsersSnap.docs.some((doc) => {
+      const existingName = (doc.data().name || "").trim().toLowerCase();
+      return existingName === normalizedName;
+    });
+
+    if (nameExists) {
+      return { error: `An account for "${name.trim()}" already exists or is pending approval. Duplicate registrations are not allowed.` };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const requiresApproval = role === Role.STUDENT || role === Role.TEACHER;
     const docRef = await usersRef.add({
-      name,
-      email,
+      name: name.trim(),
+      email: normalizedEmail,
       password: hashedPassword,
       role: role,
       faculty: faculty,
@@ -75,7 +94,7 @@ export async function register(prevState: any, formData: FormData) {
     } else {
       const sessionToken = await encryptSession({
         userId: docRef.id,
-        email: email,
+        email: normalizedEmail,
         role: role,
       });
 
@@ -117,13 +136,17 @@ export async function login(prevState: any, formData: FormData) {
 
   try {
     const usersRef = db.collection("users");
-    const snapshot = await usersRef.where("email", "==", email).limit(1).get();
+    const normalizedEmail = email.trim().toLowerCase();
+    const allUsersSnap = await usersRef.get();
 
-    if (snapshot.empty) {
+    const userDoc = allUsersSnap.docs.find(
+      (doc) => (doc.data().email || "").trim().toLowerCase() === normalizedEmail
+    );
+
+    if (!userDoc) {
       return { error: "Invalid email or password." };
     }
 
-    const userDoc = snapshot.docs[0];
     const user = { id: userDoc.id, ...userDoc.data() } as any;
 
     if (!user || !user.password) {
@@ -236,9 +259,33 @@ export async function updateUser(userId: string, data: {
   if (!userId) return { error: "User ID is required" };
 
   try {
+    if (data.email !== undefined || data.name !== undefined) {
+      const allUsersSnap = await db.collection("users").get();
+
+      if (data.email !== undefined) {
+        const normEmail = data.email.trim().toLowerCase();
+        const emailConflict = allUsersSnap.docs.some(
+          (doc) => doc.id !== userId && (doc.data().email || "").trim().toLowerCase() === normEmail
+        );
+        if (emailConflict) {
+          return { error: "Another account with this email address already exists." };
+        }
+      }
+
+      if (data.name !== undefined) {
+        const normName = data.name.trim().toLowerCase();
+        const nameConflict = allUsersSnap.docs.some(
+          (doc) => doc.id !== userId && (doc.data().name || "").trim().toLowerCase() === normName
+        );
+        if (nameConflict) {
+          return { error: `Another account for "${data.name.trim()}" already exists.` };
+        }
+      }
+    }
+
     const updateData: Record<string, any> = {};
-    if (data.name !== undefined) updateData.name = data.name;
-    if (data.email !== undefined) updateData.email = data.email;
+    if (data.name !== undefined) updateData.name = data.name.trim();
+    if (data.email !== undefined) updateData.email = data.email.trim().toLowerCase();
     if (data.role !== undefined) updateData.role = data.role.toUpperCase();
     if (data.approved !== undefined) updateData.approved = data.approved;
     if (data.phone !== undefined) updateData.phone = data.phone;
