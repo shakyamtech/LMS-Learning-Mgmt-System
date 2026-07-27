@@ -154,19 +154,6 @@ export default function StudentConsole({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setActiveConsoleTab("billing");
-              }}
-              className={`admin-sidebar-link ${activeConsoleTab === "billing" ? "active-cyan" : ""}`}
-            >
-              <span style={{ fontSize: "1.1rem" }}>💳</span>
-              <span>Fee &amp; Billing Statement</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
                 setActiveConsoleTab("idcard");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "idcard" ? "active-cyan" : ""}`}
