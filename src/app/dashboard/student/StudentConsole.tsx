@@ -202,36 +202,40 @@ export default function StudentConsole({
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
-          <div style={{ marginBottom: "2rem" }}>
-            <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
-              Welcome back, {studentDisplayName}!
-            </h2>
-            <p className="text-muted" style={{ margin: 0 }}>Here is an overview of your active courses, learning progress, and pending assignments.</p>
-          </div>
+          {activeConsoleTab !== "idcard" && (
+            <>
+              <div style={{ marginBottom: "2rem" }}>
+                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
+                  Welcome back, {studentDisplayName}!
+                </h2>
+                <p className="text-muted" style={{ margin: 0 }}>Here is an overview of your active courses, learning progress, and pending assignments.</p>
+              </div>
 
-          {/* Overview Stat Cards Grid */}
-          <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
-            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
-              <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Enrolled Courses</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#0891b2" }}>{enrollments.length}</p>
-              <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-                {activeCount} in-progress, {completedCount} completed
-              </p>
-            </div>
-            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📈</div>
-              <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Average Progress</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#059669" }}>{averageProgress}%</p>
-              <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Across all enrolled courses</p>
-            </div>
-            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚡</div>
-              <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Academic Status</h3>
-              <p className="text-h2" style={{ margin: "0.25rem 0", color: "#0891b2" }}>Good Standing</p>
-              <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active student account</p>
-            </div>
-          </div>
+              {/* Overview Stat Cards Grid */}
+              <div className="grid-cols-3" style={{ marginBottom: "2.5rem" }}>
+                <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📚</div>
+                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Enrolled Courses</h3>
+                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "#0891b2" }}>{enrollments.length}</p>
+                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>
+                    {activeCount} in-progress, {completedCount} completed
+                  </p>
+                </div>
+                <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📈</div>
+                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Average Progress</h3>
+                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "#059669" }}>{averageProgress}%</p>
+                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Across all enrolled courses</p>
+                </div>
+                <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚡</div>
+                  <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "var(--college-text)" }}>Academic Status</h3>
+                  <p className="text-h2" style={{ margin: "0.25rem 0", color: "#0891b2" }}>Good Standing</p>
+                  <p className="text-muted" style={{ margin: 0, fontSize: "0.85rem" }}>Active student account</p>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* TAB CONTENT SWITCHER */}
           {activeConsoleTab === "dashboard" && (
