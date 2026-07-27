@@ -1397,6 +1397,200 @@ a:hover {
   padding: 0.85rem 1rem;
   border-bottom: 1px solid #f3f4f6;
   font-weight: 700;
+.admin-sidebar-brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.admin-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.admin-sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.admin-sidebar-link.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(27, 94, 32, 0.45) 100%) !important;
+  color: #ffffff !important;
+  border-left: 4px solid var(--college-accent) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.2);
+  transform: none;
+}
+
+.admin-sidebar-link.active-red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.45) 100%) !important;
+  color: #ffffff !important;
+  border-left: 4px solid #f87171 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+  transform: none;
+}
+
+.admin-sidebar-link.active-cyan {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(14, 116, 144, 0.45) 100%) !important;
+  color: #ffffff !important;
+  border-left: 4px solid #22d3ee !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.2);
+  transform: none;
+}
+
+.admin-sidebar-footer {
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-sidebar-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--college-accent);
+  color: var(--college-primary-dark);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.admin-sidebar-profile-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-sidebar-profile-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.admin-sidebar-profile-email {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-sidebar-logout-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.6rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.admin-sidebar-logout-btn:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+.admin-main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-navbar {
+  background-color: #ffffff;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.admin-navbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--college-primary);
+  margin: 0;
+}
+
+.admin-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.admin-content {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+/* ─── Interactive Popover Dropdowns ─── */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.65rem;
+  background-color: #ffffff !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  width: 290px;
+  z-index: 50;
+  color: var(--college-text);
+  overflow: hidden;
+}
+
+.dropdown-popover-header {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-weight: 700;
   font-size: 0.85rem;
   color: var(--college-primary);
   background-color: #f9fafb;
@@ -1433,7 +1627,7 @@ a:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   PRINT STYLES - DOCK OFFICIAL FEE RECEIPT & CASH VOUCHER TO TOP A4/A5
+   PRINT STYLES - SINGLE-PAGE A4 VOUCHER PRINTING (TOP HALF DOCKED)
    ═══════════════════════════════════════════════════════════════════ */
 @media print {
   @page {
@@ -1441,17 +1635,24 @@ a:hover {
     margin: 0;
   }
 
-  body, html {
-    background: #ffffff !important;
-    color: #000000 !important;
+  /* Force Body/HTML to Single-Page 100vh height to prevent extra pages */
+  html, body {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
     margin: 0 !important;
     padding: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
+    background: #ffffff !important;
+    color: #1f2937 !important;
   }
 
-  /* Hide UI elements, navbar, sidebar, buttons, and headers */
+  /* Hide everything in DOM by default */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Completely hide background layouts, navigation, and modal headers */
   .admin-sidebar,
   .admin-navbar,
   .admin-content,
@@ -1466,52 +1667,31 @@ a:hover {
     visibility: hidden !important;
   }
 
-  /* Reset modal backdrop container positioning */
-  .admin-receipt-modal-backdrop,
-  div[class*="admin-receipt-modal-backdrop"] {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    height: auto !important;
+  /* Neutralize modal container background & borders */
+  .admin-receipt-modal-backdrop {
+    position: static !important;
     background: transparent !important;
     backdrop-filter: none !important;
-    display: block !important;
-    padding: 0 !important;
-    margin: 0 !important;
     box-shadow: none !important;
     border: none !important;
-    overflow: visible !important;
-  }
-
-  /* Reset inner modal box container */
-  .admin-receipt-modal-backdrop > div,
-  div[class*="admin-receipt-modal-backdrop"] > div {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    margin: 0 !important;
     padding: 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    overflow: visible !important;
+    margin: 0 !important;
   }
 
-  /* Dock Official Bill Receipt & Cash Voucher at the very top of A4 page */
+  /* Make ONLY the official voucher visible & dock to top of Page 1 */
+  .official-bill-receipt-voucher,
+  .official-bill-receipt-voucher * {
+    visibility: visible !important;
+  }
+
   .official-bill-receipt-voucher {
     display: block !important;
-    visibility: visible !important;
-    position: absolute !important;
-    top: 5mm !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: fixed !important;
+    top: 8mm !important;
+    left: 8mm !important;
+    right: 8mm !important;
     margin: 0 auto !important;
-    width: 100% !important;
+    width: calc(100% - 16mm) !important;
     max-width: 190mm !important;
     padding: 8mm 10mm !important;
     box-sizing: border-box !important;
@@ -1519,12 +1699,8 @@ a:hover {
     border-radius: 8px !important;
     background-color: #ffffff !important;
     color: #1f2937 !important;
+    z-index: 999999 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-  }
-
-  /* Force visibility for all voucher contents */
-  .official-bill-receipt-voucher * {
-    visibility: visible !important;
   }
 }
