@@ -34,7 +34,7 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2rem", width: "100%", maxWidth: "700px", margin: "0 auto" }}>
       {/* Header Info */}
-      <div style={{ textAlign: "center" }}>
+      <div className="no-print" style={{ textAlign: "center" }}>
         <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "1.75rem", color: "#0e7490", margin: "0 0 0.25rem 0" }}>
           🪪 Digital Student Identity Card
         </h3>
@@ -46,6 +46,7 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
       {/* ID Card Wrapper for Print */}
       <div className="id-card-print-container" ref={cardRef} style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <div
+          className="id-card-element"
           style={{
             width: "380px",
             height: "540px",
@@ -205,7 +206,7 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
       </div>
 
       {/* Action Buttons */}
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
         <button
           onClick={handlePrint}
           style={{
@@ -233,17 +234,45 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
       <style dangerouslySetInnerHTML={{
         __html: `
           @media print {
-            body * {
-              visibility: hidden;
+            @page {
+              size: portrait;
+              margin: 0;
             }
-            .id-card-print-container, .id-card-print-container * {
-              visibility: visible;
+            body {
+              background: #ffffff !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .admin-sidebar,
+            .admin-navbar,
+            .admin-sidebar-footer,
+            aside,
+            header,
+            button,
+            .no-print {
+              display: none !important;
+            }
+            .admin-layout, .admin-main, .admin-content, .card {
+              background: none !important;
+              border: none !important;
+              box-shadow: none !important;
+              padding: 0 !important;
+              margin: 0 !important;
             }
             .id-card-print-container {
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%);
+              display: flex !important;
+              justify-content: center !important;
+              align-items: center !important;
+              min-height: 100vh !important;
+              margin: 0 auto !important;
+              padding: 2rem 0 !important;
+            }
+            .id-card-element {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
             }
           }
         `
