@@ -3702,97 +3702,127 @@ export default function AdminDashboardClient({
               </div>
             </div>
 
-            {/* Official Voucher Printable Area */}
-            <div className="official-bill-receipt-voucher" style={{
-              width: "100%",
-              maxWidth: "680px",
-              margin: "0 auto",
-              border: "2px solid #0e7490",
-              borderRadius: "8px",
-              padding: "1rem 1.15rem",
-              backgroundColor: "#ffffff",
-              fontFamily: "Arial, sans-serif",
-              boxSizing: "border-box"
-            }}>
-              {/* Bill Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #0e7490", paddingBottom: "0.65rem", marginBottom: "0.75rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <img src="/logo.png" alt="LITA Logo" style={{ width: "46px", height: "46px", borderRadius: "50%", border: "2px solid #d4af37", flexShrink: 0 }} />
-                  <div>
-                    <h2 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 800, color: "#0e7490", fontFamily: "Playfair Display, serif", lineHeight: 1.1 }}>
-                      LAGANKHEL IT ACADEMY
-                    </h2>
-                    <span style={{ fontSize: "0.68rem", color: "#4b5563", fontWeight: 600, display: "block" }}>
-                      Lagankhel-12, Lalitpur, Nepal • Tel: +977 01-55XXXXX
-                    </span>
-                    <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "#0e7490", textTransform: "uppercase", letterSpacing: "0.05em", display: "inline-block", marginTop: "0.1rem" }}>
-                      OFFICIAL FEE RECEIPT &amp; CASH VOUCHER
-                    </span>
+            {/* Official Voucher Printable Area (100% Identical to Student Portal) */}
+            {(() => {
+              const targetStudent = printingTx ? localUsers.find(u => u.id === printingTx.studentId || (u.name && printingTx.studentName && u.name.toLowerCase() === printingTx.studentName.toLowerCase()) || (u.name && printingTx.title.toLowerCase().includes(u.name.toLowerCase()))) : null;
+
+              const printableStudentName = targetStudent?.name || printingTx.studentName || printingTx.title.split(":")[1]?.trim() || "Student";
+              const printableEmail = targetStudent?.email || "student@lita.edu.np";
+              const printableFaculty = targetStudent?.faculty || "General";
+              const printableRollNo = targetStudent?.rollNo || `ID: ${printableEmail.split("@")[0].toUpperCase()}`;
+              const printableTotalFee = targetStudent?.totalFee || printingTx.amount || 0;
+              const printablePaidFee = targetStudent?.paidFee || printingTx.amount || 0;
+              const printableDueFee = Math.max(0, printableTotalFee - printablePaidFee);
+              const isFullyPaid = printableTotalFee > 0 && printableDueFee <= 0;
+              const percentPaid = printableTotalFee > 0 ? Math.min(100, Math.round((printablePaidFee / printableTotalFee) * 100)) : 100;
+
+              return (
+                <div className="official-bill-receipt-voucher" style={{
+                  width: "100%",
+                  maxWidth: "680px",
+                  margin: "0 auto",
+                  border: "2px solid #0e7490",
+                  borderRadius: "8px",
+                  padding: "1rem 1.15rem",
+                  backgroundColor: "#ffffff",
+                  fontFamily: "Arial, sans-serif",
+                  boxSizing: "border-box"
+                }}>
+                  {/* Bill Header */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #0e7490", paddingBottom: "0.65rem", marginBottom: "0.75rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                      <img src="/logo.png" alt="LITA Logo" style={{ width: "46px", height: "46px", borderRadius: "50%", border: "2px solid #d4af37", flexShrink: 0 }} />
+                      <div>
+                        <h2 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 800, color: "#0e7490", fontFamily: "Playfair Display, serif", lineHeight: 1.1 }}>
+                          LAGANKHEL IT ACADEMY
+                        </h2>
+                        <span style={{ fontSize: "0.68rem", color: "#4b5563", fontWeight: 600, display: "block" }}>
+                          Lagankhel-12, Lalitpur, Nepal • Tel: +977 01-55XXXXX
+                        </span>
+                        <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "#0e7490", textTransform: "uppercase", letterSpacing: "0.05em", display: "inline-block", marginTop: "0.1rem" }}>
+                          OFFICIAL FEE RECEIPT &amp; CASH VOUCHER
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right", border: "1px solid #cbd5e1", padding: "0.35rem 0.65rem", borderRadius: "6px", backgroundColor: "#f8fafc", flexShrink: 0 }}>
+                      <div style={{ fontSize: "0.62rem", color: "#6b7280", fontWeight: 700 }}>VOUCHER NO.</div>
+                      <div style={{ fontSize: "0.8rem", fontWeight: 800, color: "#0e7490" }}>LITA-FEE-{printableEmail.split("@")[0].toUpperCase()}</div>
+                      <div style={{ fontSize: "0.65rem", color: "#4b5563", marginTop: "0.1rem" }}><strong>Date:</strong> {printingTx.date || new Date().toLocaleDateString()}</div>
+                    </div>
+                  </div>
+
+                  {/* Student Info Box */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.35rem 1rem", backgroundColor: "#f1f5f9", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "0.8rem", marginBottom: "0.75rem" }}>
+                    <div><strong>Student Name:</strong> {printableStudentName}</div>
+                    <div><strong>Academic Program:</strong> {printableFaculty}</div>
+                    <div><strong>Student Roll / ID:</strong> {printableRollNo}</div>
+                    <div><strong>Email:</strong> {printableEmail}</div>
+                  </div>
+
+                  {/* Particulars & Fee Table */}
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", marginBottom: "0.75rem" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "#0e7490", color: "#ffffff" }}>
+                        <th style={{ padding: "0.4rem 0.55rem", textAlign: "center", width: "35px" }}>S.N.</th>
+                        <th style={{ padding: "0.4rem 0.55rem", textAlign: "left" }}>Particulars / Description</th>
+                        <th style={{ padding: "0.4rem 0.55rem", textAlign: "right", width: "95px" }}>Total (Rs.)</th>
+                        <th style={{ padding: "0.4rem 0.55rem", textAlign: "right", width: "95px" }}>Paid (Rs.)</th>
+                        <th style={{ padding: "0.4rem 0.55rem", textAlign: "right", width: "95px" }}>Due (Rs.)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ borderBottom: "1px solid #cbd5e1" }}>
+                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "center" }}>1</td>
+                        <td style={{ padding: "0.45rem 0.55rem", fontWeight: 700, color: "#1f2937" }}>
+                          Academic Tuition &amp; Program Fee ({printableFaculty})
+                        </td>
+                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700 }}>{printableTotalFee > 0 ? printableTotalFee.toLocaleString() : "-"}</td>
+                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700, color: "#059669" }}>{printablePaidFee.toLocaleString()}</td>
+                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700, color: printableDueFee > 0 ? "#dc2626" : "#059669" }}>{printableDueFee.toLocaleString()}</td>
+                      </tr>
+
+                      <tr style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#fafafa" }}>
+                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "center", fontSize: "0.75rem", color: "#6b7280" }}>2</td>
+                        <td style={{ padding: "0.35rem 0.55rem", fontSize: "0.75rem" }}>
+                          Receipt: <strong>{printingTx.title}</strong> ({printingTx.date}) [{printingTx.paymentMethod}]
+                          {printingTx.notes && <span style={{ display: "block", color: "#6b7280", fontSize: "0.7rem" }}>Note: {printingTx.notes}</span>}
+                        </td>
+                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", color: "#9ca3af" }}>-</td>
+                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", fontWeight: 700, color: "#059669" }}>+{(printingTx.amount || 0).toLocaleString()}</td>
+                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", color: "#9ca3af" }}>-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Totals & Clearance Summary Box */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#f8fafc", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", marginBottom: "1rem" }}>
+                    <div style={{ fontSize: "0.75rem" }}>
+                      <strong>Payment Status:</strong>{" "}
+                      <span style={{ fontWeight: 800, color: isFullyPaid ? "#059669" : "#d97706" }}>
+                        {isFullyPaid ? "✅ FULLY CLEARED (100%)" : `⚠️ ${percentPaid}% CLEARED (${printableDueFee.toLocaleString()} DUE)`}
+                      </span>
+                    </div>
+                    <div style={{ textAlign: "right", fontSize: "0.78rem" }}>
+                      <span style={{ color: "#4b5563", marginRight: "0.85rem" }}>Total Deposited: <strong style={{ color: "#059669" }}>Rs. {printablePaidFee.toLocaleString()}</strong></span>
+                      <span style={{ color: "#4b5563" }}>Balance Due: <strong style={{ color: printableDueFee > 0 ? "#dc2626" : "#059669" }}>Rs. {printableDueFee.toLocaleString()}</strong></span>
+                    </div>
+                  </div>
+
+                  {/* Signature & Seal Footer */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingTop: "1rem", borderTop: "1px dashed #cbd5e1" }}>
+                    <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "130px", paddingTop: "0.2rem" }}>
+                      <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#374151" }}>Student Signature</span>
+                    </div>
+                    <div style={{ textAlign: "center", fontSize: "0.62rem", color: "#6b7280" }}>
+                      Computer Generated Official Receipt • Lagankhel IT Academy
+                    </div>
+                    <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "130px", paddingTop: "0.2rem" }}>
+                      <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#374151" }}>Authorized Accountant</span>
+                    </div>
                   </div>
                 </div>
-                <div style={{ textAlign: "right", border: "1px solid #cbd5e1", padding: "0.35rem 0.65rem", borderRadius: "6px", backgroundColor: "#f8fafc", flexShrink: 0 }}>
-                  <div style={{ fontSize: "0.62rem", color: "#6b7280", fontWeight: 700 }}>VOUCHER NO.</div>
-                  <div style={{ fontSize: "0.8rem", fontWeight: 800, color: "#0e7490" }}>INV-{(printingTx.id || "000").substring(0, 8).toUpperCase()}</div>
-                  <div style={{ fontSize: "0.65rem", color: "#4b5563", marginTop: "0.1rem" }}><strong>Date:</strong> {printingTx.date}</div>
-                </div>
-              </div>
-
-              {/* Student / Transaction Details */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.35rem 1rem", backgroundColor: "#f1f5f9", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "0.8rem", marginBottom: "0.75rem" }}>
-                <div><strong>Student / Payer:</strong> {printingTx.studentName || printingTx.title.split(":")[1]?.trim() || printingTx.title}</div>
-                <div><strong>Payment Method:</strong> {printingTx.paymentMethod || "Cash"}</div>
-                <div><strong>Description:</strong> {printingTx.title}</div>
-                <div><strong>Category:</strong> {printingTx.category || "Tuition Fee"}</div>
-              </div>
-
-              {/* Particulars & Fee Table */}
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", marginBottom: "0.75rem" }}>
-                <thead>
-                  <tr style={{ backgroundColor: "#0e7490", color: "#ffffff" }}>
-                    <th style={{ padding: "0.4rem 0.55rem", textAlign: "center", width: "35px" }}>S.N.</th>
-                    <th style={{ padding: "0.4rem 0.55rem", textAlign: "left" }}>Particulars / Description</th>
-                    <th style={{ padding: "0.4rem 0.55rem", textAlign: "center", width: "110px" }}>Mode</th>
-                    <th style={{ padding: "0.4rem 0.55rem", textAlign: "right", width: "120px" }}>Amount Paid (Rs.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ borderBottom: "1px solid #cbd5e1" }}>
-                    <td style={{ padding: "0.5rem 0.55rem", textAlign: "center" }}>1</td>
-                    <td style={{ padding: "0.5rem 0.55rem", fontWeight: 700, color: "#1f2937" }}>
-                      {printingTx.title}
-                      {printingTx.notes && <span style={{ display: "block", fontSize: "0.72rem", color: "#6b7280", fontWeight: 400 }}>Note: {printingTx.notes}</span>}
-                    </td>
-                    <td style={{ padding: "0.5rem 0.55rem", textAlign: "center", fontWeight: 600 }}>{printingTx.paymentMethod}</td>
-                    <td style={{ padding: "0.5rem 0.55rem", textAlign: "right", fontWeight: 800, color: "#059669" }}>
-                      Rs. {(printingTx.amount || 0).toLocaleString()}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              {/* Totals & Clearance Summary Box */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#f8fafc", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", marginBottom: "1rem" }}>
-                <div style={{ fontSize: "0.75rem" }}>
-                  <strong>Payment Status:</strong> <span style={{ fontWeight: 800, color: "#059669" }}>✅ VERIFIED RECEIPT</span>
-                </div>
-                <div style={{ textAlign: "right", fontSize: "0.85rem" }}>
-                  <span style={{ color: "#4b5563" }}>Total Deposited Amount: <strong style={{ color: "#059669", fontSize: "1rem" }}>Rs. {(printingTx.amount || 0).toLocaleString()}</strong></span>
-                </div>
-              </div>
-
-              {/* Signature & Seal Footer */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingTop: "1.25rem", borderTop: "1px dashed #cbd5e1" }}>
-                <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "130px", paddingTop: "0.2rem" }}>
-                  <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#374151" }}>Payer Signature</span>
-                </div>
-                <div style={{ textAlign: "center", fontSize: "0.62rem", color: "#6b7280" }}>
-                  Computer Generated Official Receipt • Lagankhel IT Academy
-                </div>
-                <div style={{ textAlign: "center", borderTop: "1px solid #4b5563", width: "130px", paddingTop: "0.2rem" }}>
-                  <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#374151" }}>Authorized Accountant</span>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
           </div>
         </div>
       )}
