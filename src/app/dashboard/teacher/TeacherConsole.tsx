@@ -5,6 +5,7 @@ import { createAssignment, gradeSubmission } from "@/app/actions/assignments";
 import { createAnnouncement, deleteAnnouncement, createComment } from "@/app/actions/announcements";
 import { useState, useTransition, useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
+import TeacherAttendanceMarking from "./TeacherAttendanceMarking";
 
 interface Student {
   id: string;
@@ -43,8 +44,8 @@ interface Comment {
   id: string;
   content: string;
   createdAt: any;
+  authorId: string;
   author: {
-    id: string;
     name: string | null;
     email: string | null;
   };
@@ -55,8 +56,8 @@ interface Announcement {
   title: string;
   content: string;
   createdAt: any;
+  authorId: string;
   author: {
-    id: string;
     name: string | null;
     email: string | null;
   };
@@ -82,6 +83,7 @@ interface TeacherConsoleProps {
   courses: Course[];
   totalStudents?: number;
   classAverageProgress?: number;
+  allStudents?: Student[];
   session?: Session;
   logout?: (formData: FormData) => void;
 }
@@ -90,6 +92,7 @@ export default function TeacherConsole({
   courses,
   totalStudents = 0,
   classAverageProgress = 0,
+  allStudents = [],
   session,
   logout
 }: TeacherConsoleProps) {
@@ -97,7 +100,7 @@ export default function TeacherConsole({
     courses.length > 0 ? courses[0].id : null
   );
 
-  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "assignments" | "announcements">("dashboard");
+  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "assignments" | "announcements" | "attendance">("dashboard");
   const [activeTab, setActiveTab] = useState<"roster" | "assignments" | "announcements">("roster");
 
   // Roster progress local state
@@ -302,6 +305,19 @@ export default function TeacherConsole({
               <span>Class Announcements</span>
             </a>
           </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveConsoleTab("attendance");
+              }}
+              className={`admin-sidebar-link ${activeConsoleTab === "attendance" ? "active-red" : ""}`}
+            >
+              <span style={{ fontSize: "1.1rem" }}>📅</span>
+              <span>Attendance Management</span>
+            </a>
+          </li>
         </ul>
 
         <div className="admin-sidebar-footer">
@@ -345,6 +361,7 @@ export default function TeacherConsole({
               {activeConsoleTab === "dashboard" ? "LMS Instructor Dashboard" :
                activeConsoleTab === "courses" ? "My Courses & Class Roster" :
                activeConsoleTab === "assignments" ? "Assignments & Submission Grading" :
+               activeConsoleTab === "attendance" ? "Daily Attendance Management" :
                "Class Broadcast Announcements"}
             </h1>
           </div>
@@ -352,7 +369,9 @@ export default function TeacherConsole({
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
-          <div style={{ marginBottom: "2rem" }}>
+          {activeConsoleTab !== "attendance" && (
+            <>
+              <div style={{ marginBottom: "2rem" }}>
             <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#991b1b", margin: "0 0 0.5rem 0" }}>
               Welcome back, {teacherDisplayName}!
             </h2>
@@ -928,6 +947,14 @@ export default function TeacherConsole({
                   </div>
                 )}
               </div>
+            </div>
+          )}
+          </>
+          )}
+
+          {activeConsoleTab === "attendance" && (
+            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
+              <TeacherAttendanceMarking courses={courses} allStudents={allStudents} />
             </div>
           )}
         </main>

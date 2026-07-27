@@ -7,6 +7,7 @@ import StudentAssignments from "./StudentAssignments";
 import CourseWorkspace from "./CourseWorkspace";
 import StudentIDCard from "./StudentIDCard";
 import StudentBilling from "./StudentBilling";
+import StudentAttendance from "./StudentAttendance";
 
 interface Session {
   userId?: string;
@@ -20,6 +21,7 @@ interface Session {
   totalFee?: number;
   paidFee?: number;
   transactions?: any[];
+  attendanceLogs?: any[];
 }
 
 interface StudentConsoleProps {
@@ -42,7 +44,7 @@ export default function StudentConsole({
   logout
 }: StudentConsoleProps) {
   const [selectedWorkspaceCourse, setSelectedWorkspaceCourse] = useState<any | null>(null);
-  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard" | "billing">("dashboard");
+  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard" | "billing" | "attendance">("dashboard");
 
   // Synchronize dynamic updates back if selectedWorkspaceCourse changes in db
   const activeCourse = selectedWorkspaceCourse
@@ -135,6 +137,19 @@ export default function StudentConsole({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
+                setActiveConsoleTab("attendance");
+              }}
+              className={`admin-sidebar-link ${activeConsoleTab === "attendance" ? "active-cyan" : ""}`}
+            >
+              <span style={{ fontSize: "1.1rem" }}>📅</span>
+              <span>Attendance Record</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveConsoleTab("idcard");
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "idcard" ? "active-cyan" : ""}`}
@@ -188,6 +203,7 @@ export default function StudentConsole({
                activeConsoleTab === "browse" ? "Browse & Enroll in Courses" :
                activeConsoleTab === "assignments" ? "My Assignments & Grades" :
                activeConsoleTab === "billing" ? "Fee & Billing Statement" :
+               activeConsoleTab === "attendance" ? "Attendance & Participation Record" :
                "Digital Student ID Card"}
             </h1>
           </div>
@@ -195,7 +211,7 @@ export default function StudentConsole({
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
-          {activeConsoleTab !== "idcard" && activeConsoleTab !== "billing" && (
+          {activeConsoleTab !== "idcard" && activeConsoleTab !== "billing" && activeConsoleTab !== "attendance" && (
             <>
               <div style={{ marginBottom: "2rem" }}>
                 <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
@@ -432,6 +448,15 @@ export default function StudentConsole({
                 faculty={session?.faculty}
                 rollNo={session?.rollNo}
                 transactions={session?.transactions || []}
+              />
+            </div>
+          )}
+
+          {activeConsoleTab === "attendance" && (
+            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
+              <StudentAttendance
+                logs={session?.attendanceLogs || []}
+                studentName={studentDisplayName}
               />
             </div>
           )}

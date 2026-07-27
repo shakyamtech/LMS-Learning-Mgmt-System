@@ -4,6 +4,7 @@ import { db } from "@/lib/firebase";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import StudentConsole from "./StudentConsole";
+import { getStudentAttendance } from "@/app/actions/attendance";
 
 export default async function StudentDashboard() {
   const cookieStore = await cookies();
@@ -152,6 +153,10 @@ export default async function StudentDashboard() {
   }));
   transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  // Fetch student attendance logs
+  const attendanceRes = await getStudentAttendance(session.userId);
+  const attendanceLogs = attendanceRes.studentLogs || [];
+
   return (
     <StudentConsole
       enrollments={enrollments}
@@ -171,6 +176,7 @@ export default async function StudentDashboard() {
         totalFee: typeof studentData?.totalFee === "number" ? studentData.totalFee : 0,
         paidFee: typeof studentData?.paidFee === "number" ? studentData.paidFee : 0,
         transactions: transactions,
+        attendanceLogs: attendanceLogs,
       }}
       logout={logout}
     />

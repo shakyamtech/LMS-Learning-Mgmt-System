@@ -145,11 +145,20 @@ export default async function TeacherDashboard() {
   const teacherUserSnap = await db.collection("users").doc(session.userId).get();
   const teacherName = teacherUserSnap.exists ? (teacherUserSnap.data()?.name || session.email.split("@")[0]) : session.email.split("@")[0];
 
+  // Fetch all students for attendance marking roster
+  const allStudentsSnap = await db.collection("users").where("role", "==", "STUDENT").get();
+  const allStudents = allStudentsSnap.docs.map((doc) => ({
+    id: doc.id,
+    name: (doc.data().name as string | undefined) || null,
+    email: (doc.data().email as string | undefined) || null,
+  }));
+
   return (
     <TeacherConsole
       courses={courses}
       totalStudents={totalStudents}
       classAverageProgress={classAverageProgress}
+      allStudents={allStudents}
       session={{ email: session.email, name: teacherName }}
       logout={logout}
     />
