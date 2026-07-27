@@ -166,11 +166,55 @@ export default function AdminDashboardClient({
   const [cmsSaving, setCmsSaving] = useState(false);
   const [activeSlideTab, setActiveSlideTab] = useState(0);
 
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: "New student Mahesh Shakya registered", time: "2 minutes ago" },
-    { id: 2, title: "Course CS-201 assigned to Teacher Ram", time: "1 hour ago" },
-    { id: 3, title: "System Database backup successful", time: "4 hours ago" }
+  interface SystemNotificationItem {
+    id: string | number;
+    title: string;
+    subtitle?: string;
+    time: string;
+    category: "payment" | "student" | "course" | "system";
+    read: boolean;
+    linkTab?: "dashboard" | "users" | "accounting" | "attendance" | "cms";
+  }
+
+  const [notifications, setNotifications] = useState<SystemNotificationItem[]>([
+    {
+      id: "notif-1",
+      title: "New student Mahesh Shakya registered",
+      subtitle: "Assigned ID: STU-8841 • Faculty: BCA",
+      time: "10 mins ago",
+      category: "student",
+      read: false,
+      linkTab: "users"
+    },
+    {
+      id: "notif-2",
+      title: "Payment Received: Rs. 15,000",
+      subtitle: "gita sherstha (Class 9) paid via eSewa",
+      time: "1 hour ago",
+      category: "payment",
+      read: false,
+      linkTab: "accounting"
+    },
+    {
+      id: "notif-3",
+      title: "Course CS-201 assigned to Teacher Ram",
+      subtitle: "Program: Computer Science (+2)",
+      time: "3 hours ago",
+      category: "course",
+      read: true,
+      linkTab: "dashboard"
+    },
+    {
+      id: "notif-4",
+      title: "System Database Backup Successful",
+      subtitle: "Automated snapshot saved to cloud storage",
+      time: "Today, 04:00 AM",
+      category: "system",
+      read: true,
+      linkTab: "dashboard"
+    }
   ]);
+  const [notifFilter, setNotifFilter] = useState<"all" | "unread" | "payment" | "student">("all");
 
   const notificationsRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -190,7 +234,7 @@ export default function AdminDashboardClient({
     try {
       const dismissed = localStorage.getItem("dismissedNotifications");
       if (dismissed) {
-        const dismissedIds = JSON.parse(dismissed) as number[];
+        const dismissedIds = JSON.parse(dismissed) as (string | number)[];
         setNotifications(prev => prev.filter(n => !dismissedIds.includes(n.id)));
       }
     } catch {
@@ -212,12 +256,12 @@ export default function AdminDashboardClient({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleDismissNotification = (id: number) => {
+  const handleDismissNotification = (id: string | number) => {
     const updated = notifications.filter(n => n.id !== id);
     setNotifications(updated);
     try {
       const dismissed = localStorage.getItem("dismissedNotifications");
-      const dismissedIds = dismissed ? (JSON.parse(dismissed) as number[]) : [];
+      const dismissedIds = dismissed ? (JSON.parse(dismissed) as (string | number)[]) : [];
       if (!dismissedIds.includes(id)) {
         dismissedIds.push(id);
         localStorage.setItem("dismissedNotifications", JSON.stringify(dismissedIds));
@@ -227,17 +271,29 @@ export default function AdminDashboardClient({
     }
   };
 
+  const handleMarkAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
   const handleClearAllNotifications = () => {
     const allIds = notifications.map(n => n.id);
     setNotifications([]);
     try {
       const dismissed = localStorage.getItem("dismissedNotifications");
-      const dismissedIds = dismissed ? (JSON.parse(dismissed) as number[]) : [];
+      const dismissedIds = dismissed ? (JSON.parse(dismissed) as (string | number)[]) : [];
       const combined = Array.from(new Set([...dismissedIds, ...allIds]));
       localStorage.setItem("dismissedNotifications", JSON.stringify(combined));
     } catch {
       // Ignore localStorage errors
     }
+  };
+
+  const handleNotificationClick = (notif: SystemNotificationItem) => {
+    setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+    if (notif.linkTab) {
+      setActiveTab(notif.linkTab);
+    }
+    setShowNotifications(false);
   };
 
   // Clear search query when tab changes
@@ -816,121 +872,362 @@ export default function AdminDashboardClient({
 
             {/* Notification Dropdown Container */}
             <div className="dropdown-container" ref={notificationsRef} style={{ position: "relative" }}>
-              <button
-                onClick={() => {
-                  setShowNotifications(!showNotifications);
-                  setShowSettings(false);
-                }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: "1.35rem",
-                  cursor: "pointer",
-                  padding: "0.25rem",
-                  display: "flex",
-                  alignItems: "center"
-                }}
-                title="Notifications"
-              >
-                🔔
-              </button>
-              {isMounted && notifications.length > 0 && (
-                <span style={{
-                  position: "absolute",
-                  top: "-2px",
-                  right: "-2px",
-                  width: "16px",
-                  height: "16px",
-                  backgroundColor: "#ef4444",
-                  color: "white",
-                  borderRadius: "50%",
-                  fontSize: "0.65rem",
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  pointerEvents: "none"
-                }}>
-                  {notifications.length}
-                </span>
-              )}
+              {(() => {
+                const unreadCount = isMounted ? notifications.filter(n => !n.read).length : 0;
 
-              {showNotifications && (
-                <div className="dropdown-popover">
-                  <div className="dropdown-popover-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span>System Notifications</span>
-                    {isMounted && notifications.length > 0 && (
-                      <button
-                        onClick={handleClearAllNotifications}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          color: "#ef4444",
-                          fontSize: "0.7rem",
-                          fontWeight: 600,
-                          cursor: "pointer",
-                          padding: 0
-                        }}
-                      >
-                        Clear All
-                      </button>
-                    )}
-                  </div>
-                  {!isMounted || notifications.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "1.5rem 1rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
-                      🎉 No new notifications!
-                    </div>
-                  ) : (
-                    notifications.map((notif) => (
-                      <div key={notif.id} className="dropdown-popover-item" style={{
+                const getCategoryBadge = (category: string) => {
+                  switch (category) {
+                    case "payment":
+                      return { bg: "#ecfdf5", color: "#059669", icon: "💳" };
+                    case "student":
+                      return { bg: "#eff6ff", color: "#2563eb", icon: "👤" };
+                    case "course":
+                      return { bg: "#faf5ff", color: "#9333ea", icon: "📚" };
+                    case "system":
+                    default:
+                      return { bg: "#fff7ed", color: "#d97706", icon: "⚙️" };
+                  }
+                };
+
+                const filteredNotifs = notifications.filter(n => {
+                  if (notifFilter === "unread") return !n.read;
+                  if (notifFilter === "payment") return n.category === "payment";
+                  if (notifFilter === "student") return n.category === "student";
+                  return true;
+                });
+
+                return (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowNotifications(!showNotifications);
+                        setShowSettings(false);
+                      }}
+                      title="Notifications"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        backgroundColor: showNotifications ? "#ecfdf5" : "#ffffff",
+                        border: showNotifications ? "2px solid #0e7490" : "1px solid #e5e7eb",
                         display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
                         alignItems: "center",
-                        gap: "0.75rem"
-                      }}>
-                        <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: "0.2rem" }}>
-                          <span className="dropdown-popover-item-title">{notif.title}</span>
-                          <span className="dropdown-popover-item-time">🕒 {notif.time}</span>
-                        </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDismissNotification(notif.id);
-                          }}
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        position: "relative",
+                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                        outline: "none",
+                        boxShadow: showNotifications ? "0 0 0 3px rgba(14, 116, 144, 0.15)" : "0 1px 3px rgba(0,0,0,0.05)"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f0f9ff";
+                        e.currentTarget.style.borderColor = "#0e7490";
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = showNotifications ? "#ecfdf5" : "#ffffff";
+                        e.currentTarget.style.borderColor = showNotifications ? "#0e7490" : "#e5e7eb";
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                    >
+                      {/* SVG Bell Icon */}
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={unreadCount > 0 ? "#0e7490" : "#4b5563"} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.2s" }}>
+                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                      </svg>
+
+                      {/* Unread Pill Badge */}
+                      {isMounted && unreadCount > 0 && (
+                        <span
                           style={{
-                            background: "#f3f4f6",
-                            border: "none",
-                            color: "#4b5563",
-                            fontSize: "0.85rem",
-                            cursor: "pointer",
-                            width: "22px",
-                            height: "22px",
-                            borderRadius: "50%",
+                            position: "absolute",
+                            top: "-3px",
+                            right: "-3px",
+                            minWidth: "18px",
+                            height: "18px",
+                            padding: "0 4px",
+                            backgroundColor: "#ef4444",
+                            color: "#ffffff",
+                            borderRadius: "9999px",
+                            fontSize: "0.65rem",
+                            fontWeight: 800,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            lineHeight: 1,
-                            transition: "all 0.2s ease",
-                            flexShrink: 0
+                            border: "2px solid #ffffff",
+                            boxShadow: "0 2px 5px rgba(239, 68, 68, 0.4)",
+                            pointerEvents: "none",
+                            lineHeight: 1
                           }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#fee2e2";
-                            e.currentTarget.style.color = "#ef4444";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "#f3f4f6";
-                            e.currentTarget.style.color = "#4b5563";
-                          }}
-                          title="Dismiss"
                         >
-                          ✕
-                        </button>
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                      )}
+                    </button>
+
+                    {showNotifications && (
+                      <div
+                        className="dropdown-popover"
+                        style={{
+                          position: "absolute",
+                          top: "calc(100% + 10px)",
+                          right: "-10px",
+                          width: "360px",
+                          backgroundColor: "#ffffff",
+                          borderRadius: "14px",
+                          boxShadow: "0 20px 35px -10px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06)",
+                          zIndex: 1000,
+                          overflow: "hidden",
+                          animation: "dropdownFadeSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
+                        }}
+                      >
+                        {/* Header */}
+                        <div style={{
+                          padding: "0.85rem 1.1rem",
+                          backgroundColor: "#f8fafc",
+                          borderBottom: "1px solid #e2e8f0",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center"
+                        }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <span style={{ fontSize: "1rem" }}>🔔</span>
+                            <span style={{ fontWeight: 800, fontSize: "0.92rem", color: "#0e7490", fontFamily: "Playfair Display, serif" }}>
+                              Notifications
+                            </span>
+                            {unreadCount > 0 && (
+                              <span style={{
+                                fontSize: "0.68rem",
+                                fontWeight: 800,
+                                backgroundColor: "rgba(14, 116, 144, 0.12)",
+                                color: "#0e7490",
+                                padding: "0.15rem 0.5rem",
+                                borderRadius: "9999px"
+                              }}>
+                                {unreadCount} new
+                              </span>
+                            )}
+                          </div>
+
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                            {unreadCount > 0 && (
+                              <button
+                                type="button"
+                                onClick={handleMarkAllAsRead}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  color: "#0e7490",
+                                  fontSize: "0.72rem",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                  padding: 0,
+                                  textDecoration: "underline"
+                                }}
+                              >
+                                Mark read
+                              </button>
+                            )}
+                            {notifications.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={handleClearAllNotifications}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  color: "#ef4444",
+                                  fontSize: "0.72rem",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                  padding: 0
+                                }}
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Filter Tabs */}
+                        <div style={{
+                          display: "flex",
+                          borderBottom: "1px solid #f1f5f9",
+                          backgroundColor: "#ffffff",
+                          padding: "0.35rem 0.65rem",
+                          gap: "0.35rem"
+                        }}>
+                          {(["all", "unread", "payment", "student"] as const).map(tab => (
+                            <button
+                              key={tab}
+                              type="button"
+                              onClick={() => setNotifFilter(tab)}
+                              style={{
+                                flex: 1,
+                                padding: "0.3rem 0",
+                                border: "none",
+                                borderRadius: "6px",
+                                fontSize: "0.72rem",
+                                fontWeight: notifFilter === tab ? 700 : 600,
+                                backgroundColor: notifFilter === tab ? "#0e7490" : "transparent",
+                                color: notifFilter === tab ? "#ffffff" : "#64748b",
+                                cursor: "pointer",
+                                transition: "all 0.15s ease",
+                                textTransform: "capitalize"
+                              }}
+                            >
+                              {tab}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Items List */}
+                        <div style={{ maxHeight: "360px", overflowY: "auto" }}>
+                          {filteredNotifs.length === 0 ? (
+                            <div style={{ textAlign: "center", padding: "2.5rem 1rem", color: "#64748b" }}>
+                              <div style={{ fontSize: "2rem", marginBottom: "0.4rem" }}>🎉</div>
+                              <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>No notifications right now</div>
+                              <div style={{ fontSize: "0.75rem", marginTop: "0.2rem", color: "#94a3b8" }}>You&apos;re completely all caught up!</div>
+                            </div>
+                          ) : (
+                            filteredNotifs.map((notif) => {
+                              const badgeStyle = getCategoryBadge(notif.category);
+                              return (
+                                <div
+                                  key={notif.id}
+                                  onClick={() => handleNotificationClick(notif)}
+                                  style={{
+                                    padding: "0.85rem 1rem",
+                                    borderBottom: "1px solid #f1f5f9",
+                                    display: "flex",
+                                    alignItems: "flex-start",
+                                    gap: "0.85rem",
+                                    cursor: "pointer",
+                                    backgroundColor: notif.read ? "#ffffff" : "#f0f9ff",
+                                    transition: "background-color 0.15s ease",
+                                    position: "relative"
+                                  }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = notif.read ? "#f8fafc" : "#e0f2fe"}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = notif.read ? "#ffffff" : "#f0f9ff"}
+                                >
+                                  {/* Badge Icon */}
+                                  <div style={{
+                                    width: "36px",
+                                    height: "36px",
+                                    borderRadius: "10px",
+                                    backgroundColor: badgeStyle.bg,
+                                    color: badgeStyle.color,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "1.1rem",
+                                    flexShrink: 0
+                                  }}>
+                                    {badgeStyle.icon}
+                                  </div>
+
+                                  {/* Main Info */}
+                                  <div style={{ flexGrow: 1, minWidth: 0 }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                                      <span style={{
+                                        fontWeight: notif.read ? 600 : 800,
+                                        fontSize: "0.82rem",
+                                        color: "#0f172a",
+                                        lineHeight: 1.2
+                                      }}>
+                                        {notif.title}
+                                      </span>
+                                      {!notif.read && (
+                                        <span style={{
+                                          width: "7px",
+                                          height: "7px",
+                                          borderRadius: "50%",
+                                          backgroundColor: "#0284c7",
+                                          flexShrink: 0,
+                                          marginLeft: "0.5rem"
+                                        }} />
+                                      )}
+                                    </div>
+
+                                    {notif.subtitle && (
+                                      <p style={{ margin: "0.2rem 0 0 0", fontSize: "0.74rem", color: "#475569", lineHeight: 1.35 }}>
+                                        {notif.subtitle}
+                                      </p>
+                                    )}
+
+                                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.35rem" }}>
+                                      <span style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 600 }}>
+                                        🕒 {notif.time}
+                                      </span>
+                                      <span style={{
+                                        fontSize: "0.62rem",
+                                        fontWeight: 700,
+                                        textTransform: "uppercase",
+                                        padding: "0.1rem 0.4rem",
+                                        borderRadius: "4px",
+                                        backgroundColor: badgeStyle.bg,
+                                        color: badgeStyle.color
+                                      }}>
+                                        {notif.category}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Dismiss Button */}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDismissNotification(notif.id);
+                                    }}
+                                    style={{
+                                      background: "transparent",
+                                      border: "none",
+                                      color: "#94a3b8",
+                                      fontSize: "0.85rem",
+                                      cursor: "pointer",
+                                      width: "22px",
+                                      height: "22px",
+                                      borderRadius: "50%",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      flexShrink: 0
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.backgroundColor = "#fee2e2";
+                                      e.currentTarget.style.color = "#ef4444";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.backgroundColor = "transparent";
+                                      e.currentTarget.style.color = "#94a3b8";
+                                    }}
+                                    title="Dismiss"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+
+                        {/* Footer */}
+                        <div style={{
+                          padding: "0.6rem",
+                          backgroundColor: "#f8fafc",
+                          borderTop: "1px solid #f1f5f9",
+                          textAlign: "center"
+                        }}>
+                          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600 }}>
+                            ⚡ Automatic real-time notification sync enabled
+                          </span>
+                        </div>
                       </div>
-                    ))
-                  )}
-                </div>
-              )}
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             {/* Settings Dropdown Container */}
