@@ -7,7 +7,7 @@ import StudentAssignments from "./StudentAssignments";
 import CourseWorkspace from "./CourseWorkspace";
 import StudentIDCard from "./StudentIDCard";
 import StudentBilling from "./StudentBilling";
-import StudentAttendance from "./StudentAttendance";
+import { markSelfAttendance } from "@/app/actions/attendance";
 
 interface Session {
   userId?: string;
@@ -44,7 +44,24 @@ export default function StudentConsole({
   logout
 }: StudentConsoleProps) {
   const [selectedWorkspaceCourse, setSelectedWorkspaceCourse] = useState<any | null>(null);
-  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard" | "billing" | "attendance">("dashboard");
+  const [activeConsoleTab, setActiveConsoleTab] = useState<"dashboard" | "courses" | "browse" | "assignments" | "idcard" | "billing">("dashboard");
+
+  // Check if today's attendance is already marked present
+  const todayStr = new Date().toISOString().split("T")[0];
+  const initialIsPresent = session?.attendanceLogs?.some(l => l.date === todayStr && l.status === "PRESENT") || false;
+
+  const [isPresentToday, setIsPresentToday] = useState(initialIsPresent);
+  const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
+
+  const handleMarkSelfAttendance = async () => {
+    setIsMarkingAttendance(true);
+    const res = await markSelfAttendance();
+    setIsMarkingAttendance(false);
+
+    if (res?.success) {
+      setIsPresentToday(true);
+    }
+  };
 
   // Synchronize dynamic updates back if selectedWorkspaceCourse changes in db
   const activeCourse = selectedWorkspaceCourse
@@ -137,12 +154,12 @@ export default function StudentConsole({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setActiveConsoleTab("attendance");
+                setActiveConsoleTab("billing");
               }}
-              className={`admin-sidebar-link ${activeConsoleTab === "attendance" ? "active-cyan" : ""}`}
+              className={`admin-sidebar-link ${activeConsoleTab === "billing" ? "active-cyan" : ""}`}
             >
-              <span style={{ fontSize: "1.1rem" }}>📅</span>
-              <span>Attendance Record</span>
+              <span style={{ fontSize: "1.1rem" }}>💳</span>
+              <span>Fee &amp; Billing Statement</span>
             </a>
           </li>
           <li>
@@ -203,7 +220,6 @@ export default function StudentConsole({
                activeConsoleTab === "browse" ? "Browse & Enroll in Courses" :
                activeConsoleTab === "assignments" ? "My Assignments & Grades" :
                activeConsoleTab === "billing" ? "Fee & Billing Statement" :
-               activeConsoleTab === "attendance" ? "Attendance & Participation Record" :
                "Digital Student ID Card"}
             </h1>
           </div>
@@ -211,13 +227,60 @@ export default function StudentConsole({
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>
-          {activeConsoleTab !== "idcard" && activeConsoleTab !== "billing" && activeConsoleTab !== "attendance" && (
+          {activeConsoleTab !== "idcard" && activeConsoleTab !== "billing" && (
             <>
-              <div style={{ marginBottom: "2rem" }}>
-                <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
-                  Welcome back, {studentDisplayName}!
-                </h2>
-                <p className="text-muted" style={{ margin: 0 }}>Here is an overview of your active courses, learning progress, and pending assignments.</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+                <div>
+                  <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "2.25rem", color: "#0e7490", margin: "0 0 0.5rem 0" }}>
+                    Welcome back, {studentDisplayName}!
+                  </h2>
+                  <p className="text-muted" style={{ margin: 0 }}>Here is an overview of your active courses, learning progress, and pending assignments.</p>
+                </div>
+
+                {/* Interactive Click to Mark Present Button */}
+                <div style={{ flexShrink: 0 }}>
+                  {isPresentToday ? (
+                    <div style={{
+                      backgroundColor: "#f0fdf4",
+                      color: "#166534",
+                      border: "2px solid #bbf7d0",
+                      padding: "0.65rem 1.25rem",
+                      borderRadius: "9999px",
+                      fontWeight: 800,
+                      fontSize: "0.88rem",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      boxShadow: "0 2px 8px rgba(22, 101, 52, 0.1)"
+                    }}>
+                      <span>✅</span> Present Today ({new Date().toLocaleDateString()})
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={isMarkingAttendance}
+                      onClick={handleMarkSelfAttendance}
+                      style={{
+                        backgroundColor: "#0e7490",
+                        backgroundImage: "linear-gradient(135deg, #0e7490 0%, #059669 100%)",
+                        color: "white",
+                        border: "none",
+                        padding: "0.7rem 1.4rem",
+                        borderRadius: "9999px",
+                        fontWeight: 800,
+                        fontSize: "0.9rem",
+                        cursor: isMarkingAttendance ? "not-allowed" : "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        boxShadow: "0 4px 14px rgba(14, 116, 144, 0.35)",
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      <span>📍</span> {isMarkingAttendance ? "Marking..." : "Click to Mark Present"}
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Overview Stat Cards Grid */}
@@ -448,15 +511,6 @@ export default function StudentConsole({
                 faculty={session?.faculty}
                 rollNo={session?.rollNo}
                 transactions={session?.transactions || []}
-              />
-            </div>
-          )}
-
-          {activeConsoleTab === "attendance" && (
-            <div className="card" style={{ backgroundColor: "white", padding: "1.5rem" }}>
-              <StudentAttendance
-                logs={session?.attendanceLogs || []}
-                studentName={studentDisplayName}
               />
             </div>
           )}

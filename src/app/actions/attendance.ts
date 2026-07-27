@@ -140,3 +140,73 @@ export async function getStudentAttendance(studentId: string) {
     return { error: "Failed to fetch student attendance." };
   }
 }
+
+export async function markSelfAttendance() {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || session.role !== "STUDENT") {
+    return { error: "Unauthorized. Only students can mark self attendance." };
+  }
+
+  const todayDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+  try {
+    const studentUserSnap = await db.collection("users").doc(session.userId).get();
+    const studentData = studentUserSnap.exists ? studentUserSnap.data() : {};
+    const studentName = studentData?.name || session.email.split("@")[0];
+
+    const attendanceRef = db.collection("attendance");
+    // Find today's daily attendance entry
+    const snap = await attendanceRef
+      .where("courseId", "==", "DAILY_ATTENDANCE")
+      .where("date", "==", todayDate)
+      .get();
+
+    const timestamp = new Date().toISOString();
+
+    if (!snap.empty) {
+      const doc = snap.docs[0];
+      const records = (doc.data().records || []) as AttendanceRecordItem[];
+      
+      const existingIdx = records.findIndex(r => r.studentId === session.userId);
+      if (existingIdx >= 0) {
+        return { success: true, date: todayDate, alreadyMarked: true, status: records[existingIdx].status };
+      }
+
+      records.push({
+        studentId: session.userId,
+        studentName,
+        status: "PRESENT",
+        remark: "Self Marked Attendance via Dashboard"
+      });
+
+      await attendanceRef.doc(doc.id).update({
+        records,
+        updatedAt: timestamp
+      });
+      return { success: true, date: todayDate, alreadyMarked: false, status: "PRESENT" };
+    } else {
+      await attendanceRef.add({
+        courseId: "DAILY_ATTENDANCE",
+        courseTitle: "Daily Campus Attendance",
+        date: todayDate,
+        teacherId: "SYSTEM_SELF",
+        records: [{
+          studentId: session.userId,
+          studentName,
+          status: "PRESENT",
+          remark: "Self Marked Attendance via Dashboard"
+        }],
+        createdAt: timestamp
+      });
+
+      return { success: true, date: todayDate, alreadyMarked: false, status: "PRESENT" };
+    }
+  } catch (error) {
+    console.error("Mark self attendance error:", error);
+    return { error: "Failed to mark attendance." };
+  }
+}
