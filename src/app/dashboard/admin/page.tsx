@@ -89,6 +89,16 @@ export default async function AdminDashboard() {
     paidFee: typeof doc.data().paidFee === "number" ? doc.data().paidFee : null,
   }));
 
+  // Sort users: Pending (unapproved) users first, then by createdAt descending (latest registered at top)
+  allUsers.sort((a, b) => {
+    if (!a.approved && b.approved) return -1;
+    if (a.approved && !b.approved) return 1;
+
+    const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return timeB - timeA;
+  });
+
   const students = allUsers.filter(u => u.role === "STUDENT");
 
   // 5. Fetch Financial Transactions for Accounting
