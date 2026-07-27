@@ -3726,7 +3726,8 @@ export default function AdminDashboardClient({
                   padding: "1rem 1.15rem",
                   backgroundColor: "#ffffff",
                   fontFamily: "Arial, sans-serif",
-                  boxSizing: "border-box"
+                  boxSizing: "border-box",
+                  color: "#1f2937"
                 }}>
                   {/* Bill Header */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #0e7490", paddingBottom: "0.65rem", marginBottom: "0.75rem" }}>
@@ -3747,20 +3748,20 @@ export default function AdminDashboardClient({
                     <div style={{ textAlign: "right", border: "1px solid #cbd5e1", padding: "0.35rem 0.65rem", borderRadius: "6px", backgroundColor: "#f8fafc", flexShrink: 0 }}>
                       <div style={{ fontSize: "0.62rem", color: "#6b7280", fontWeight: 700 }}>VOUCHER NO.</div>
                       <div style={{ fontSize: "0.8rem", fontWeight: 800, color: "#0e7490" }}>LITA-FEE-{printableEmail.split("@")[0].toUpperCase()}</div>
-                      <div style={{ fontSize: "0.65rem", color: "#4b5563", marginTop: "0.1rem" }}><strong>Date:</strong> {printingTx.date || new Date().toLocaleDateString()}</div>
+                      <div style={{ fontSize: "0.65rem", color: "#4b5563", marginTop: "0.1rem" }}><strong style={{ color: "#111827" }}>Date:</strong> {printingTx.date || new Date().toLocaleDateString()}</div>
                     </div>
                   </div>
 
                   {/* Student Info Box */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.35rem 1rem", backgroundColor: "#f1f5f9", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "0.8rem", marginBottom: "0.75rem" }}>
-                    <div><strong>Student Name:</strong> {printableStudentName}</div>
-                    <div><strong>Academic Program:</strong> {printableFaculty}</div>
-                    <div><strong>Student Roll / ID:</strong> {printableRollNo}</div>
-                    <div><strong>Email:</strong> {printableEmail}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.35rem 1rem", backgroundColor: "#f1f5f9", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "0.8rem", marginBottom: "0.75rem", color: "#374151" }}>
+                    <div><strong style={{ color: "#111827" }}>Student Name:</strong> {printableStudentName}</div>
+                    <div><strong style={{ color: "#111827" }}>Academic Program:</strong> {printableFaculty}</div>
+                    <div><strong style={{ color: "#111827" }}>Student Roll / ID:</strong> {printableRollNo}</div>
+                    <div><strong style={{ color: "#111827" }}>Email:</strong> {printableEmail}</div>
                   </div>
 
                   {/* Particulars & Fee Table */}
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", marginBottom: "0.75rem" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", marginBottom: "0.75rem", color: "#1f2937" }}>
                     <thead>
                       <tr style={{ backgroundColor: "#0e7490", color: "#ffffff" }}>
                         <th style={{ padding: "0.4rem 0.55rem", textAlign: "center", width: "35px" }}>S.N.</th>
@@ -3772,32 +3773,32 @@ export default function AdminDashboardClient({
                     </thead>
                     <tbody>
                       <tr style={{ borderBottom: "1px solid #cbd5e1" }}>
-                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "center" }}>1</td>
-                        <td style={{ padding: "0.45rem 0.55rem", fontWeight: 700, color: "#1f2937" }}>
+                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "center", color: "#374151" }}>1</td>
+                        <td style={{ padding: "0.45rem 0.55rem", fontWeight: 700, color: "#111827" }}>
                           Academic Tuition &amp; Program Fee ({printableFaculty})
                         </td>
-                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700 }}>{printableTotalFee > 0 ? printableTotalFee.toLocaleString() : "-"}</td>
+                        <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700, color: "#111827" }}>{printableTotalFee > 0 ? printableTotalFee.toLocaleString() : "-"}</td>
                         <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700, color: "#059669" }}>{printablePaidFee.toLocaleString()}</td>
                         <td style={{ padding: "0.45rem 0.55rem", textAlign: "right", fontWeight: 700, color: printableDueFee > 0 ? "#dc2626" : "#059669" }}>{printableDueFee.toLocaleString()}</td>
                       </tr>
 
                       <tr style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#fafafa" }}>
                         <td style={{ padding: "0.35rem 0.55rem", textAlign: "center", fontSize: "0.75rem", color: "#6b7280" }}>2</td>
-                        <td style={{ padding: "0.35rem 0.55rem", fontSize: "0.75rem" }}>
-                          Receipt: <strong>{printingTx.title}</strong> ({printingTx.date}) [{printingTx.paymentMethod}]
-                          {printingTx.notes && <span style={{ display: "block", color: "#6b7280", fontSize: "0.7rem" }}>Note: {printingTx.notes}</span>}
+                        <td style={{ padding: "0.35rem 0.55rem", fontSize: "0.75rem", color: "#374151" }}>
+                          Receipt: <strong style={{ color: "#111827" }}>{printingTx.title}</strong> ({printingTx.date}) [{printingTx.paymentMethod}]
+                          {printingTx.notes && <span style={{ display: "block", color: "#4b5563", fontSize: "0.7rem" }}>Note: {printingTx.notes}</span>}
                         </td>
-                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", color: "#9ca3af" }}>-</td>
+                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", color: "#6b7280" }}>-</td>
                         <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", fontWeight: 700, color: "#059669" }}>+{(printingTx.amount || 0).toLocaleString()}</td>
-                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", color: "#9ca3af" }}>-</td>
+                        <td style={{ padding: "0.35rem 0.55rem", textAlign: "right", fontSize: "0.75rem", color: "#6b7280" }}>-</td>
                       </tr>
                     </tbody>
                   </table>
 
                   {/* Totals & Clearance Summary Box */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#f8fafc", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", marginBottom: "1rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#f8fafc", padding: "0.55rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", marginBottom: "1rem", color: "#374151" }}>
                     <div style={{ fontSize: "0.75rem" }}>
-                      <strong>Payment Status:</strong>{" "}
+                      <strong style={{ color: "#111827" }}>Payment Status:</strong>{" "}
                       <span style={{ fontWeight: 800, color: isFullyPaid ? "#059669" : "#d97706" }}>
                         {isFullyPaid ? "✅ FULLY CLEARED (100%)" : `⚠️ ${percentPaid}% CLEARED (${printableDueFee.toLocaleString()} DUE)`}
                       </span>
