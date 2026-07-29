@@ -172,6 +172,8 @@ export default function EditProfileModal({
     ? "rgba(220,38,38,0.25)"
     : "rgba(8,145,178,0.25)";
 
+  if (!isOpen) return null;
+
   return (
     <>
       {/* Inline keyframes */}
@@ -191,40 +193,34 @@ export default function EditProfileModal({
         .ep-save-btn:hover:not(:disabled) { opacity: 0.88; }
       `}</style>
 
-      {/* Thin backdrop — just dims slightly, does NOT centre */}
-      {isOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9998,
-            background: "rgba(0,0,0,0.08)",
-          }}
-          aria-hidden="true"
-        />
-      )}
+      {/* Backdrop — closes modal on outside click */}
+      <div
+        onClick={onClose}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 99998,
+          background: "rgba(0,0,0,0.12)",
+          cursor: "pointer",
+        }}
+        aria-hidden="true"
+      />
 
-      {/* Dropdown panel — absolutely positioned top-right */}
+      {/* Dropdown panel — top-right modal */}
       <div
         ref={panelRef}
         style={{
           position: "fixed",
-          top: "68px",           /* just below the navbar */
+          top: "68px",
           right: "18px",
-          zIndex: 9999,
+          zIndex: 99999,
           width: "360px",
           backgroundColor: "#ffffff",
           borderRadius: "1rem",
           boxShadow: "0 20px 60px -8px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.08)",
           border: `1px solid ${accentBorder}`,
           overflow: "hidden",
-          /* Slide-down animation */
-          animation: isOpen ? "dropSlideDown 0.28s cubic-bezier(0.34,1.38,0.64,1) both" : "none",
-          /* Hide (not unmount) when closed so animation plays cleanly */
-          visibility: isOpen ? "visible" : "hidden",
-          opacity: isOpen ? 1 : 0,
-          pointerEvents: isOpen ? "auto" : "none",
-          transition: isOpen ? "none" : "opacity 0.18s ease, visibility 0.18s",
+          animation: "dropSlideDown 0.28s cubic-bezier(0.34,1.38,0.64,1) both",
         }}
         role="dialog"
         aria-modal="true"
