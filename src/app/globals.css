@@ -1324,15 +1324,6 @@ a:hover {
   }
 }
 
-  }
-  .admin-content {
-    padding: 1.25rem !important;
-  }
-  .grid-cols-3 {
-    grid-template-columns: 1fr 1fr !important;
-  }
-}
-
 .admin-sidebar {
   background-color: var(--college-primary-dark);
   color: white;
