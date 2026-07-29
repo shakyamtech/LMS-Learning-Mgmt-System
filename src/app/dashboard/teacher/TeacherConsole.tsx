@@ -402,6 +402,35 @@ export default function TeacherConsole({
             </a>
           </li>
         </ul>
+
+        {/* Sidebar Footer — System Version */}
+        <div style={{
+          marginTop: "auto",
+          padding: "1rem 0.5rem 0.5rem",
+          borderTop: "1px solid rgba(255, 255, 255, 0.12)",
+          textAlign: "center"
+        }}>
+          <div style={{
+            fontSize: "0.72rem",
+            fontWeight: 700,
+            color: "rgba(255, 255, 255, 0.7)",
+            letterSpacing: "0.04em",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.45rem"
+          }}>
+            <span style={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              backgroundColor: "#22c55e",
+              boxShadow: "0 0 8px #22c55e",
+              display: "inline-block"
+            }} />
+            LMS v2.4.0 • Instructor Hub
+          </div>
+        </div>
       </aside>
 
       {/* Main content workspace */}
