@@ -44,18 +44,6 @@ export default function EditProfileModal({
   const [passSuccess, setPassSuccess] = useState<string | null>(null);
   const [passError, setPassError] = useState<string | null>(null);
 
-  // Close when clicking outside
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onClose]);
-
   // Close on Escape
   useEffect(() => {
     if (!isOpen) return;
@@ -209,6 +197,7 @@ export default function EditProfileModal({
       {/* Dropdown panel — top-right modal */}
       <div
         ref={panelRef}
+        onClick={(e) => e.stopPropagation()}
         style={{
           position: "fixed",
           top: "68px",
