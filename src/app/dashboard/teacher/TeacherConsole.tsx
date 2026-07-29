@@ -113,6 +113,7 @@ export default function TeacherConsole({
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const logoutFormRef = useRef<HTMLFormElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -401,16 +402,6 @@ export default function TeacherConsole({
             </a>
           </li>
         </ul>
-
-        <div className="admin-sidebar-footer">
-          {logout && (
-            <form action={logout}>
-              <button className="admin-sidebar-logout-btn" type="submit" style={{ backgroundColor: "rgba(239, 68, 68, 0.2)", color: "#fca5a5" }}>
-                🚪 Logout
-              </button>
-            </form>
-          )}
-        </div>
       </aside>
 
       {/* Main content workspace */}
@@ -1093,6 +1084,13 @@ export default function TeacherConsole({
         </main>
       </div>
 
+      {/* Hidden Logout Form */}
+      {logout && (
+        <form ref={logoutFormRef} action={logout} style={{ display: "none" }}>
+          <button type="submit" />
+        </form>
+      )}
+
       {/* Edit Profile Modal */}
       <EditProfileModal
         isOpen={isEditProfileOpen}
@@ -1107,6 +1105,12 @@ export default function TeacherConsole({
           setCurrentAvatar(newAvatar);
           setIsEditProfileOpen(false);
         }}
+        onLogout={logout ? () => {
+          setIsEditProfileOpen(false);
+          if (logoutFormRef.current) {
+            logoutFormRef.current.requestSubmit();
+          }
+        } : undefined}
       />
 
       <style jsx global>{`

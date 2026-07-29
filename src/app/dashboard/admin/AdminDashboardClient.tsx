@@ -113,6 +113,7 @@ export default function AdminDashboardClient({
   const [isSearchOpenMobile, setIsSearchOpenMobile] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const logoutFormRef = useRef<HTMLFormElement>(null);
   const closeSidebar = () => setIsSidebarOpen(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
   const [localUsers, setLocalUsers] = useState<PlatformUser[]>(allUsers);
@@ -903,14 +904,6 @@ export default function AdminDashboardClient({
             </a>
           </li>
         </ul>
-
-        <div className="admin-sidebar-footer">
-          <form action={logout}>
-            <button className="admin-sidebar-logout-btn" type="submit">
-              🚪 Logout
-            </button>
-          </form>
-        </div>
       </aside>
 
       {/* Main content workspace */}
@@ -5092,6 +5085,33 @@ export default function AdminDashboardClient({
           </div>
         </div>
       )}
+
+      {/* Hidden Logout Form */}
+      <form ref={logoutFormRef} action={logout} style={{ display: "none" }}>
+        <button type="submit" />
+      </form>
+
+      {/* Edit Profile Modal for Admin */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        user={{
+          name: displayName,
+          email: session?.email || "",
+          avatar: currentAvatar,
+          role: "ADMIN"
+        }}
+        onAvatarUpdated={(newAvatar) => {
+          setCurrentAvatar(newAvatar);
+          setIsEditProfileOpen(false);
+        }}
+        onLogout={() => {
+          setIsEditProfileOpen(false);
+          if (logoutFormRef.current) {
+            logoutFormRef.current.requestSubmit();
+          }
+        }}
+      />
     </div>
   );
 }

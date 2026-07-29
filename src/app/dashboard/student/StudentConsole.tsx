@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import BrowseCourses from "./BrowseCourses";
 import StudentAssignments from "./StudentAssignments";
@@ -58,6 +58,7 @@ export default function StudentConsole({
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const logoutFormRef = useRef<HTMLFormElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const closeSidebar = () => setIsSidebarOpen(false);
@@ -246,16 +247,6 @@ export default function StudentConsole({
             </a>
           </li>
         </ul>
-
-        <div className="admin-sidebar-footer">
-          {logout && (
-            <form action={logout}>
-              <button className="admin-sidebar-logout-btn" type="submit" style={{ backgroundColor: "rgba(6, 182, 212, 0.2)", color: "#a5f3fc" }}>
-                🚪 Logout
-              </button>
-            </form>
-          )}
-        </div>
       </aside>
 
       {/* Main content workspace */}
@@ -695,6 +686,13 @@ export default function StudentConsole({
         />
       )}
 
+      {/* Hidden Logout Form */}
+      {logout && (
+        <form ref={logoutFormRef} action={logout} style={{ display: "none" }}>
+          <button type="submit" />
+        </form>
+      )}
+
       {/* Edit Profile Modal */}
       <EditProfileModal
         isOpen={isEditProfileOpen}
@@ -709,6 +707,12 @@ export default function StudentConsole({
           setCurrentAvatar(newAvatar);
           setIsEditProfileOpen(false);
         }}
+        onLogout={logout ? () => {
+          setIsEditProfileOpen(false);
+          if (logoutFormRef.current) {
+            logoutFormRef.current.requestSubmit();
+          }
+        } : undefined}
       />
 
       <style jsx global>{`

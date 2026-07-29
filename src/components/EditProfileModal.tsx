@@ -13,6 +13,7 @@ interface EditProfileModalProps {
     role?: string;
   };
   onAvatarUpdated: (newAvatar: string) => void;
+  onLogout?: () => void;
 }
 
 export default function EditProfileModal({
@@ -20,6 +21,7 @@ export default function EditProfileModal({
   onClose,
   user,
   onAvatarUpdated,
+  onLogout,
 }: EditProfileModalProps) {
   const [activeTab, setActiveTab] = useState<"photo" | "password">("photo");
   const panelRef = useRef<HTMLDivElement>(null);
@@ -419,6 +421,42 @@ export default function EditProfileModal({
                 {isSavingPass ? "Updating…" : "Update Password"}
               </button>
             </form>
+          )}
+
+          {/* Logout Section */}
+          {onLogout && (
+            <div style={{ marginTop: "1rem", paddingTop: "0.85rem", borderTop: "1px solid #e2e8f0" }}>
+              <button
+                type="button"
+                onClick={onLogout}
+                style={{
+                  width: "100%",
+                  padding: "0.65rem",
+                  borderRadius: "0.6rem",
+                  backgroundColor: "#fef2f2",
+                  color: "#dc2626",
+                  border: "1px solid #fca5a5",
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#dc2626";
+                  e.currentTarget.style.color = "#ffffff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#fef2f2";
+                  e.currentTarget.style.color = "#dc2626";
+                }}
+              >
+                🚪 Sign Out / Logout
+              </button>
+            </div>
           )}
         </div>
       </div>
