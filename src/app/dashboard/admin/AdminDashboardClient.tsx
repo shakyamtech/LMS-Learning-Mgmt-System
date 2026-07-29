@@ -1449,61 +1449,160 @@ export default function AdminDashboardClient({
 
                   <div style={{ padding: "0.6rem", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
                     {/* Item 1: System Config */}
-                    <button
-                      type="button"
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => {
                         setShowSettings(false);
                         setActiveSettingModal("config");
                       }}
-                      className="popover-menu-btn"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: "0.85rem",
+                        padding: "0.75rem 0.85rem",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        width: "100%",
+                        boxSizing: "border-box"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f8fafc";
+                        e.currentTarget.style.transform = "translateX(3px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.transform = "translateX(0)";
+                      }}
                     >
-                      <div className="popover-icon-box" style={{ backgroundColor: "#f0fdf4", color: "#166534" }}>
+                      <div style={{
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "50%",
+                        backgroundColor: "#f0fdf4",
+                        color: "#166534",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "1.1rem",
+                        flexShrink: 0
+                      }}>
                         ⚙️
                       </div>
-                      <div style={{ flex: 1, textAlign: "left" }}>
-                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>System Configuration</div>
-                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.1rem" }}>Platform mode, self-reg &amp; helpline</div>
+                      <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b", lineHeight: 1.2 }}>System Configuration</div>
+                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.15rem", lineHeight: 1.2 }}>Platform mode, self-reg &amp; helpline</div>
                       </div>
-                      <span className="popover-arrow">›</span>
-                    </button>
+                      <span style={{ fontSize: "1.2rem", color: "#94a3b8", fontWeight: 700, flexShrink: 0 }}>›</span>
+                    </div>
 
                     {/* Item 2: Security & API Keys */}
-                    <button
-                      type="button"
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => {
                         setShowSettings(false);
                         setActiveSettingModal("security");
                       }}
-                      className="popover-menu-btn"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: "0.85rem",
+                        padding: "0.75rem 0.85rem",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        width: "100%",
+                        boxSizing: "border-box"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f8fafc";
+                        e.currentTarget.style.transform = "translateX(3px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.transform = "translateX(0)";
+                      }}
                     >
-                      <div className="popover-icon-box" style={{ backgroundColor: "#fef3c7", color: "#92400e" }}>
+                      <div style={{
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "50%",
+                        backgroundColor: "#fef3c7",
+                        color: "#92400e",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "1.1rem",
+                        flexShrink: 0
+                      }}>
                         🔑
                       </div>
-                      <div style={{ flex: 1, textAlign: "left" }}>
-                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>Security &amp; API Keys</div>
-                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.1rem" }}>DB status, session expiry &amp; 2FA</div>
+                      <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b", lineHeight: 1.2 }}>Security &amp; API Keys</div>
+                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.15rem", lineHeight: 1.2 }}>DB status, session expiry &amp; 2FA</div>
                       </div>
-                      <span className="popover-arrow">›</span>
-                    </button>
+                      <span style={{ fontSize: "1.2rem", color: "#94a3b8", fontWeight: 700, flexShrink: 0 }}>›</span>
+                    </div>
 
                     {/* Item 3: Data Export & Analytics */}
-                    <button
-                      type="button"
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => {
                         setShowSettings(false);
                         setActiveSettingModal("export");
                       }}
-                      className="popover-menu-btn"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: "0.85rem",
+                        padding: "0.75rem 0.85rem",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        width: "100%",
+                        boxSizing: "border-box"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f8fafc";
+                        e.currentTarget.style.transform = "translateX(3px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.transform = "translateX(0)";
+                      }}
                     >
-                      <div className="popover-icon-box" style={{ backgroundColor: "#ecfeff", color: "#155e75" }}>
+                      <div style={{
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ecfeff",
+                        color: "#155e75",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "1.1rem",
+                        flexShrink: 0
+                      }}>
                         📊
                       </div>
-                      <div style={{ flex: 1, textAlign: "left" }}>
-                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>Data Export &amp; Analytics</div>
-                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.1rem" }}>Download CSV reports &amp; JSON backup</div>
+                      <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b", lineHeight: 1.2 }}>Data Export &amp; Analytics</div>
+                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.15rem", lineHeight: 1.2 }}>Download CSV reports &amp; JSON backup</div>
                       </div>
-                      <span className="popover-arrow">›</span>
-                    </button>
+                      <span style={{ fontSize: "1.2rem", color: "#94a3b8", fontWeight: 700, flexShrink: 0 }}>›</span>
+                    </div>
                   </div>
                 </div>
               )}
