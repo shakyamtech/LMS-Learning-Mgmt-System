@@ -326,6 +326,46 @@ export async function updateOwnAvatar(avatar: string) {
   }
 }
 
+export async function changeOwnPassword(currentPass: string, newPass: string) {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || !session.userId) {
+    return { error: "Unauthorized" };
+  }
+
+  if (!currentPass || !newPass) {
+    return { error: "Both current and new password are required." };
+  }
+
+  if (newPass.length < 6) {
+    return { error: "New password must be at least 6 characters long." };
+  }
+
+  try {
+    const userDoc = await db.collection("users").doc(session.userId).get();
+    if (!userDoc.exists) return { error: "User account not found." };
+
+    const userData = userDoc.data();
+    const storedHash = userData?.password || "";
+    const isMatch = await bcrypt.compare(currentPass, storedHash);
+
+    if (!isMatch) {
+      return { error: "Current password is incorrect." };
+    }
+
+    const hashedNew = await bcrypt.hash(newPass, 10);
+    await db.collection("users").doc(session.userId).update({ password: hashedNew });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Change own password error:", error);
+    return { error: "Failed to change password." };
+  }
+}
+
 export async function deleteUser(userId: string) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("session")?.value;

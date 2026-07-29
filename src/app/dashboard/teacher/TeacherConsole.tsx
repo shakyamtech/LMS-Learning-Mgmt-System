@@ -6,6 +6,7 @@ import { createAnnouncement, deleteAnnouncement, createComment } from "@/app/act
 import { useState, useTransition, useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { updateOwnAvatar } from "@/app/actions/auth";
+import EditProfileModal from "@/components/EditProfileModal";
 import TeacherAttendanceMarking from "./TeacherAttendanceMarking";
 
 interface Student {
@@ -111,6 +112,7 @@ export default function TeacherConsole({
 
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -387,11 +389,13 @@ export default function TeacherConsole({
         </ul>
 
         <div className="admin-sidebar-footer">
-          <div className="admin-sidebar-profile">
-            <label
-              style={{ cursor: "pointer", position: "relative", display: "inline-block" }}
-              title="Click to upload/change your profile photo"
-            >
+          <div
+            className="admin-sidebar-profile"
+            onClick={() => setIsEditProfileOpen(true)}
+            style={{ cursor: "pointer" }}
+            title="Click to edit profile photo or change password"
+          >
+            <div style={{ position: "relative", display: "inline-block" }}>
               <div className="admin-sidebar-avatar" style={{
                 backgroundColor: "#ef4444",
                 color: "white",
@@ -422,18 +426,12 @@ export default function TeacherConsole({
                 border: "1.5px solid #ffffff",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.3)"
               }}>
-                📷
+                ⚙️
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handlePhotoUpload}
-              />
-            </label>
+            </div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{teacherDisplayName}</span>
-              <span className="admin-sidebar-profile-email">{session?.email || ""}</span>
+              <span className="admin-sidebar-profile-email" style={{ fontSize: "0.7rem", color: "#fca5a5" }}>⚙️ Settings</span>
             </div>
           </div>
           {logout && (
@@ -1067,6 +1065,29 @@ export default function TeacherConsole({
           )}
         </main>
       </div>
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        user={{
+          name: teacherDisplayName,
+          email: session?.email || "",
+          avatar: currentAvatar,
+          role: "TEACHER"
+        }}
+        onAvatarUpdated={(newAvatar) => {
+          setCurrentAvatar(newAvatar);
+          setIsEditProfileOpen(false);
+        }}
+      />
+
+      <style jsx global>{`
+        @keyframes modalSlideUp {
+          from { opacity: 0; transform: translateY(30px) scale(0.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
     </div>
   );
 }

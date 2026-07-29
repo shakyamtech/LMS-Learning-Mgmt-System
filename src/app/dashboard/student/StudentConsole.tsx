@@ -7,6 +7,7 @@ import StudentAssignments from "./StudentAssignments";
 import CourseWorkspace from "./CourseWorkspace";
 import StudentIDCard from "./StudentIDCard";
 import StudentBilling from "./StudentBilling";
+import EditProfileModal from "@/components/EditProfileModal";
 import { markSelfAttendance } from "@/app/actions/attendance";
 import { updateOwnAvatar } from "@/app/actions/auth";
 
@@ -56,6 +57,7 @@ export default function StudentConsole({
   const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -230,11 +232,13 @@ export default function StudentConsole({
         </ul>
 
         <div className="admin-sidebar-footer">
-          <div className="admin-sidebar-profile">
-            <label
-              style={{ cursor: "pointer", position: "relative", display: "inline-block" }}
-              title="Click to upload/change your profile photo"
-            >
+          <div
+            className="admin-sidebar-profile"
+            onClick={() => setIsEditProfileOpen(true)}
+            style={{ cursor: "pointer" }}
+            title="Click to edit profile photo or change password"
+          >
+            <div style={{ position: "relative", display: "inline-block" }}>
               <div className="admin-sidebar-avatar" style={{
                 backgroundColor: "#06b6d4",
                 color: "white",
@@ -265,18 +269,12 @@ export default function StudentConsole({
                 border: "1.5px solid #ffffff",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.3)"
               }}>
-                📷
+                ⚙️
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handlePhotoUpload}
-              />
-            </label>
+            </div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{studentDisplayName}</span>
-              <span className="admin-sidebar-profile-email">{session?.email || ""}</span>
+              <span className="admin-sidebar-profile-email" style={{ fontSize: "0.7rem", color: "#a5f3fc" }}>⚙️ Settings</span>
             </div>
           </div>
           {logout && (
@@ -669,6 +667,22 @@ export default function StudentConsole({
         />
       )}
 
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        user={{
+          name: studentDisplayName,
+          email: session?.email || "",
+          avatar: currentAvatar,
+          role: "STUDENT"
+        }}
+        onAvatarUpdated={(newAvatar) => {
+          setCurrentAvatar(newAvatar);
+          setIsEditProfileOpen(false);
+        }}
+      />
+
       <style jsx global>{`
         .student-course-card-cyan {
           transition: all 0.2s ease-in-out;
@@ -677,6 +691,10 @@ export default function StudentConsole({
           border-color: #0891b2 !important;
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(8, 145, 178, 0.15);
+        }
+        @keyframes modalSlideUp {
+          from { opacity: 0; transform: translateY(30px) scale(0.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
     </div>
