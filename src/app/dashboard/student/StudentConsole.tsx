@@ -445,8 +445,39 @@ export default function StudentConsole({
                 My Enrolled Courses & Learning Workspaces
               </h3>
               {enrollments.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "3rem 1rem" }}>
-                  <p className="text-muted">You are not enrolled in any courses yet.</p>
+                <div style={{
+                  textAlign: "center",
+                  padding: "3.5rem 1.5rem",
+                  border: "2px dashed #cbd5e1",
+                  borderRadius: "var(--radius-lg)",
+                  backgroundColor: "#f8fafc"
+                }}>
+                  <div style={{ fontSize: "3.5rem", marginBottom: "0.75rem" }}>📖</div>
+                  <h3 style={{ margin: "0 0 0.5rem 0", color: "#1e293b", fontWeight: 700, fontFamily: "Playfair Display, serif" }}>
+                    No Active Enrolled Classes
+                  </h3>
+                  <p style={{ color: "#64748b", fontSize: "0.9rem", maxWidth: "440px", margin: "0 auto 1.5rem auto", lineHeight: 1.5 }}>
+                    You haven't joined any classes yet. Browse our available programs &amp; courses catalog to enroll and start learning!
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveConsoleTab("browse")}
+                    style={{
+                      padding: "0.7rem 1.6rem",
+                      backgroundColor: "#0e7490",
+                      backgroundImage: "linear-gradient(135deg, #0e7490 0%, #059669 100%)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "9999px",
+                      fontWeight: 800,
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 14px rgba(14, 116, 144, 0.3)",
+                      transition: "transform 0.2s ease"
+                    }}
+                  >
+                    🔍 Browse Course Catalog &amp; Enroll &rarr;
+                  </button>
                 </div>
               ) : (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
