@@ -320,7 +320,31 @@ export async function deleteUser(userId: string) {
   if (!userId) return { error: "User ID is required" };
 
   try {
+    // 1. Delete user document from "users"
     await db.collection("users").doc(userId).delete();
+
+    // 2. Cascade delete attendance logs for this student
+    const attendanceSnap = await db.collection("attendance").get();
+    for (const doc of attendanceSnap.docs) {
+      const data = doc.data();
+      const records = (data.records || []) as Array<{ studentId: string; [key: string]: any }>;
+      const updatedRecords = records.filter((r) => r.studentId !== userId);
+
+      if (updatedRecords.length !== records.length) {
+        if (updatedRecords.length === 0) {
+          await db.collection("attendance").doc(doc.id).delete();
+        } else {
+          await db.collection("attendance").doc(doc.id).update({ records: updatedRecords });
+        }
+      }
+    }
+
+    // 3. Cascade delete enrollments for this student
+    const enrollmentsSnap = await db.collection("enrollments").where("studentId", "==", userId).get();
+    for (const doc of enrollmentsSnap.docs) {
+      await db.collection("enrollments").doc(doc.id).delete();
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Delete user error:", error);
