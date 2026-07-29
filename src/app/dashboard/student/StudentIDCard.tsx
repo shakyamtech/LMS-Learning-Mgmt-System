@@ -93,11 +93,11 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
           </div>
 
           {/* Student Profile Photo / Avatar */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "1.25rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "1rem" }}>
             <div style={{
-              width: "90px",
-              height: "90px",
-              borderRadius: "50%",
+              width: "95px",
+              height: "120px",
+              borderRadius: "0.75rem",
               backgroundColor: "#0e7490",
               color: "#ffffff",
               display: "flex",
@@ -105,8 +105,8 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
               justifyContent: "center",
               fontSize: "2.25rem",
               fontWeight: 800,
-              border: "4px solid #ffffff",
-              boxShadow: "0 4px 12px rgba(14, 116, 144, 0.25)",
+              border: "3px solid #ffffff",
+              boxShadow: "0 0 0 2px #0e7490, 0 8px 16px rgba(14, 116, 144, 0.22)",
               overflow: "hidden"
             }}>
               {student.avatar ? (
