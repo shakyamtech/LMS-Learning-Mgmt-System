@@ -1429,22 +1429,82 @@ export default function AdminDashboardClient({
               </button>
 
               {showSettings && (
-                <div className="dropdown-popover">
-                  <div className="dropdown-popover-header">Quick System Settings</div>
-                  {mockSettings.map((setting) => (
-                    <div
-                      key={setting.id}
-                      className="dropdown-popover-item"
+                <div className="dropdown-popover" style={{ width: "320px" }}>
+                  {/* Header with College Primary Gradient */}
+                  <div style={{
+                    padding: "0.85rem 1.15rem",
+                    background: "linear-gradient(135deg, #1B5E20 0%, #123d15 100%)",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
+                    <div style={{ fontWeight: 800, fontSize: "0.92rem", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span>⚙️</span> Quick System Settings
+                    </div>
+                    <span style={{ fontSize: "0.68rem", backgroundColor: "rgba(212, 175, 55, 0.25)", color: "#fef08a", padding: "0.15rem 0.55rem", borderRadius: "9999px", fontWeight: 700 }}>
+                      ADMIN
+                    </span>
+                  </div>
+
+                  <div style={{ padding: "0.6rem", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                    {/* Item 1: System Config */}
+                    <button
+                      type="button"
                       onClick={() => {
                         setShowSettings(false);
-                        if (setting.id === 1) setActiveSettingModal("config");
-                        else if (setting.id === 2) setActiveSettingModal("security");
-                        else if (setting.id === 3) setActiveSettingModal("export");
+                        setActiveSettingModal("config");
                       }}
+                      className="popover-menu-btn"
                     >
-                      <span className="dropdown-popover-item-title">{setting.label}</span>
-                    </div>
-                  ))}
+                      <div className="popover-icon-box" style={{ backgroundColor: "#f0fdf4", color: "#166534" }}>
+                        ⚙️
+                      </div>
+                      <div style={{ flex: 1, textAlign: "left" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>System Configuration</div>
+                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.1rem" }}>Platform mode, self-reg &amp; helpline</div>
+                      </div>
+                      <span className="popover-arrow">›</span>
+                    </button>
+
+                    {/* Item 2: Security & API Keys */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowSettings(false);
+                        setActiveSettingModal("security");
+                      }}
+                      className="popover-menu-btn"
+                    >
+                      <div className="popover-icon-box" style={{ backgroundColor: "#fef3c7", color: "#92400e" }}>
+                        🔑
+                      </div>
+                      <div style={{ flex: 1, textAlign: "left" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>Security &amp; API Keys</div>
+                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.1rem" }}>DB status, session expiry &amp; 2FA</div>
+                      </div>
+                      <span className="popover-arrow">›</span>
+                    </button>
+
+                    {/* Item 3: Data Export & Analytics */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowSettings(false);
+                        setActiveSettingModal("export");
+                      }}
+                      className="popover-menu-btn"
+                    >
+                      <div className="popover-icon-box" style={{ backgroundColor: "#ecfeff", color: "#155e75" }}>
+                        📊
+                      </div>
+                      <div style={{ flex: 1, textAlign: "left" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1e293b" }}>Data Export &amp; Analytics</div>
+                        <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.1rem" }}>Download CSV reports &amp; JSON backup</div>
+                      </div>
+                      <span className="popover-arrow">›</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
