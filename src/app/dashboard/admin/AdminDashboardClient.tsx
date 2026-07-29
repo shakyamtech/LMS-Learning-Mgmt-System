@@ -813,7 +813,12 @@ export default function AdminDashboardClient({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar" style={{ overflow: "hidden" }}>
+            <div className="admin-sidebar-avatar" style={{
+              overflow: "hidden",
+              border: "2px solid #ffffff",
+              boxShadow: "0 0 0 2px rgba(212, 175, 55, 0.6), 0 3px 8px rgba(0, 0, 0, 0.2)",
+              flexShrink: 0
+            }}>
               {session?.avatar ? (
                 <img src={session.avatar} alt={displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : (

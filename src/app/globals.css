@@ -1475,8 +1475,8 @@ a:hover {
 }
 
 .admin-sidebar-avatar {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: var(--college-accent);
   color: var(--college-primary-dark);
@@ -1485,6 +1485,10 @@ a:hover {
   align-items: center;
   justify-content: center;
   font-size: 0.95rem;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35), 0 3px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .admin-sidebar-profile-info {

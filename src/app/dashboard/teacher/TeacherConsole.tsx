@@ -323,7 +323,14 @@ export default function TeacherConsole({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#ef4444", color: "white", overflow: "hidden" }}>
+            <div className="admin-sidebar-avatar" style={{
+              backgroundColor: "#ef4444",
+              color: "white",
+              overflow: "hidden",
+              border: "2px solid #ffffff",
+              boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.5), 0 3px 8px rgba(0, 0, 0, 0.2)",
+              flexShrink: 0
+            }}>
               {session?.avatar ? (
                 <img src={session.avatar} alt={teacherDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : (
