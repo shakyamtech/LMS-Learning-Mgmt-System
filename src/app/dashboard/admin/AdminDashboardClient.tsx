@@ -1529,22 +1529,26 @@ export default function AdminDashboardClient({
                             <tr key={user.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                               <td style={{ padding: "1rem" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-                                  <div style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    borderRadius: "50%",
-                                    backgroundColor: roleBadgeStyle.bg,
-                                    color: roleBadgeStyle.color,
-                                    fontWeight: 700,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontSize: "0.95rem",
-                                    overflow: "hidden",
-                                    border: "2px solid #ffffff",
-                                    boxShadow: "0 0 0 2px rgba(14, 116, 144, 0.25), 0 2px 6px rgba(0, 0, 0, 0.12)",
-                                    flexShrink: 0
-                                  }}>
+                                  <div
+                                    className="user-avatar-hover"
+                                    title="Click to view details"
+                                    onClick={() => setViewingUser(user)}
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      backgroundColor: roleBadgeStyle.bg,
+                                      color: roleBadgeStyle.color,
+                                      fontWeight: 700,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontSize: "0.95rem",
+                                      overflow: "hidden",
+                                      border: "2px solid #ffffff",
+                                      boxShadow: "0 0 0 2px rgba(14, 116, 144, 0.25), 0 2px 6px rgba(0, 0, 0, 0.12)",
+                                      flexShrink: 0
+                                    }}>
                                     {user.avatar ? (
                                       <img src={user.avatar} alt={user.name || "User"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                     ) : (
