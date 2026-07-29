@@ -389,51 +389,6 @@ export default function TeacherConsole({
         </ul>
 
         <div className="admin-sidebar-footer">
-          <div
-            className="admin-sidebar-profile"
-            onClick={() => setIsEditProfileOpen(true)}
-            style={{ cursor: "pointer" }}
-            title="Click to edit profile photo or change password"
-          >
-            <div style={{ position: "relative", display: "inline-block" }}>
-              <div className="admin-sidebar-avatar" style={{
-                backgroundColor: "#ef4444",
-                color: "white",
-                overflow: "hidden",
-                border: "2px solid #ffffff",
-                boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.5), 0 3px 8px rgba(0, 0, 0, 0.2)",
-                flexShrink: 0
-              }}>
-                {currentAvatar ? (
-                  <img src={currentAvatar} alt={teacherDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
-                  initials
-                )}
-              </div>
-              <div style={{
-                position: "absolute",
-                bottom: "-3px",
-                right: "-3px",
-                backgroundColor: "#dc2626",
-                color: "#ffffff",
-                borderRadius: "50%",
-                width: "18px",
-                height: "18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "0.6rem",
-                border: "1.5px solid #ffffff",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.3)"
-              }}>
-                ⚙️
-              </div>
-            </div>
-            <div className="admin-sidebar-profile-info">
-              <span className="admin-sidebar-profile-name">{teacherDisplayName}</span>
-              <span className="admin-sidebar-profile-email" style={{ fontSize: "0.7rem", color: "#fca5a5" }}>⚙️ Settings</span>
-            </div>
-          </div>
           {logout && (
             <form action={logout}>
               <button className="admin-sidebar-logout-btn" type="submit" style={{ backgroundColor: "rgba(239, 68, 68, 0.2)", color: "#fca5a5" }}>
@@ -447,7 +402,7 @@ export default function TeacherConsole({
       {/* Main content workspace */}
       <div className="admin-main">
         {/* Top Navbar */}
-        <header className="admin-navbar">
+        <header className="admin-navbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{
               fontSize: "0.7rem",
@@ -471,6 +426,52 @@ export default function TeacherConsole({
                "Class Broadcast Announcements"}
             </h1>
           </div>
+
+          {/* Top-right Profile Avatar Button */}
+          <button
+            type="button"
+            onClick={() => setIsEditProfileOpen(true)}
+            title="Account & Security Settings"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.6rem",
+              background: "rgba(220, 38, 38, 0.07)",
+              border: "1.5px solid rgba(220, 38, 38, 0.18)",
+              borderRadius: "9999px",
+              padding: "0.35rem 0.85rem 0.35rem 0.4rem",
+              cursor: "pointer",
+              transition: "background 0.2s ease",
+              flexShrink: 0
+            }}
+          >
+            <div style={{
+              width: "34px",
+              height: "34px",
+              borderRadius: "50%",
+              backgroundColor: "#ef4444",
+              color: "white",
+              overflow: "hidden",
+              border: "2px solid #ffffff",
+              boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.35)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 700,
+              fontSize: "0.85rem",
+              flexShrink: 0
+            }}>
+              {currentAvatar ? (
+                <img src={currentAvatar} alt={teacherDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                initials
+              )}
+            </div>
+            <div style={{ textAlign: "left", lineHeight: 1.2 }}>
+              <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--college-text)" }}>{teacherDisplayName}</div>
+              <div style={{ fontSize: "0.68rem", color: "#64748b" }}>⚙️ Settings</div>
+            </div>
+          </button>
         </header>
 
         {/* Content Workspace Area */}
