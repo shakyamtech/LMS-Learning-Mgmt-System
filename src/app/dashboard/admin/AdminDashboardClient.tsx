@@ -7,6 +7,7 @@ import AdminAttendance from "./AdminAttendance";
 import { approveStudent, rejectStudent, updateUser, deleteUser } from "@/app/actions/auth";
 import { saveHomepageConfig } from "@/app/actions/cms";
 import { addTransaction, deleteTransaction } from "@/app/actions/accounting";
+import EditProfileModal from "@/components/EditProfileModal";
 
 interface Teacher {
   id: string;
@@ -110,6 +111,8 @@ export default function AdminDashboardClient({
   const [showSettings, setShowSettings] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpenMobile, setIsSearchOpenMobile] = useState(false);
+  const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const closeSidebar = () => setIsSidebarOpen(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
   const [localUsers, setLocalUsers] = useState<PlatformUser[]>(allUsers);
@@ -827,24 +830,6 @@ export default function AdminDashboardClient({
         </ul>
 
         <div className="admin-sidebar-footer">
-          <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar" style={{
-              overflow: "hidden",
-              border: "2px solid #ffffff",
-              boxShadow: "0 0 0 2px rgba(212, 175, 55, 0.6), 0 3px 8px rgba(0, 0, 0, 0.2)",
-              flexShrink: 0
-            }}>
-              {session?.avatar ? (
-                <img src={session.avatar} alt={displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                initials
-              )}
-            </div>
-            <div className="admin-sidebar-profile-info">
-              <span className="admin-sidebar-profile-name">{displayName}</span>
-              <span className="admin-sidebar-profile-email">{session.email}</span>
-            </div>
-          </div>
           <form action={logout}>
             <button className="admin-sidebar-logout-btn" type="submit">
               🚪 Logout
@@ -1383,6 +1368,52 @@ export default function AdminDashboardClient({
                 </div>
               )}
             </div>
+
+            {/* Admin Profile Avatar Button */}
+            <button
+              type="button"
+              onClick={() => setIsEditProfileOpen(true)}
+              title={displayName + " — Account Settings"}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                flexShrink: 0,
+                borderRadius: "50%",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 0 3px rgba(27, 94, 32, 0.4)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+              }}
+            >
+              <div style={{
+                width: "38px",
+                height: "38px",
+                borderRadius: "50%",
+                backgroundColor: "var(--college-primary)",
+                color: "white",
+                overflow: "hidden",
+                border: "2.5px solid #ffffff",
+                boxShadow: "0 0 0 2px rgba(212, 175, 55, 0.6), 0 2px 8px rgba(0,0,0,0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+              }}>
+                {currentAvatar ? (
+                  <img src={currentAvatar} alt={displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  initials
+                )}
+              </div>
+            </button>
           </div>
         </>
       )}
@@ -4536,6 +4567,21 @@ export default function AdminDashboardClient({
           </>
         );
       })()}
+      {/* Edit Profile Modal for Admin */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        user={{
+          name: displayName,
+          email: session?.email || "",
+          avatar: currentAvatar,
+          role: "ADMIN"
+        }}
+        onAvatarUpdated={(newAvatar) => {
+          setCurrentAvatar(newAvatar);
+          setIsEditProfileOpen(false);
+        }}
+      />
     </div>
   );
 }
