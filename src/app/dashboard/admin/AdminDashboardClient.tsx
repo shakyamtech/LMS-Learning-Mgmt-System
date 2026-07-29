@@ -1540,7 +1540,10 @@ export default function AdminDashboardClient({
                                     alignItems: "center",
                                     justifyContent: "center",
                                     fontSize: "0.95rem",
-                                    overflow: "hidden"
+                                    overflow: "hidden",
+                                    border: "2px solid #ffffff",
+                                    boxShadow: "0 0 0 2px rgba(14, 116, 144, 0.25), 0 2px 6px rgba(0, 0, 0, 0.12)",
+                                    flexShrink: 0
                                   }}>
                                     {user.avatar ? (
                                       <img src={user.avatar} alt={user.name || "User"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -3104,7 +3107,10 @@ export default function AdminDashboardClient({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  overflow: "hidden"
+                  overflow: "hidden",
+                  border: "2px solid #ffffff",
+                  boxShadow: "0 0 0 2px rgba(27, 94, 32, 0.3), 0 4px 10px rgba(0, 0, 0, 0.15)",
+                  flexShrink: 0
                 }}>
                   {viewingUser.avatar ? (
                     <img src={viewingUser.avatar} alt={viewingUser.name || "User"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
