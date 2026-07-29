@@ -25,6 +25,7 @@ export default function EditProfileModal({
 }: EditProfileModalProps) {
   const [activeTab, setActiveTab] = useState<"photo" | "password">("photo");
   const panelRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Photo state
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(
@@ -333,15 +334,42 @@ export default function EditProfileModal({
                 </div>
               )}
 
-              <label htmlFor="ep-photo-input" style={{
-                display: "inline-block", padding: "0.5rem 1.1rem",
-                backgroundColor: "#f1f5f9", color: "#334155",
-                borderRadius: "9999px", fontWeight: 700, fontSize: "0.8rem",
-                cursor: "pointer", border: "1px solid #cbd5e1", marginBottom: "0.5rem",
-              }}>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  padding: "0.55rem 1.25rem",
+                  backgroundColor: "#f1f5f9",
+                  color: "#334155",
+                  borderRadius: "9999px",
+                  fontWeight: 700,
+                  fontSize: "0.82rem",
+                  cursor: "pointer",
+                  border: "1.5px solid #cbd5e1",
+                  marginBottom: "0.5rem",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e2e8f0";
+                  e.currentTarget.style.borderColor = accentColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f1f5f9";
+                  e.currentTarget.style.borderColor = "#cbd5e1";
+                }}
+              >
                 📁 Choose Photo
-              </label>
-              <input id="ep-photo-input" type="file" accept="image/*" onChange={handleFileSelect} style={{ display: "none" }} />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                style={{ display: "none" }}
+              />
 
               <p style={{ fontSize: "0.7rem", color: "#94a3b8", margin: "0 0 1rem 0" }}>
                 Auto-compressed under 50 KB
