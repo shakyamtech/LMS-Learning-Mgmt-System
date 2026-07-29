@@ -5,6 +5,7 @@ import { createAssignment, gradeSubmission } from "@/app/actions/assignments";
 import { createAnnouncement, deleteAnnouncement, createComment } from "@/app/actions/announcements";
 import { useState, useTransition, useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { updateOwnAvatar } from "@/app/actions/auth";
 import TeacherAttendanceMarking from "./TeacherAttendanceMarking";
 
 interface Student {
@@ -107,6 +108,70 @@ export default function TeacherConsole({
   // Roster progress local state
   const [localProgress, setLocalProgress] = useState<{ [enrollmentId: string]: number }>({});
   const [savingEnrollmentId, setSavingEnrollmentId] = useState<string | null>(null);
+
+  const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        let maxDim = 300;
+        let quality = 0.75;
+        let resultDataUrl = "";
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        for (let attempt = 0; attempt < 8; attempt++) {
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          if (ctx) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            resultDataUrl = canvas.toDataURL("image/jpeg", quality);
+
+            const approxBytes = Math.round(resultDataUrl.length * 0.75);
+            if (approxBytes <= 48000) {
+              break;
+            }
+          }
+
+          maxDim = Math.round(maxDim * 0.85);
+          quality = Math.max(0.15, quality - 0.12);
+        }
+
+        const finalAvatar = resultDataUrl || (event.target?.result as string);
+        setCurrentAvatar(finalAvatar);
+        setIsUploadingPhoto(true);
+        updateOwnAvatar(finalAvatar).then(() => {
+          setIsUploadingPhoto(false);
+        });
+      };
+    };
+  };
 
   // Assignment creation form state
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -323,20 +388,49 @@ export default function TeacherConsole({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar" style={{
-              backgroundColor: "#ef4444",
-              color: "white",
-              overflow: "hidden",
-              border: "2px solid #ffffff",
-              boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.5), 0 3px 8px rgba(0, 0, 0, 0.2)",
-              flexShrink: 0
-            }}>
-              {session?.avatar ? (
-                <img src={session.avatar} alt={teacherDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                initials
-              )}
-            </div>
+            <label
+              style={{ cursor: "pointer", position: "relative", display: "inline-block" }}
+              title="Click to upload/change your profile photo"
+            >
+              <div className="admin-sidebar-avatar" style={{
+                backgroundColor: "#ef4444",
+                color: "white",
+                overflow: "hidden",
+                border: "2px solid #ffffff",
+                boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.5), 0 3px 8px rgba(0, 0, 0, 0.2)",
+                flexShrink: 0
+              }}>
+                {currentAvatar ? (
+                  <img src={currentAvatar} alt={teacherDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div style={{
+                position: "absolute",
+                bottom: "-3px",
+                right: "-3px",
+                backgroundColor: "#dc2626",
+                color: "#ffffff",
+                borderRadius: "50%",
+                width: "18px",
+                height: "18px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.6rem",
+                border: "1.5px solid #ffffff",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.3)"
+              }}>
+                📷
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handlePhotoUpload}
+              />
+            </label>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{teacherDisplayName}</span>
               <span className="admin-sidebar-profile-email">{session?.email || ""}</span>

@@ -307,6 +307,25 @@ export async function updateUser(userId: string, data: {
   }
 }
 
+export async function updateOwnAvatar(avatar: string) {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("session")?.value;
+  if (!sessionToken) return { error: "Unauthorized" };
+
+  const session = await decryptSession(sessionToken);
+  if (!session || !session.userId) {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    await db.collection("users").doc(session.userId).update({ avatar });
+    return { success: true };
+  } catch (error) {
+    console.error("Update own avatar error:", error);
+    return { error: "Failed to update profile photo." };
+  }
+}
+
 export async function deleteUser(userId: string) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("session")?.value;
