@@ -866,7 +866,7 @@ export default function AdminDashboardClient({
               ☰
             </button>
             <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-              <span style={{
+              <span className="admin-navbar-badge" style={{
                 fontSize: "0.7rem",
                 backgroundColor: "rgba(27, 94, 32, 0.08)",
                 color: "var(--college-primary)",
