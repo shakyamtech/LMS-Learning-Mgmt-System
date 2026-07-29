@@ -58,6 +58,9 @@ export default function StudentConsole({
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const closeSidebar = () => setIsSidebarOpen(false);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -140,8 +143,15 @@ export default function StudentConsole({
 
   return (
     <div className="admin-layout">
+      {/* Mobile backdrop overlay */}
+      <div
+        className={`sidebar-backdrop ${isSidebarOpen ? "active" : ""}`}
+        onClick={closeSidebar}
+        aria-hidden="true"
+      />
+
       {/* Sidebar Navigation - Vibrant Cyan / Teal Theme */}
-      <aside className="admin-sidebar" style={{
+      <aside className={`admin-sidebar${isSidebarOpen ? " sidebar-open" : ""}`} style={{
         backgroundColor: "#164e63",
         backgroundImage: "linear-gradient(180deg, #164e63 0%, #0e7490 100%)"
       }}>
@@ -157,6 +167,7 @@ export default function StudentConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("dashboard");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active-cyan" : ""}`}
             >
@@ -170,6 +181,7 @@ export default function StudentConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("courses");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active-cyan" : ""}`}
             >
@@ -183,6 +195,7 @@ export default function StudentConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("browse");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "browse" ? "active-cyan" : ""}`}
             >
@@ -196,6 +209,7 @@ export default function StudentConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("assignments");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active-cyan" : ""}`}
             >
@@ -209,6 +223,7 @@ export default function StudentConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("billing");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "billing" ? "active-cyan" : ""}`}
             >
@@ -222,6 +237,7 @@ export default function StudentConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("idcard");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "idcard" ? "active-cyan" : ""}`}
             >
@@ -246,7 +262,17 @@ export default function StudentConsole({
       <div className="admin-main">
         {/* Top Navbar */}
         <header className="admin-navbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          {/* Left: Hamburger (mobile) + Title */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0, flex: 1 }}>
+            <button
+              type="button"
+              className="admin-hamburger"
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Open navigation"
+            >
+              ☰
+            </button>
+            <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
             <span style={{
               fontSize: "0.7rem",
               backgroundColor: "rgba(8, 145, 178, 0.1)",
@@ -269,6 +295,7 @@ export default function StudentConsole({
                activeConsoleTab === "billing" ? "Fee & Billing Statement" :
                "Digital Student ID Card"}
             </h1>
+            </div>
           </div>
 
           {/* Top-right Profile Avatar Button */}

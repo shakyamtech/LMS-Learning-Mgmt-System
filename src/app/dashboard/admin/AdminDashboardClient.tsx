@@ -108,6 +108,8 @@ export default function AdminDashboardClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const closeSidebar = () => setIsSidebarOpen(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
   const [localUsers, setLocalUsers] = useState<PlatformUser[]>(allUsers);
   const [transactions, setTransactions] = useState<TransactionRecord[]>(initialTransactions);
@@ -719,8 +721,15 @@ export default function AdminDashboardClient({
 
   return (
     <div className="admin-layout">
+      {/* Mobile backdrop overlay */}
+      <div
+        className={`sidebar-backdrop ${isSidebarOpen ? "active" : ""}`}
+        onClick={closeSidebar}
+        aria-hidden="true"
+      />
+
       {/* Sidebar Navigation */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar${isSidebarOpen ? " sidebar-open" : ""}`}>
         <Link href="/" className="admin-sidebar-brand">
           <img src="/logo.png" alt="Lagankhel IT Academy Logo" />
           <span className="admin-sidebar-brand-name">LITA Admin</span>
@@ -733,6 +742,7 @@ export default function AdminDashboardClient({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab("dashboard");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeTab === "dashboard" ? "active" : ""}`}
             >
@@ -746,6 +756,7 @@ export default function AdminDashboardClient({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab("users");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeTab === "users" ? "active" : ""}`}
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
@@ -776,6 +787,7 @@ export default function AdminDashboardClient({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab("accounting");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeTab === "accounting" ? "active" : ""}`}
             >
@@ -789,6 +801,7 @@ export default function AdminDashboardClient({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab("attendance");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeTab === "attendance" ? "active" : ""}`}
             >
@@ -802,6 +815,7 @@ export default function AdminDashboardClient({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab("cms");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeTab === "cms" ? "active" : ""}`}
             >
@@ -842,28 +856,38 @@ export default function AdminDashboardClient({
       <div className="admin-main">
         {/* Top Navbar */}
         <header className="admin-navbar">
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{
-              fontSize: "0.7rem",
-              backgroundColor: "rgba(27, 94, 32, 0.08)",
-              color: "var(--college-primary)",
-              fontWeight: 700,
-              padding: "0.15rem 0.5rem",
-              borderRadius: "var(--radius-full)",
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-              width: "fit-content",
-              marginBottom: "0.25rem"
-            }}>
-              ⚡ Admin Control Panel
-            </span>
-            <h1 className="admin-navbar-title">
-              {activeTab === "dashboard" ? "LMS Root Administrator" :
-               activeTab === "users" ? "Users Management" :
-               activeTab === "accounting" ? "Accounting & Financial Management" :
-               activeTab === "attendance" ? "Student Attendance & Class Logs" :
-               "Site Configuration (CMS)"}
-            </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0 }}>
+            <button
+              type="button"
+              className="admin-hamburger"
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Open navigation"
+            >
+              ☰
+            </button>
+            <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+              <span style={{
+                fontSize: "0.7rem",
+                backgroundColor: "rgba(27, 94, 32, 0.08)",
+                color: "var(--college-primary)",
+                fontWeight: 700,
+                padding: "0.15rem 0.5rem",
+                borderRadius: "var(--radius-full)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                width: "fit-content",
+                marginBottom: "0.25rem"
+              }}>
+                ⚡ Admin Control Panel
+              </span>
+              <h1 className="admin-navbar-title">
+                {activeTab === "dashboard" ? "LMS Root Administrator" :
+                 activeTab === "users" ? "Users Management" :
+                 activeTab === "accounting" ? "Accounting & Financial Management" :
+                 activeTab === "attendance" ? "Student Attendance & Class Logs" :
+                 "Site Configuration (CMS)"}
+              </h1>
+            </div>
           </div>
 
           <div className="admin-navbar-right" style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>

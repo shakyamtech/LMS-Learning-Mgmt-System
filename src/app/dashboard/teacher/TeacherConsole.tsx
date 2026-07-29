@@ -113,6 +113,8 @@ export default function TeacherConsole({
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(session?.avatar || null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -307,8 +309,15 @@ export default function TeacherConsole({
 
   return (
     <div className="admin-layout">
+      {/* Mobile backdrop overlay */}
+      <div
+        className={`sidebar-backdrop ${isSidebarOpen ? "active" : ""}`}
+        onClick={closeSidebar}
+        aria-hidden="true"
+      />
+
       {/* Sidebar Navigation - Deep Crimson Red Theme */}
-      <aside className="admin-sidebar" style={{
+      <aside className={`admin-sidebar${isSidebarOpen ? " sidebar-open" : ""}`} style={{
         backgroundColor: "#7f1d1d",
         backgroundImage: "linear-gradient(180deg, #7f1d1d 0%, #991b1b 100%)"
       }}>
@@ -324,6 +333,7 @@ export default function TeacherConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("dashboard");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "dashboard" ? "active-red" : ""}`}
             >
@@ -338,6 +348,7 @@ export default function TeacherConsole({
                 e.preventDefault();
                 setActiveConsoleTab("courses");
                 setActiveTab("roster");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "courses" ? "active-red" : ""}`}
             >
@@ -352,6 +363,7 @@ export default function TeacherConsole({
                 e.preventDefault();
                 setActiveConsoleTab("assignments");
                 setActiveTab("assignments");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "assignments" ? "active-red" : ""}`}
             >
@@ -366,6 +378,7 @@ export default function TeacherConsole({
                 e.preventDefault();
                 setActiveConsoleTab("announcements");
                 setActiveTab("announcements");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "announcements" ? "active-red" : ""}`}
             >
@@ -379,6 +392,7 @@ export default function TeacherConsole({
               onClick={(e) => {
                 e.preventDefault();
                 setActiveConsoleTab("attendance");
+                closeSidebar();
               }}
               className={`admin-sidebar-link ${activeConsoleTab === "attendance" ? "active-red" : ""}`}
             >
@@ -403,7 +417,18 @@ export default function TeacherConsole({
       <div className="admin-main">
         {/* Top Navbar */}
         <header className="admin-navbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          {/* Left: Hamburger (mobile) + Title */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0, flex: 1 }}>
+            <button
+              type="button"
+              className="admin-hamburger"
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Open navigation"
+              style={{ color: "#dc2626" }}
+            >
+              ☰
+            </button>
+            <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
             <span style={{
               fontSize: "0.7rem",
               backgroundColor: "rgba(220, 38, 38, 0.1)",
@@ -425,6 +450,7 @@ export default function TeacherConsole({
                activeConsoleTab === "attendance" ? "Daily Attendance Management" :
                "Class Broadcast Announcements"}
             </h1>
+            </div>
           </div>
 
           {/* Top-right Profile Avatar Button */}
