@@ -142,9 +142,32 @@ export default function EditProfileModal({
   };
 
   const initials = (user.name || user.email || "US").substring(0, 2).toUpperCase();
-  const accentColor = user.role === "TEACHER" ? "#ef4444" : "#0e7490";
-  const accentLight = user.role === "TEACHER" ? "rgba(239,68,68,0.08)" : "rgba(14,116,144,0.08)";
-  const accentBorder = user.role === "TEACHER" ? "rgba(239,68,68,0.2)" : "rgba(14,116,144,0.2)";
+  const isTeacher = user.role === "TEACHER";
+  const isAdmin = user.role === "ADMIN";
+
+  const accentColor = isAdmin
+    ? "#1B5E20"
+    : isTeacher
+    ? "#dc2626"
+    : "#0891b2";
+
+  const accentGradientEnd = isAdmin
+    ? "#123d15"
+    : isTeacher
+    ? "#991b1b"
+    : "#0e7490";
+
+  const accentLight = isAdmin
+    ? "rgba(27,94,32,0.08)"
+    : isTeacher
+    ? "rgba(220,38,38,0.08)"
+    : "rgba(8,145,178,0.08)";
+
+  const accentBorder = isAdmin
+    ? "rgba(27,94,32,0.25)"
+    : isTeacher
+    ? "rgba(220,38,38,0.25)"
+    : "rgba(8,145,178,0.25)";
 
   return (
     <>
@@ -206,7 +229,7 @@ export default function EditProfileModal({
       >
         {/* ── Header ── */}
         <div style={{
-          background: `linear-gradient(135deg, ${accentColor}ee 0%, ${accentColor} 100%)`,
+          background: `linear-gradient(135deg, ${accentColor} 0%, ${accentGradientEnd} 100%)`,
           padding: "1rem 1.1rem 0.8rem",
           color: "white",
           display: "flex",
@@ -330,7 +353,7 @@ export default function EditProfileModal({
                 style={{
                   width: "100%", padding: "0.68rem",
                   backgroundColor: isUploadingPhoto || !selectedFile ? "#cbd5e1" : accentColor,
-                  backgroundImage: isUploadingPhoto || !selectedFile ? "none" : `linear-gradient(135deg, ${accentColor} 0%, #059669 100%)`,
+                  backgroundImage: isUploadingPhoto || !selectedFile ? "none" : `linear-gradient(135deg, ${accentColor} 0%, ${accentGradientEnd} 100%)`,
                   color: "white", border: "none", borderRadius: "0.6rem",
                   fontWeight: 700, fontSize: "0.85rem",
                   cursor: isUploadingPhoto || !selectedFile ? "not-allowed" : "pointer",
@@ -386,7 +409,7 @@ export default function EditProfileModal({
                 style={{
                   width: "100%", padding: "0.68rem",
                   backgroundColor: isSavingPass ? "#cbd5e1" : accentColor,
-                  backgroundImage: isSavingPass ? "none" : `linear-gradient(135deg, ${accentColor} 0%, #059669 100%)`,
+                  backgroundImage: isSavingPass ? "none" : `linear-gradient(135deg, ${accentColor} 0%, ${accentGradientEnd} 100%)`,
                   color: "white", border: "none", borderRadius: "0.6rem",
                   fontWeight: 700, fontSize: "0.85rem",
                   cursor: isSavingPass ? "not-allowed" : "pointer",
