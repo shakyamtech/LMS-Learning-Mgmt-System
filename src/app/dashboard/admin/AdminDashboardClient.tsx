@@ -109,6 +109,7 @@ export default function AdminDashboardClient({
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSearchOpenMobile, setIsSearchOpenMobile] = useState(false);
   const closeSidebar = () => setIsSidebarOpen(false);
   const [localStudents, setLocalStudents] = useState<Student[]>(students);
   const [localUsers, setLocalUsers] = useState<PlatformUser[]>(allUsers);
@@ -855,69 +856,136 @@ export default function AdminDashboardClient({
       {/* Main content workspace */}
       <div className="admin-main">
         {/* Top Navbar */}
-        <header className="admin-navbar">
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0 }}>
-            <button
-              type="button"
-              className="admin-hamburger"
-              onClick={() => setIsSidebarOpen(true)}
-              aria-label="Open navigation"
-            >
-              ☰
-            </button>
-            <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-              <span className="admin-navbar-badge" style={{
-                fontSize: "0.7rem",
-                backgroundColor: "rgba(27, 94, 32, 0.08)",
-                color: "var(--college-primary)",
-                fontWeight: 700,
-                padding: "0.15rem 0.5rem",
+        <header className="admin-navbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
+          {isSearchOpenMobile ? (
+            /* Mobile Expanded Search Input Bar */
+            <div style={{ display: "flex", alignItems: "center", width: "100%", gap: "0.5rem" }}>
+              <button
+                type="button"
+                onClick={() => setIsSearchOpenMobile(false)}
+                style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", padding: "0.2rem", color: "#164e63" }}
+              >
+                ←
+              </button>
+              <div style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#f3f4f6",
+                border: "1.5px solid #0e7490",
                 borderRadius: "var(--radius-full)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                width: "fit-content",
-                marginBottom: "0.25rem"
+                padding: "0.35rem 0.85rem",
+                gap: "0.5rem"
               }}>
-                ⚡ Admin Control Panel
-              </span>
-              <h1 className="admin-navbar-title">
-                {activeTab === "dashboard" ? "LMS Root Administrator" :
-                 activeTab === "users" ? "Users Management" :
-                 activeTab === "accounting" ? "Accounting & Financial Management" :
-                 activeTab === "attendance" ? "Student Attendance & Class Logs" :
-                 "Site Configuration (CMS)"}
-              </h1>
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder={activeTab === "dashboard" ? "Search courses..." : "Search students..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    outline: "none",
+                    width: "100%",
+                    fontSize: "0.85rem",
+                    color: "#374151"
+                  }}
+                />
+                <span style={{ fontSize: "0.85rem", color: "#9ca3af" }}>🔍</span>
+              </div>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  style={{ background: "none", border: "none", fontSize: "1rem", cursor: "pointer", color: "#64748b" }}
+                >
+                  ✕
+                </button>
+              )}
             </div>
-          </div>
+          ) : (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0, flex: 1 }}>
+                <button
+                  type="button"
+                  className="admin-hamburger"
+                  onClick={() => setIsSidebarOpen(true)}
+                  aria-label="Open navigation"
+                >
+                  ☰
+                </button>
+                <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                  <span className="admin-navbar-badge" style={{
+                    fontSize: "0.7rem",
+                    backgroundColor: "rgba(27, 94, 32, 0.08)",
+                    color: "var(--college-primary)",
+                    fontWeight: 700,
+                    padding: "0.15rem 0.5rem",
+                    borderRadius: "var(--radius-full)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    width: "fit-content",
+                    marginBottom: "0.25rem"
+                  }}>
+                    ⚡ Admin Control Panel
+                  </span>
+                  <h1 className="admin-navbar-title">
+                    {activeTab === "dashboard" ? "LMS Root Administrator" :
+                     activeTab === "users" ? "Users Management" :
+                     activeTab === "accounting" ? "Accounting & Financial Management" :
+                     activeTab === "attendance" ? "Student Attendance & Class Logs" :
+                     "Site Configuration (CMS)"}
+                  </h1>
+                </div>
+              </div>
 
-          <div className="admin-navbar-right" style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-            {/* Search Input */}
-            <div className="admin-navbar-search" style={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#f3f4f6",
-              border: "1px solid #e5e7eb",
-              borderRadius: "var(--radius-full)",
-              padding: "0.4rem 1rem",
-              width: "220px",
-              gap: "0.5rem"
-            }}>
-              <input
-                type="text"
-                placeholder={activeTab === "dashboard" ? "Search courses..." : "Search students..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "0.85rem",
-                  color: "#374151"
-                }}
-              />
-              <span style={{ fontSize: "0.9rem", color: "#9ca3af" }}>🔍</span>
-            </div>
+              <div className="admin-navbar-right" style={{ display: "flex", alignItems: "center", gap: "1rem", flexShrink: 0 }}>
+                {/* Desktop Search Input */}
+                <div className="admin-navbar-search-desktop" style={{
+                  alignItems: "center",
+                  backgroundColor: "#f3f4f6",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "var(--radius-full)",
+                  padding: "0.4rem 1rem",
+                  width: "200px",
+                  gap: "0.5rem"
+                }}>
+                  <input
+                    type="text"
+                    placeholder={activeTab === "dashboard" ? "Search courses..." : "Search students..."}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      width: "100%",
+                      fontSize: "0.85rem",
+                      color: "#374151"
+                    }}
+                  />
+                  <span style={{ fontSize: "0.9rem", color: "#9ca3af" }}>🔍</span>
+                </div>
+
+                {/* Mobile Search Icon Button */}
+                <button
+                  type="button"
+                  className="admin-navbar-search-mobile-btn"
+                  onClick={() => setIsSearchOpenMobile(true)}
+                  title="Search"
+                  style={{
+                    background: "rgba(243, 244, 246, 0.9)",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "50%",
+                    width: "36px",
+                    height: "36px",
+                    cursor: "pointer",
+                    fontSize: "0.9rem"
+                  }}
+                >
+                  🔍
+                </button>
 
             {/* Notification Dropdown Container */}
             <div className="dropdown-container" ref={notificationsRef} style={{ position: "relative" }}>
@@ -1316,7 +1384,9 @@ export default function AdminDashboardClient({
               )}
             </div>
           </div>
-        </header>
+        </>
+      )}
+    </header>
 
         {/* Content Workspace Area */}
         <main className="admin-content bg-cream-pattern animate-fade-in" style={{ flexGrow: 1 }}>

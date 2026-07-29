@@ -1195,6 +1195,14 @@ a:hover {
   to   { opacity: 1; }
 }
 
+/* Desktop Search Navbar utilities */
+.admin-navbar-search-desktop {
+  display: flex !important;
+}
+.admin-navbar-search-mobile-btn {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
   /* Layout becomes single column */
   .admin-layout {
@@ -1204,7 +1212,7 @@ a:hover {
 
   /* Hamburger visible on mobile */
   .admin-hamburger {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
   }
