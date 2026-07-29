@@ -11,6 +11,7 @@ interface StudentProfile {
   phone?: string | null;
   address?: string | null;
   createdAt?: string | null;
+  avatar?: string | null;
 }
 
 interface StudentIDCardProps {
@@ -105,9 +106,18 @@ export default function StudentIDCard({ student }: StudentIDCardProps) {
               fontSize: "2.25rem",
               fontWeight: 800,
               border: "4px solid #ffffff",
-              boxShadow: "0 4px 12px rgba(14, 116, 144, 0.25)"
+              boxShadow: "0 4px 12px rgba(14, 116, 144, 0.25)",
+              overflow: "hidden"
             }}>
-              {initials}
+              {student.avatar ? (
+                <img
+                  src={student.avatar}
+                  alt={studentName}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                initials
+              )}
             </div>
 
             <h3 style={{ margin: "0.75rem 0 0.15rem 0", fontSize: "1.3rem", fontWeight: 800, color: "#1f2937", textAlign: "center" }}>

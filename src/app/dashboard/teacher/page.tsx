@@ -141,9 +141,10 @@ export default async function TeacherDashboard() {
       )
     : 0;
 
-  // Fetch teacher name from Firestore
+  // Fetch teacher name & avatar from Firestore
   const teacherUserSnap = await db.collection("users").doc(session.userId).get();
   const teacherName = teacherUserSnap.exists ? (teacherUserSnap.data()?.name || session.email.split("@")[0]) : session.email.split("@")[0];
+  const teacherAvatar = teacherUserSnap.exists ? (teacherUserSnap.data()?.avatar || null) : null;
 
   // Fetch all students for attendance marking roster
   const allStudentsSnap = await db.collection("users").where("role", "==", "STUDENT").get();
@@ -159,7 +160,7 @@ export default async function TeacherDashboard() {
       totalStudents={totalStudents}
       classAverageProgress={classAverageProgress}
       allStudents={allStudents}
-      session={{ email: session.email, name: teacherName }}
+      session={{ email: session.email, name: teacherName, avatar: teacherAvatar }}
       logout={logout}
     />
   );

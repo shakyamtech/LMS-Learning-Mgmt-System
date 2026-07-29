@@ -173,6 +173,7 @@ export default async function StudentDashboard() {
         phone: studentData?.phone || null,
         address: studentData?.address || null,
         createdAt: studentData?.createdAt || null,
+        avatar: studentData?.avatar || null,
         totalFee: typeof studentData?.totalFee === "number" ? studentData.totalFee : 0,
         paidFee: typeof studentData?.paidFee === "number" ? studentData.paidFee : 0,
         transactions: transactions,

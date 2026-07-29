@@ -88,6 +88,7 @@ export default async function AdminDashboard() {
     admissionDate: (doc.data().admissionDate as string | undefined) || null,
     totalFee: typeof doc.data().totalFee === "number" ? doc.data().totalFee : null,
     paidFee: typeof doc.data().paidFee === "number" ? doc.data().paidFee : null,
+    avatar: (doc.data().avatar as string | undefined) || null,
   }));
 
   // Sort users: Pending (unapproved) users first, then by createdAt descending (latest registered at top)
@@ -127,6 +128,10 @@ export default async function AdminDashboard() {
   const attendanceRes = await getAllAttendanceLogs();
   const attendanceLogs = attendanceRes.allLogs || [];
 
+  // 8. Fetch current Admin user profile for avatar
+  const adminUserSnap = await db.collection("users").doc(session.userId).get();
+  const adminAvatar = adminUserSnap.exists ? (adminUserSnap.data()?.avatar || null) : null;
+
   return (
     <AdminDashboardClient
       teachers={teachers}
@@ -138,7 +143,7 @@ export default async function AdminDashboard() {
       attendanceLogs={attendanceLogs}
       totalUsers={totalUsers}
       totalCourses={totalCourses}
-      session={{ email: session.email }}
+      session={{ email: session.email, avatar: adminAvatar }}
       logout={logout}
     />
   );

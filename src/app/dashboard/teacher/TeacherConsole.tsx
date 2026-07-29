@@ -77,6 +77,7 @@ interface Course {
 interface Session {
   email: string;
   name?: string;
+  avatar?: string | null;
 }
 
 interface TeacherConsoleProps {
@@ -322,7 +323,13 @@ export default function TeacherConsole({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#ef4444", color: "white" }}>{initials}</div>
+            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#ef4444", color: "white", overflow: "hidden" }}>
+              {session?.avatar ? (
+                <img src={session.avatar} alt={teacherDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                initials
+              )}
+            </div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{teacherDisplayName}</span>
               <span className="admin-sidebar-profile-email">{session?.email || ""}</span>

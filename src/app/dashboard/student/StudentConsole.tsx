@@ -18,6 +18,7 @@ interface Session {
   phone?: string | null;
   address?: string | null;
   createdAt?: string | null;
+  avatar?: string | null;
   totalFee?: number;
   paidFee?: number;
   transactions?: any[];
@@ -166,7 +167,13 @@ export default function StudentConsole({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#06b6d4", color: "white" }}>{initials}</div>
+            <div className="admin-sidebar-avatar" style={{ backgroundColor: "#06b6d4", color: "white", overflow: "hidden" }}>
+              {session?.avatar ? (
+                <img src={session.avatar} alt={studentDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                initials
+              )}
+            </div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{studentDisplayName}</span>
               <span className="admin-sidebar-profile-email">{session?.email || ""}</span>
@@ -513,7 +520,8 @@ export default function StudentConsole({
                   rollNo: session?.rollNo,
                   phone: session?.phone,
                   address: session?.address,
-                  createdAt: session?.createdAt
+                  createdAt: session?.createdAt,
+                  avatar: session?.avatar,
                 }}
               />
             </div>

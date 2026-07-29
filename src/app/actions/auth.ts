@@ -246,6 +246,7 @@ export async function updateUser(userId: string, data: {
   admissionDate?: string;
   totalFee?: number;
   paidFee?: number;
+  avatar?: string;
 }) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("session")?.value;
@@ -296,6 +297,7 @@ export async function updateUser(userId: string, data: {
     if (data.admissionDate !== undefined) updateData.admissionDate = data.admissionDate;
     if (data.totalFee !== undefined) updateData.totalFee = data.totalFee;
     if (data.paidFee !== undefined) updateData.paidFee = data.paidFee;
+    if (data.avatar !== undefined) updateData.avatar = data.avatar;
 
     await db.collection("users").doc(userId).update(updateData);
     return { success: true };

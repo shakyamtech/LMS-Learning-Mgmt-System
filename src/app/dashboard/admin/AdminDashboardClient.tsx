@@ -55,6 +55,7 @@ export interface PlatformUser {
   admissionDate?: string | null;
   totalFee?: number | null;
   paidFee?: number | null;
+  avatar?: string | null;
 }
 
 export interface TransactionRecord {
@@ -73,6 +74,7 @@ export interface TransactionRecord {
 
 interface Session {
   email: string;
+  avatar?: string | null;
 }
 
 interface AdminDashboardClientProps {
@@ -113,10 +115,19 @@ export default function AdminDashboardClient({
   // User Management State
   const [userRoleFilter, setUserRoleFilter] = useState<"ALL" | "STUDENT" | "TEACHER" | "ADMIN">("ALL");
   const [editingUser, setEditingUser] = useState<PlatformUser | null>(null);
+  const [editAvatar, setEditAvatar] = useState<string>("");
   const [viewingUser, setViewingUser] = useState<PlatformUser | null>(null);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const [userActionError, setUserActionError] = useState<string | null>(null);
   const [isUserPending, startUserTransition] = useTransition();
+
+  useEffect(() => {
+    if (editingUser) {
+      setEditAvatar(editingUser.avatar || "");
+    } else {
+      setEditAvatar("");
+    }
+  }, [editingUser]);
 
   // Accounting State
   const [txFilter, setTxFilter] = useState<"ALL" | "STUDENT_FEE" | "INCOME" | "EXPENSE">("ALL");
@@ -349,6 +360,7 @@ export default function AdminDashboardClient({
     const admissionDate = formData.get("admissionDate") as string;
     const totalFeeStr = formData.get("totalFee") as string;
     const paidFeeStr = formData.get("paidFee") as string;
+    const avatar = (formData.get("avatar") as string) || "";
 
     const totalFee = totalFeeStr !== "" ? parseFloat(totalFeeStr) : undefined;
     const paidFee = paidFeeStr !== "" ? parseFloat(paidFeeStr) : undefined;
@@ -366,7 +378,8 @@ export default function AdminDashboardClient({
         rollNo,
         admissionDate,
         totalFee,
-        paidFee
+        paidFee,
+        avatar
       });
       if (res?.error) {
         setUserActionError(res.error);
@@ -384,7 +397,8 @@ export default function AdminDashboardClient({
           rollNo,
           admissionDate,
           totalFee: totalFee !== undefined ? totalFee : editingUser.totalFee,
-          paidFee: paidFee !== undefined ? paidFee : editingUser.paidFee
+          paidFee: paidFee !== undefined ? paidFee : editingUser.paidFee,
+          avatar: avatar || null
         };
         setLocalUsers(prev => prev.map(u => u.id === editingUser.id ? updatedObj : u));
         if (viewingUser?.id === editingUser.id) {
@@ -799,7 +813,13 @@ export default function AdminDashboardClient({
 
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-profile">
-            <div className="admin-sidebar-avatar">{initials}</div>
+            <div className="admin-sidebar-avatar" style={{ overflow: "hidden" }}>
+              {session?.avatar ? (
+                <img src={session.avatar} alt={displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                initials
+              )}
+            </div>
             <div className="admin-sidebar-profile-info">
               <span className="admin-sidebar-profile-name">{displayName}</span>
               <span className="admin-sidebar-profile-email">{session.email}</span>
@@ -1514,9 +1534,14 @@ export default function AdminDashboardClient({
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontSize: "0.95rem"
+                                    fontSize: "0.95rem",
+                                    overflow: "hidden"
                                   }}>
-                                    {initials}
+                                    {user.avatar ? (
+                                      <img src={user.avatar} alt={user.name || "User"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    ) : (
+                                      initials
+                                    )}
                                   </div>
                                   <div>
                                     <div style={{ fontWeight: 600, color: "var(--college-text)" }}>{user.name || "Unnamed User"}</div>
@@ -2598,6 +2623,146 @@ export default function AdminDashboardClient({
             )}
 
             <form onSubmit={handleSaveUser}>
+              {/* Profile Photo / Avatar Upload Section */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1.25rem",
+                padding: "1rem",
+                backgroundColor: "#f8fafc",
+                borderRadius: "var(--radius-md)",
+                border: "1px dashed #cbd5e1",
+                marginBottom: "1.25rem"
+              }}>
+                <div style={{
+                  width: "72px",
+                  height: "72px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(14, 116, 144, 0.15)",
+                  color: "#0e7490",
+                  fontWeight: 800,
+                  fontSize: "1.75rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  border: "2px solid #0e7490",
+                  flexShrink: 0
+                }}>
+                  {editAvatar ? (
+                    <img src={editAvatar} alt="Profile preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    (editingUser.name || editingUser.email || "US").substring(0, 2).toUpperCase()
+                  )}
+                </div>
+                <div style={{ flexGrow: 1 }}>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#1f2937", marginBottom: "0.35rem" }}>
+                    🖼️ Profile Photo / Avatar
+                  </label>
+                  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+                    <label style={{
+                      cursor: "pointer",
+                      padding: "0.4rem 0.85rem",
+                      backgroundColor: "#0e7490",
+                      color: "#ffffff",
+                      borderRadius: "var(--radius-md)",
+                      fontSize: "0.8rem",
+                      fontWeight: 600,
+                      display: "inline-block"
+                    }}>
+                      📁 Choose Photo
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.readAsDataURL(file);
+                            reader.onload = (event) => {
+                              const img = new Image();
+                              img.src = event.target?.result as string;
+                              img.onload = () => {
+                                let maxDim = 300;
+                                let quality = 0.75;
+                                let resultDataUrl = "";
+
+                                const canvas = document.createElement("canvas");
+                                const ctx = canvas.getContext("2d");
+
+                                for (let attempt = 0; attempt < 8; attempt++) {
+                                  let width = img.width;
+                                  let height = img.height;
+
+                                  if (width > height) {
+                                    if (width > maxDim) {
+                                      height = Math.round((height * maxDim) / width);
+                                      width = maxDim;
+                                    }
+                                  } else {
+                                    if (height > maxDim) {
+                                      width = Math.round((width * maxDim) / height);
+                                      height = maxDim;
+                                    }
+                                  }
+
+                                  canvas.width = width;
+                                  canvas.height = height;
+
+                                  if (ctx) {
+                                    ctx.clearRect(0, 0, width, height);
+                                    ctx.drawImage(img, 0, 0, width, height);
+                                    resultDataUrl = canvas.toDataURL("image/jpeg", quality);
+
+                                    // Estimate byte size (Base64 string length * 0.75)
+                                    const approxBytes = Math.round(resultDataUrl.length * 0.75);
+                                    if (approxBytes <= 48000) {
+                                      break;
+                                    }
+                                  }
+
+                                  maxDim = Math.round(maxDim * 0.85);
+                                  quality = Math.max(0.15, quality - 0.12);
+                                }
+
+                                setEditAvatar(resultDataUrl || (event.target?.result as string));
+                              };
+                            };
+                          }
+                        }}
+                      />
+                    </label>
+                    {editAvatar && (
+                      <button
+                        type="button"
+                        onClick={() => setEditAvatar("")}
+                        style={{
+                          padding: "0.4rem 0.75rem",
+                          backgroundColor: "#fee2e2",
+                          color: "#dc2626",
+                          border: "none",
+                          borderRadius: "var(--radius-md)",
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          cursor: "pointer"
+                        }}
+                      >
+                        Remove Photo
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="hidden"
+                    name="avatar"
+                    value={editAvatar}
+                  />
+                  <p style={{ margin: "0.35rem 0 0 0", fontSize: "0.75rem", color: "#059669", fontWeight: 600 }}>
+                    ⚡ Auto-compressed under 50KB {editAvatar ? `(Current size: ~${Math.round((editAvatar.length * 0.75) / 1024)} KB)` : "upon selection"}.
+                  </p>
+                </div>
+              </div>
+
               {/* Core Info */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
                 <div>
@@ -2933,9 +3098,14 @@ export default function AdminDashboardClient({
                   fontSize: "1.3rem",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "center",
+                  overflow: "hidden"
                 }}>
-                  {(viewingUser.name || viewingUser.email || "US").substring(0, 2).toUpperCase()}
+                  {viewingUser.avatar ? (
+                    <img src={viewingUser.avatar} alt={viewingUser.name || "User"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    (viewingUser.name || viewingUser.email || "US").substring(0, 2).toUpperCase()
+                  )}
                 </div>
                 <div>
                   <h3 style={{ margin: "0 0 0.2rem 0", fontSize: "1.35rem", color: "var(--college-primary)", fontFamily: "Playfair Display, serif" }}>
