@@ -275,45 +275,45 @@ export default function StudentConsole({
           <button
             type="button"
             onClick={() => setIsEditProfileOpen(true)}
-            title="Account & Security Settings"
+            title={studentDisplayName + " — Account Settings"}
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.6rem",
-              background: "rgba(14, 116, 144, 0.07)",
-              border: "1.5px solid rgba(14, 116, 144, 0.18)",
-              borderRadius: "9999px",
-              padding: "0.35rem 0.85rem 0.35rem 0.4rem",
+              background: "none",
+              border: "none",
+              padding: 0,
               cursor: "pointer",
-              transition: "background 0.2s ease",
-              flexShrink: 0
+              flexShrink: 0,
+              borderRadius: "50%",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 0 3px rgba(6,182,212,0.4)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
             }}
           >
             <div style={{
-              width: "34px",
-              height: "34px",
+              width: "38px",
+              height: "38px",
               borderRadius: "50%",
               backgroundColor: "#06b6d4",
               color: "white",
               overflow: "hidden",
-              border: "2px solid #ffffff",
-              boxShadow: "0 0 0 2px rgba(6, 182, 212, 0.35)",
+              border: "2.5px solid #ffffff",
+              boxShadow: "0 0 0 2px rgba(6, 182, 212, 0.4), 0 2px 8px rgba(0,0,0,0.12)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontWeight: 700,
-              fontSize: "0.85rem",
-              flexShrink: 0
+              fontSize: "0.9rem",
             }}>
               {currentAvatar ? (
                 <img src={currentAvatar} alt={studentDisplayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : (
                 initials
               )}
-            </div>
-            <div style={{ textAlign: "left", lineHeight: 1.2 }}>
-              <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--college-text)" }}>{studentDisplayName}</div>
-              <div style={{ fontSize: "0.68rem", color: "#64748b" }}>⚙️ Settings</div>
             </div>
           </button>
         </header>
